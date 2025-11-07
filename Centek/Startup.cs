@@ -1,5 +1,6 @@
 using Centek.Data;
 using Microsoft.EntityFrameworkCore;
+
 // using Microsoft.AspNetCore.Builder;
 // using Microsoft.AspNetCore.Hosting;
 // using Microsoft.Extensions.Configuration;
@@ -20,10 +21,12 @@ namespace Centek
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CentekContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("CentekContext"))
+            );
 
             services.AddControllersWithViews();
         }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

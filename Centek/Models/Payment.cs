@@ -8,7 +8,7 @@ namespace Centek.Models
         public bool type { get; set; }
         public float value { get; set; }
         public DateTime date { get; set; }
-
+        
         public Account Account { get; set; }
         public int? MainCategoryId { get; set; }
         public int? SubCategoryId { get; set; }
