@@ -3,11 +3,11 @@ namespace Centek.Models
     public class Payment
     {
         public int ID { get; set; }
-        public string? name { get; set; }
-        public string? note { get; set; }
-        public bool type { get; set; }
-        public float value { get; set; }
-        public DateTime date { get; set; }
+        public string? Name { get; set; }
+        public string? Note { get; set; }
+        public bool Type { get; set; }
+        public float Value { get; set; }
+        public DateTime Date { get; set; }
 
         public required Account Account { get; set; }
         public int? MainCategoryId { get; set; }

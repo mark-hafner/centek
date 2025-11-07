@@ -1,12 +1,12 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using Centek.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Centek.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    public IActionResult Home()
     {
         return View();
     }
@@ -22,6 +22,8 @@ public class HomeController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return View(
+            new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }
+        );
     }
 }

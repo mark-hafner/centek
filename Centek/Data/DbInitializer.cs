@@ -21,17 +21,17 @@ namespace Centek.Data
             {
                 new User
                 {
-                    username = "asmith",
-                    password = "pass123",
-                    name = "John",
-                    surname = "Doe",
+                    Username = "asmith",
+                    Password = "pass123",
+                    Name = "John",
+                    Surname = "Doe",
                 },
                 new User
                 {
-                    username = "asmith",
-                    password = "secret",
-                    name = "Alice",
-                    surname = "Smith",
+                    Username = "bnasmith",
+                    Password = "secret",
+                    Name = "Alice",
+                    Surname = "Smith",
                 },
             };
             foreach (var u in users)
@@ -43,8 +43,8 @@ namespace Centek.Data
             // Računi
             var accounts = new Account[]
             {
-                new Account { name = "Main Account", User = users[0] },
-                new Account { name = "Savings", User = users[1] },
+                new Account { Name = "Main Account", User = users[0] },
+                new Account { Name = "Savings", User = users[1] },
             };
             foreach (var a in accounts)
             {
@@ -55,8 +55,8 @@ namespace Centek.Data
             // Glavne kategorije
             var mainCategories = new MainCategory[]
             {
-                new MainCategory { name = "Food", User = users[0] },
-                new MainCategory { name = "Utilities", User = users[1] },
+                new MainCategory { Name = "Food", User = users[0] },
+                new MainCategory { Name = "Utilities", User = users[1] },
             };
             foreach (var mc in mainCategories)
             {
@@ -67,8 +67,8 @@ namespace Centek.Data
             // Podkategorije
             var subCategories = new SubCategory[]
             {
-                new SubCategory { name = "Groceries", MainCategory = mainCategories[0] },
-                new SubCategory { name = "Electricity", MainCategory = mainCategories[1] },
+                new SubCategory { Name = "Groceries", MainCategory = mainCategories[0] },
+                new SubCategory { Name = "Electricity", MainCategory = mainCategories[1] },
             };
             foreach (var sc in subCategories)
             {
@@ -81,22 +81,22 @@ namespace Centek.Data
             {
                 new Payment
                 {
-                    name = "Supermarket",
-                    note = "Weekly shopping",
-                    type = true,
-                    value = 75.5f,
-                    date = DateTime.Now,
+                    Name = "Supermarket",
+                    Note = "Weekly shopping",
+                    Type = true,
+                    Value = 75.5f,
+                    Date = DateTime.Now,
                     Account = accounts[0],
                     MainCategory = mainCategories[0],
                     SubCategory = subCategories[0],
                 },
                 new Payment
                 {
-                    name = "Electric bill",
-                    note = "Monthly",
-                    type = false,
-                    value = 120.0f,
-                    date = DateTime.Now,
+                    Name = "Electric bill",
+                    Note = "Monthly",
+                    Type = false,
+                    Value = 120.0f,
+                    Date = DateTime.Now,
                     Account = accounts[1],
                     MainCategory = mainCategories[1],
                     SubCategory = subCategories[1],
