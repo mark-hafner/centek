@@ -10,6 +10,8 @@ namespace Centek.Models
         public DateTime date { get; set; }
 
         public Account Account { get; set; }
+        public int? MainCategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
         public MainCategory? MainCategory { get; set; }
         public SubCategory? SubCategory { get; set; }
     }
