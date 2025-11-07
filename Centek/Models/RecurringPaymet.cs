@@ -11,14 +11,14 @@ namespace Centek.Models
         }
 
         public int ID { get; set; }
-        public string? name { get; set; }
-        public string? note { get; set; }
-        public bool type { get; set; }
-        public float value { get; set; }
-        public DateTime startDate { get; set; }
-        public DateTime? endDate { get; set; }
-        public Frequency frequency { get; set; }
-        public int interval { get; set; }
+        public string? Name { get; set; }
+        public string? Mote { get; set; }
+        public bool Type { get; set; }
+        public float Value { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public Frequency RecFrequency { get; set; }
+        public int RecInterval { get; set; }
 
         public required Account Account { get; set; }
         public int? MainCategoryId { get; set; }
