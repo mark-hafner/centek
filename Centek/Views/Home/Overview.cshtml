@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Overview";
+}
+<h1>@ViewData["Title"]</h1>
+<div>
+    <p>Here you can see overview of your finances.</p>
+</div>
+
+<div class="overview-chart-container">
+    <canvas id="account_Chart"></canvas>
+    <canvas id="payment_Chart"></canvas>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // graph accounts
+        const ctxAccounts = document.getElementById('account_Chart').getContext('2d');
+        new Chart(ctxAccounts, {
+            type: 'pie',
+            data: {
+                labels: ['Nlb', 'Cash', 'Drugs'],
+                datasets: [{
+                    label: 'Accounts',
+                    data: [
+                        Math.floor(Math.random() * 11),
+                        Math.floor(Math.random() * 11),
+                        Math.floor(Math.random() * 11)
+                    ],
+                }]
+            },
+        });
+
+        // graph payments
+        const ctxPayments = document.getElementById('payment_Chart').getContext('2d');
+        new Chart(ctxPayments, {
+            type: 'pie',
+            data: {
+                labels: ['shop', 'mechanic', 'restaurants'],
+                datasets: [{
+                    label: 'payments',
+                    data: [
+                        Math.floor(Math.random() * 11),
+                        Math.floor(Math.random() * 11),
+                        Math.floor(Math.random() * 11)
+                    ],
+                }]
+            },
+        });
+    </script>
+}
