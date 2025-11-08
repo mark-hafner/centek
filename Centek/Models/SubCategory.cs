@@ -5,6 +5,7 @@ namespace Centek.Models
         public int ID { get; set; }
         public string Name { get; set; }
 
+        public int MainCategoryId { get; set; }
         public MainCategory MainCategory { get; set; }
         public Payment Payment { get; set; }
     }
