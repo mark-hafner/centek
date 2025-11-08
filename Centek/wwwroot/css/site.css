@@ -65,3 +65,42 @@ body {
   /* Change container height to make chart taller or shorter */
   height: 100%;
 }
+
+/* loader overlay */
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /*cover full screen */
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  /* alignment horizontaly */
+  justify-content: center;
+  /* alignment vertically */
+  align-items: center;
+  /* sits above everyting */
+  z-index: 9999;
+}
+
+/* loader spinner */
+.loader::after {
+  content: "";
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
