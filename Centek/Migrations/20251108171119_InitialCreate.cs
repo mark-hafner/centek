@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Centek.Migrations
 {
     /// <inheritdoc />
@@ -32,7 +30,7 @@ namespace Centek.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -82,7 +80,7 @@ namespace Centek.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -91,8 +89,7 @@ namespace Centek.Migrations
                         name: "FK_Accounts_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -216,8 +213,7 @@ namespace Centek.Migrations
                         name: "FK_SubCategories_MainCategories_MainCategoryId",
                         column: x => x.MainCategoryId,
                         principalTable: "MainCategories",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -295,39 +291,6 @@ namespace Centek.Migrations
                         principalColumn: "ID");
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "seed-user-id", 0, "b27a6e2b-0421-4614-b6b1-9ffd60ec5d92", "demo@centek.com", true, false, null, "Demo", "DEMO@CENTEK.COM", "DEMO@CENTEK.COM", "AQAAAAIAAYagAAAAEN9B0YSw7lSpOa1odN2DHxypzh0liZ2DDiuS/CIIg6ROXI4s4HMAqP1KiwKYmj+POw==", null, false, "a839d460-dc8c-4d09-bf03-56dd34b41053", "User", false, "demo@centek.com" });
-
-            migrationBuilder.InsertData(
-                table: "MainCategories",
-                columns: new[] { "ID", "Name", "UserId" },
-                values: new object[,]
-                {
-                    { 1, "Hrana", "test-user-id" },
-                    { 2, "Transport", "test-user-id" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Accounts",
-                columns: new[] { "ID", "Name", "UserId" },
-                values: new object[] { 1, "Glavni račun", "seed-user-id" });
-
-            migrationBuilder.InsertData(
-                table: "SubCategories",
-                columns: new[] { "ID", "MainCategoryId", "Name" },
-                values: new object[,]
-                {
-                    { 1, 1, "Trgovina" },
-                    { 2, 1, "Restavracije" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Payments",
-                columns: new[] { "ID", "AccountId", "Date", "MainCategoryId", "Name", "Note", "SubCategoryId", "Type", "Value" },
-                values: new object[] { 1, 1, new DateTime(2025, 11, 8, 17, 16, 2, 459, DateTimeKind.Local).AddTicks(1556), 1, "Nakup v trgovini", "Mleko in kruh", null, true, 12.5f });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_UserId",
                 table: "Accounts",
@@ -385,16 +348,12 @@ namespace Centek.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_MainCategoryId",
                 table: "Payments",
-                column: "MainCategoryId",
-                unique: true,
-                filter: "[MainCategoryId] IS NOT NULL");
+                column: "MainCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_SubCategoryId",
                 table: "Payments",
-                column: "SubCategoryId",
-                unique: true,
-                filter: "[SubCategoryId] IS NOT NULL");
+                column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecurringPayment_AccountId",

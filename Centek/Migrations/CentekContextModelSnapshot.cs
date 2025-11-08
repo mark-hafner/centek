@@ -35,7 +35,6 @@ namespace Centek.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
@@ -43,14 +42,6 @@ namespace Centek.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Accounts");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            Name = "Glavni račun",
-                            UserId = "seed-user-id"
-                        });
                 });
 
             modelBuilder.Entity("Centek.Models.MainCategory", b =>
@@ -74,20 +65,6 @@ namespace Centek.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("MainCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            Name = "Hrana",
-                            UserId = "test-user-id"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            Name = "Transport",
-                            UserId = "test-user-id"
-                        });
                 });
 
             modelBuilder.Entity("Centek.Models.Payment", b =>
@@ -126,28 +103,11 @@ namespace Centek.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("MainCategoryId")
-                        .IsUnique()
-                        .HasFilter("[MainCategoryId] IS NOT NULL");
+                    b.HasIndex("MainCategoryId");
 
-                    b.HasIndex("SubCategoryId")
-                        .IsUnique()
-                        .HasFilter("[SubCategoryId] IS NOT NULL");
+                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("Payments");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            AccountId = 1,
-                            Date = new DateTime(2025, 11, 8, 17, 16, 2, 459, DateTimeKind.Local).AddTicks(1556),
-                            MainCategoryId = 1,
-                            Name = "Nakup v trgovini",
-                            Note = "Mleko in kruh",
-                            Type = true,
-                            Value = 12.5f
-                        });
                 });
 
             modelBuilder.Entity("Centek.Models.RecurringPayment", b =>
@@ -222,20 +182,6 @@ namespace Centek.Migrations
                     b.HasIndex("MainCategoryId");
 
                     b.ToTable("SubCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            MainCategoryId = 1,
-                            Name = "Trgovina"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            MainCategoryId = 1,
-                            Name = "Restavracije"
-                        });
                 });
 
             modelBuilder.Entity("Centek.Models.User", b =>
@@ -264,7 +210,6 @@ namespace Centek.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
@@ -308,26 +253,6 @@ namespace Centek.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "seed-user-id",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "b27a6e2b-0421-4614-b6b1-9ffd60ec5d92",
-                            Email = "demo@centek.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            Name = "Demo",
-                            NormalizedEmail = "DEMO@CENTEK.COM",
-                            NormalizedUserName = "DEMO@CENTEK.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN9B0YSw7lSpOa1odN2DHxypzh0liZ2DDiuS/CIIg6ROXI4s4HMAqP1KiwKYmj+POw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "a839d460-dc8c-4d09-bf03-56dd34b41053",
-                            Surname = "User",
-                            TwoFactorEnabled = false,
-                            UserName = "demo@centek.com"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -471,9 +396,7 @@ namespace Centek.Migrations
                 {
                     b.HasOne("Centek.Models.User", "User")
                         .WithMany("Accounts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -498,12 +421,12 @@ namespace Centek.Migrations
                         .IsRequired();
 
                     b.HasOne("Centek.Models.MainCategory", "MainCategory")
-                        .WithOne("Payment")
-                        .HasForeignKey("Centek.Models.Payment", "MainCategoryId");
+                        .WithMany("Payments")
+                        .HasForeignKey("MainCategoryId");
 
                     b.HasOne("Centek.Models.SubCategory", "SubCategory")
-                        .WithOne("Payment")
-                        .HasForeignKey("Centek.Models.Payment", "SubCategoryId");
+                        .WithMany("Payments")
+                        .HasForeignKey("SubCategoryId");
 
                     b.Navigation("Account");
 
@@ -539,9 +462,7 @@ namespace Centek.Migrations
                 {
                     b.HasOne("Centek.Models.MainCategory", "MainCategory")
                         .WithMany("SubCategories")
-                        .HasForeignKey("MainCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MainCategoryId");
 
                     b.Navigation("MainCategory");
                 });
@@ -606,16 +527,14 @@ namespace Centek.Migrations
 
             modelBuilder.Entity("Centek.Models.MainCategory", b =>
                 {
-                    b.Navigation("Payment")
-                        .IsRequired();
+                    b.Navigation("Payments");
 
                     b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("Centek.Models.SubCategory", b =>
                 {
-                    b.Navigation("Payment")
-                        .IsRequired();
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("Centek.Models.User", b =>

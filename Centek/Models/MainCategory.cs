@@ -9,7 +9,7 @@ namespace Centek.Models
 
         public string UserId { get; set; }
         public User User { get; set; }
-        public Payment Payment { get; set; }
+        public ICollection<Payment> Payments { get; set; }
         public ICollection<SubCategory>? SubCategories { get; set; }
     }
 }

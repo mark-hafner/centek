@@ -7,6 +7,6 @@ namespace Centek.Models
 
         public int MainCategoryId { get; set; }
         public MainCategory MainCategory { get; set; }
-        public Payment Payment { get; set; }
+        public ICollection<Payment> Payments { get; set; }
     }
 }
