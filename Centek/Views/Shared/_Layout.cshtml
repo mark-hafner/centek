@@ -12,7 +12,6 @@
     <link rel="icon" type="image/x-icon" href="~/favicon/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="~/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="~/favicon/favicon-16x16.png">
-
 </head>
 
 <body>
@@ -30,7 +29,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Home">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
@@ -45,8 +44,9 @@
             </div>
         </nav>
     </header>
+    <div class="loader"></div>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main id="page-content" role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
@@ -61,6 +61,12 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
+    @* loader script *@
+    <script>
+        $(window).on('load', function () {
+            $('.loader').fadeOut("slow");
+        });
+    </script>
 </body>
 
 </html>

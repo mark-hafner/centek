@@ -50,7 +50,7 @@ namespace Centek
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                    pattern: "{controller=Home}/{action=Index}/{id?}" // default landing page: [action]
                 );
             });
         }
