@@ -21,15 +21,15 @@ namespace Centek.Data
             {
                 new User
                 {
-                    Username = "asmith",
-                    Password = "pass123",
+                    // Username = "asmith",
+                    // Password = "pass123",
                     Name = "John",
                     Surname = "Doe",
                 },
                 new User
                 {
-                    Username = "bnasmith",
-                    Password = "secret",
+                    // Username = "bnasmith",
+                    // Password = "secret",
                     Name = "Alice",
                     Surname = "Smith",
                 },

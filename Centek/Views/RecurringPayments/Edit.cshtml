@@ -1,0 +1,76 @@
+@model Centek.Models.RecurringPayment
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>RecurringPayment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Mote" class="control-label"></label>
+                <input asp-for="Mote" class="form-control" />
+                <span asp-validation-for="Mote" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Type" /> @Html.DisplayNameFor(model => model.Type)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Value" class="control-label"></label>
+                <input asp-for="Value" class="form-control" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecFrequency" class="control-label"></label>
+                <select asp-for="RecFrequency" class="form-control"></select>
+                <span asp-validation-for="RecFrequency" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecInterval" class="control-label"></label>
+                <input asp-for="RecInterval" class="form-control" />
+                <span asp-validation-for="RecInterval" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MainCategoryId" class="control-label"></label>
+                <select asp-for="MainCategoryId" class="form-control" asp-items="ViewBag.MainCategoryId"></select>
+                <span asp-validation-for="MainCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubCategoryId" class="control-label"></label>
+                <select asp-for="SubCategoryId" class="form-control" asp-items="ViewBag.SubCategoryId"></select>
+                <span asp-validation-for="SubCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

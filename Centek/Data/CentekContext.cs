@@ -1,9 +1,10 @@
 using Centek.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Centek.Data
 {
-    public class CentekContext : DbContext
+    public class CentekContext : IdentityDbContext<User>
     {
         public CentekContext(DbContextOptions<CentekContext> options)
             : base(options) { }
@@ -13,5 +14,6 @@ namespace Centek.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<MainCategory> MainCategories { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<Centek.Models.RecurringPayment> RecurringPayment { get; set; } = default!;
     }
 }

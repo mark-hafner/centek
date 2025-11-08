@@ -1,13 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Centek.Models
 {
-    public class User
+    public class User: IdentityUser
     {
-        [Key]
-        public required string Username { get; set; }
-        public required string Password { get; set; }
         public required string Name { get; set; }
         public string? Surname { get; set; }
 

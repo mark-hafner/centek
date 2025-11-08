@@ -1,3 +1,5 @@
+using Centek.Models;
+
 namespace Centek.Models
 {
     public class MainCategory
