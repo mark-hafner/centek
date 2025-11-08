@@ -66,8 +66,10 @@ body {
   height: 100%;
 }
 
+
 /* loader overlay */
 .loader {
+  /* top and height are set by script */
   position: fixed;
   top: 0;
   left: 0;
