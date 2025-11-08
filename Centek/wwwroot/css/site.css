@@ -60,9 +60,9 @@ body {
 
 /* Chart canvas */
 .overview-chart-container canvas {
-  /* Change container width to make chart wider or narrower */
+  /* make chart wider or narrower */
   width: 50%;
-  /* Change container height to make chart taller or shorter */
+  /*  make chart taller or shorter */
   height: 100%;
 }
 
@@ -97,6 +97,7 @@ body {
   animation: spin 2s linear infinite;
 }
 
+/* loader animation */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
