@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Centek.Migrations
 {
     [DbContext(typeof(CentekContext))]
-    [Migration("20251108171119_InitialCreate")]
+    [Migration("20251109165656_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -213,6 +213,7 @@ namespace Centek.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
