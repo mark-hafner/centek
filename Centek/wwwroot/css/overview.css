@@ -1,0 +1,29 @@
+/* overview charts */
+.overview-chart-container {
+    /* centering method for chart */
+    display: flex;
+    /* move chart left, right, or center */
+    justify-content: space-between;
+    /* move chart up or down */
+    align-items: center;
+
+    /* make chart wider or narrower */
+    width: 100%;
+    /* limit how wide chart can get */
+    /* max-width: 600px; */
+    /* make chart taller or shorter */
+    height: 400px;
+
+    /* horizontal positioning left*/
+    margin: auto;
+    /* Required for chart layout */
+    position: relative;
+}
+
+/* Chart canvas */
+.overview-chart-container canvas {
+    /* make chart wider or narrower */
+    width: 50%;
+    /*  make chart taller or shorter */
+    height: 100%;
+}
