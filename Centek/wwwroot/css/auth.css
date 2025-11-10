@@ -1,0 +1,82 @@
+body {
+    background: linear-gradient(135deg, #ffd139, #ff9100, #ffd139);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+form#registerForm {
+    background-color: white;
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+form#registerForm h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+form#registerForm input.form-control {
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+form#registerForm .btn-primary {
+    background-color: #ffc400;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+form#registerForm .btn-primary:hover {
+    background-color: #ff7b00;
+}
+
+form#account {
+    background-color: white;
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+form#account .btn-primary {
+    background-color: #ffc400;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+form#account .btn-primary:hover {
+    background-color: #ff7b00;
+}
+
+/* Target all buttons and inputs */
+button,
+button.btn,
+input[type="submit"],
+input[type="button"] {
+    background-color: #ffc400 !important;  /* your color */
+    color: #fff !important;                /* text color */
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 20px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: 0.2s !important;
+}
+
+button:hover,
+button.btn:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background-color: #ff7b00 !important;  /* hover color */
+}
