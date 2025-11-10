@@ -14,6 +14,16 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
+                <label asp-for="MainCategoryId" class="control-label">Main Category</label>
+                @* get list of Main Categories and set them in select form *@
+                <select asp-for="MainCategoryId" class="form-control"
+                    asp-items="@(ViewData["MainCategoryId"] as SelectList)">
+                    <option value="">-- Select Main Category --</option>
+                </select>
+                <span asp-validation-for="MainCategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
@@ -26,6 +36,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="MainCategories" asp-action="Index">Back to List</a>
 </div>
-

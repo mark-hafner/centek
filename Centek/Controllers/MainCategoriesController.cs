@@ -1,10 +1,9 @@
-using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Centek.Controllers
 {
@@ -23,11 +22,28 @@ namespace Centek.Controllers
         // GET: MainCategories
         public async Task<IActionResult> Index()
         {
-            var user = await _userManager.GetUserAsync(User); //get current user
-            var MainCategories = await _context
+            // get user specific categories
+            var user = await _userManager.GetUserAsync(User);
+
+            // Get MainCategories for this user
+            var mainCategories = await _context
                 .MainCategories.Where(c => c.UserId == user.Id)
                 .ToListAsync();
-            return View(MainCategories);
+
+            // Get SubCategories conected to MainCategories
+            var subCategories = await _context
+                .SubCategories.Where(s =>
+                    mainCategories.Select(c => c.ID).Contains(s.MainCategoryId)
+                )
+                .ToListAsync();
+
+            var viewModel = new CategoryViewModel
+            {
+                MainCategories = mainCategories,
+                SubCategories = subCategories,
+            };
+
+            return View(viewModel);
         }
 
         // GET: MainCategories/Details/5
@@ -61,19 +77,16 @@ namespace Centek.Controllers
         public async Task<IActionResult> Create(MainCategory mainCategory)
         {
             var user = await _userManager.GetUserAsync(User); //get current user
-            Console.WriteLine(user.Id);
+            //match current user with his categories
             mainCategory.UserId = user.Id;
             mainCategory.User = user;
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("Invalid Model");
                 return View(mainCategory);
             }
-
             _context.Add(mainCategory);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-
         }
 
         // GET: MainCategories/Edit/5
@@ -85,7 +98,10 @@ namespace Centek.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User); //get current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
+            // show only categories from current user
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
+                c.ID == id && c.UserId == user.Id
+            );
             if (mainCategory == null)
             {
                 return NotFound();
@@ -101,7 +117,10 @@ namespace Centek.Controllers
         public async Task<IActionResult> Edit(int id, MainCategory updatedCategory)
         {
             var user = await _userManager.GetUserAsync(User); //get current user
-            var existingCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
+            // show only categories from current user
+            var existingCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
+                c.ID == id && c.UserId == user.Id
+            );
 
             if (existingCategory == null)
                 return NotFound();
@@ -117,7 +136,6 @@ namespace Centek.Controllers
             return View(existingCategory);
         }
 
-
         // GET: MainCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -127,7 +145,10 @@ namespace Centek.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User); //get current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
+            // show only categories from current user
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
+                c.ID == id && c.UserId == user.Id
+            );
             if (mainCategory == null)
             {
                 return NotFound();
@@ -142,7 +163,10 @@ namespace Centek.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _userManager.GetUserAsync(User); //get current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
+            // show only categories from current user
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
+                c.ID == id && c.UserId == user.Id
+            );
             if (mainCategory != null)
             {
                 _context.MainCategories.Remove(mainCategory);

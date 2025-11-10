@@ -1,22 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Configuration;
+
 
 namespace Centek.Controllers
 {
     public class SubCategoriesController : Controller
     {
         private readonly CentekContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public SubCategoriesController(CentekContext context)
+
+        public SubCategoriesController(CentekContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: SubCategories
@@ -33,8 +35,7 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var subCategory = await _context.SubCategories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(m => m.ID == id);
             if (subCategory == null)
             {
                 return NotFound();
@@ -43,41 +44,58 @@ namespace Centek.Controllers
             return View(subCategory);
         }
 
-        // GET: SubCategories/Create
-        public IActionResult Create()
+        // Helper for generating items in the MainCategory dropdown menu
+        private async Task GenerateMainCategoryDropdownAsync(object selectedValue = null)
         {
+            var user = await _userManager.GetUserAsync(User); // current user
+            // Get only MainCategories for this user
+            var mainCategories = await _context.MainCategories
+                .Where(c => c.UserId == user.Id)
+                .Select(c => new { c.ID, c.Name })
+                .ToListAsync();
+            //put recived data into ViewData for display in select
+            ViewData["MainCategoryId"] = new SelectList(
+                mainCategories,
+                "ID",
+                "Name",
+                selectedValue
+            );
+        }
+
+        // GET: SubCategories/Create
+        public async Task<IActionResult> Create()
+        {
+            //populate main category dropdown
+            await GenerateMainCategoryDropdownAsync();
             return View();
         }
 
         // POST: SubCategories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name")] SubCategory subCategory)
+        public async Task<IActionResult> Create(SubCategory subCategory)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(subCategory);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // repopulate dropdown if validation fails
+                await GenerateMainCategoryDropdownAsync(subCategory.MainCategoryId);
+                return View(subCategory);
             }
-            return View(subCategory);
+            _context.Add(subCategory);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "MainCategories");
         }
 
         // GET: SubCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var subCategory = await _context.SubCategories.FindAsync(id);
-            if (subCategory == null)
-            {
-                return NotFound();
-            }
+            if (subCategory == null) return NotFound();
+
+            //populate main category dropdown
+            await GenerateMainCategoryDropdownAsync(subCategory.MainCategoryId);
             return View(subCategory);
         }
 
@@ -86,33 +104,38 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name")] SubCategory subCategory)
+        public async Task<IActionResult> Edit(int id, SubCategory subCategory)
         {
             if (id != subCategory.ID)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(subCategory);
+                    //get current subCategory from database
+                    var subCategoryInDb = await _context.SubCategories.FindAsync(id);
+                    if (subCategoryInDb == null) return NotFound();
+
+                    //update SAME subCategory that is in database
+                    subCategoryInDb.Name = subCategory.Name;
+                    subCategoryInDb.MainCategoryId = subCategory.MainCategoryId;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!SubCategoryExists(subCategory.ID))
-                    {
                         return NotFound();
-                    }
                     else
                     {
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "MainCategories");
             }
+
+            //populate main category dropdown
+            await GenerateMainCategoryDropdownAsync(subCategory.MainCategoryId);
             return View(subCategory);
         }
 
@@ -124,8 +147,7 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var subCategory = await _context.SubCategories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(m => m.ID == id);
             if (subCategory == null)
             {
                 return NotFound();
@@ -146,7 +168,7 @@ namespace Centek.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "MainCategories");
         }
 
         private bool SubCategoryExists(int id)
