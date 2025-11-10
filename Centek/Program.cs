@@ -2,6 +2,7 @@ using Centek.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -52,6 +53,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
+builder.Services.AddScoped<SubCategoryDelete>();
+builder.Services.AddScoped<MainCategoryDelete>();
 
 var app = builder.Build();
 

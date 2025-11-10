@@ -1,7 +1,6 @@
 using Centek.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Centek.Data
 {
@@ -22,50 +21,58 @@ namespace Centek.Data
             base.OnModelCreating(modelBuilder);
 
             // Account → Payment
-            modelBuilder.Entity<Payment>()
+            modelBuilder
+                .Entity<Payment>()
                 .HasOne(p => p.Account)
                 .WithMany(a => a.Payments)
                 .HasForeignKey(p => p.AccountId)
                 .IsRequired();
 
             // MainCategory → User
-            modelBuilder.Entity<MainCategory>()
+            modelBuilder
+                .Entity<MainCategory>()
                 .HasOne(mc => mc.User)
                 .WithMany(u => u.MainCategories)
                 .HasForeignKey(mc => mc.UserId)
                 .IsRequired();
 
             // SubCategory → MainCategory
-            modelBuilder.Entity<SubCategory>()
+            modelBuilder
+                .Entity<SubCategory>()
                 .HasOne(sc => sc.MainCategory)
                 .WithMany(mc => mc.SubCategories)
                 .IsRequired(false);
 
             // Payment → MainCategory / SubCategory
-            modelBuilder.Entity<Payment>()
+            modelBuilder
+                .Entity<Payment>()
                 .HasOne(p => p.MainCategory)
                 .WithMany(mc => mc.Payments)
                 .HasForeignKey(p => p.MainCategoryId)
                 .IsRequired(false);
 
-            modelBuilder.Entity<Payment>()
+            modelBuilder
+                .Entity<Payment>()
                 .HasOne(p => p.SubCategory)
                 .WithMany(sc => sc.Payments)
                 .HasForeignKey(p => p.SubCategoryId)
                 .IsRequired(false);
 
             // RecurringPayment → Account, MainCategory, SubCategory
-            modelBuilder.Entity<RecurringPayment>()
+            modelBuilder
+                .Entity<RecurringPayment>()
                 .HasOne(rp => rp.Account)
                 .WithMany(a => a.RecurringPayments)
                 .IsRequired();
 
-            modelBuilder.Entity<RecurringPayment>()
+            modelBuilder
+                .Entity<RecurringPayment>()
                 .HasOne(rp => rp.MainCategory)
                 .WithMany()
                 .IsRequired(false);
 
-            modelBuilder.Entity<RecurringPayment>()
+            modelBuilder
+                .Entity<RecurringPayment>()
                 .HasOne(rp => rp.SubCategory)
                 .WithMany()
                 .IsRequired(false);

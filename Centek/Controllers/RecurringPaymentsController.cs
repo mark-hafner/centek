@@ -50,7 +50,7 @@ namespace Centek.Controllers
         public IActionResult Create()
         {
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID");
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID");
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace Centek.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", recurringPayment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID", recurringPayment.SubCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", recurringPayment.SubCategoryId);
             return View(recurringPayment);
         }
 
@@ -86,7 +86,7 @@ namespace Centek.Controllers
                 return NotFound();
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", recurringPayment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID", recurringPayment.SubCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", recurringPayment.SubCategoryId);
             return View(recurringPayment);
         }
 
@@ -123,7 +123,7 @@ namespace Centek.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", recurringPayment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID", recurringPayment.SubCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", recurringPayment.SubCategoryId);
             return View(recurringPayment);
         }
 
