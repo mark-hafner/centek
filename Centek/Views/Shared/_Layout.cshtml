@@ -21,6 +21,10 @@
     {
         <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     }
+    @if (Context.Request.Path.StartsWithSegments("/MainCategories") || Context.Request.Path.StartsWithSegments("/SubCategories"))
+    {
+        <link rel="stylesheet" href="~/css/categories.css" asp-append-version="true" />
+    }
     @RenderSection("Styles", required: false)
 
     @* favicon imports *@
