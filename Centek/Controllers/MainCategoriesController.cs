@@ -1,28 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Centek.Controllers
 {
+    [Authorize]
     public class MainCategoriesController : Controller
     {
         private readonly CentekContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public MainCategoriesController(CentekContext context)
+        public MainCategoriesController(CentekContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: MainCategories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MainCategories.ToListAsync());
+            var user = await _userManager.GetUserAsync(User); //get current user
+            var MainCategories = await _context
+                .MainCategories.Where(c => c.UserId == user.Id)
+                .ToListAsync();
+            return View(MainCategories);
         }
 
         // GET: MainCategories/Details/5
@@ -33,8 +38,7 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var mainCategory = await _context.MainCategories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(m => m.ID == id);
             if (mainCategory == null)
             {
                 return NotFound();
@@ -54,15 +58,22 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name")] MainCategory mainCategory)
+        public async Task<IActionResult> Create(MainCategory mainCategory)
         {
-            if (ModelState.IsValid)
+            var user = await _userManager.GetUserAsync(User); //get current user
+            Console.WriteLine(user.Id);
+            mainCategory.UserId = user.Id;
+            mainCategory.User = user;
+            if (!ModelState.IsValid)
             {
-                _context.Add(mainCategory);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Console.WriteLine("Invalid Model");
+                return View(mainCategory);
             }
-            return View(mainCategory);
+
+            _context.Add(mainCategory);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: MainCategories/Edit/5
@@ -73,7 +84,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var mainCategory = await _context.MainCategories.FindAsync(id);
+            var user = await _userManager.GetUserAsync(User); //get current user
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
             if (mainCategory == null)
             {
                 return NotFound();
@@ -86,35 +98,25 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name")] MainCategory mainCategory)
+        public async Task<IActionResult> Edit(int id, MainCategory updatedCategory)
         {
-            if (id != mainCategory.ID)
-            {
+            var user = await _userManager.GetUserAsync(User); //get current user
+            var existingCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
+
+            if (existingCategory == null)
                 return NotFound();
-            }
+
+            existingCategory.Name = updatedCategory.Name;
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(mainCategory);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MainCategoryExists(mainCategory.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(mainCategory);
+
+            return View(existingCategory);
         }
+
 
         // GET: MainCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -124,8 +126,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var mainCategory = await _context.MainCategories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var user = await _userManager.GetUserAsync(User); //get current user
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
             if (mainCategory == null)
             {
                 return NotFound();
@@ -139,7 +141,8 @@ namespace Centek.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var mainCategory = await _context.MainCategories.FindAsync(id);
+            var user = await _userManager.GetUserAsync(User); //get current user
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
             if (mainCategory != null)
             {
                 _context.MainCategories.Remove(mainCategory);
