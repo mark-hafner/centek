@@ -6,9 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Centek</title>
     <script type="importmap"></script>
+    @* stylesheet imports *@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Centek.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/loader.css" asp-append-version="true" /> @* style for loader *@
+    @* only load auth.css when Identity page is on *@
+    @if (Context.Request.Path.StartsWithSegments("/Identity"))
+    {
+        <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+    }
+    @RenderSection("Styles", required: false)
+
+    @* favicon imports *@
     <link rel="icon" type="image/x-icon" href="~/favicon/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="~/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="~/favicon/favicon-16x16.png">
