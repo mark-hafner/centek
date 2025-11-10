@@ -20,7 +20,7 @@ namespace Centek.Controllers
         {
             if (_signInManager.IsSignedIn(User))
             {
-                return RedirectToAction("Welcome", "Index");
+                return RedirectToAction("Index");
             }
             return View();
         }
