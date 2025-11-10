@@ -5,28 +5,37 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Centek.Areas.Identity.Pages.Account.Manage
 {
     public class DeletePersonalDataModel : PageModel
     {
+        private readonly CentekContext _context;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly MainCategoryDelete _mainCategoryDelete;
 
         public DeletePersonalDataModel(
+            CentekContext context,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            MainCategoryDelete mainCategoryDelete)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _mainCategoryDelete = mainCategoryDelete;
         }
 
         /// <summary>
@@ -86,7 +95,17 @@ namespace Centek.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
-
+            var MainCategories = await _context
+                .MainCategories.Where(mc => mc.UserId == user.Id)
+                .ToListAsync();
+            foreach (var MainCategory in MainCategories)
+            {
+                bool deleted = await _mainCategoryDelete.DeleteMainCategoryAsync(MainCategory.ID);
+                if (!deleted)
+                {
+                    _logger.LogWarning("MAIN CATEGORY DELETED");
+                }
+            }
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)

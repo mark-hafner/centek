@@ -1,5 +1,6 @@
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,16 +9,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Centek.Controllers
 {
     [Authorize]
-    public class MainCategoriesController : Controller
+    public class MainCategoriesController(CentekContext context, UserManager<User> userManager, SubCategoryDelete subCategoryDelete) : Controller
     {
-        private readonly CentekContext _context;
-        private readonly UserManager<User> _userManager;
-
-        public MainCategoriesController(CentekContext context, UserManager<User> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
+        private readonly CentekContext _context = context;
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly SubCategoryDelete _subCategoryDelete = subCategoryDelete;
 
         // GET: MainCategories
         public async Task<IActionResult> Index()
@@ -164,15 +160,25 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user.Id
-            );
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
             if (mainCategory != null)
             {
+                // Get SubCategories conected to MainCategories
+                var subCategories = await _context
+                    .SubCategories.Where(s => s.MainCategoryId == mainCategory.ID)
+                    .ToListAsync();
+
+                foreach (var subCategory in subCategories)
+                {
+                    if (!await _subCategoryDelete.DeleteSubCategoryAsync(subCategory.ID))
+                    {
+                        Console.WriteLine("SUBCATEGORY NOT DELETED");
+                    }
+                }
                 _context.MainCategories.Remove(mainCategory);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

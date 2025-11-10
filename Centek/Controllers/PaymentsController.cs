@@ -50,7 +50,7 @@ namespace Centek.Controllers
         public IActionResult Create()
         {
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID");
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID");
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace Centek.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID", payment.SubCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.SubCategoryId);
             return View(payment);
         }
 
@@ -86,7 +86,7 @@ namespace Centek.Controllers
                 return NotFound();
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID", payment.SubCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.SubCategoryId);
             return View(payment);
         }
 
@@ -123,7 +123,7 @@ namespace Centek.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "ID", "ID", payment.SubCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.SubCategoryId);
             return View(payment);
         }
 

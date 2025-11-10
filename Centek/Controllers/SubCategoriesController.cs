@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Configuration;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace Centek.Controllers
 {
@@ -13,7 +11,6 @@ namespace Centek.Controllers
     {
         private readonly CentekContext _context;
         private readonly UserManager<User> _userManager;
-
 
         public SubCategoriesController(CentekContext context, UserManager<User> userManager)
         {
@@ -45,14 +42,16 @@ namespace Centek.Controllers
         }
 
         // Helper for generating items in the MainCategory dropdown menu
-        private async Task GenerateMainCategoryDropdownAsync(object selectedValue = null)
+        private async Task GenerateMainCategoryDropdownAsync(object? selectedValue = null)
         {
             var user = await _userManager.GetUserAsync(User); // current user
             // Get only MainCategories for this user
-            var mainCategories = await _context.MainCategories
-                .Where(c => c.UserId == user.Id)
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            var mainCategories = await _context
+                .MainCategories.Where(c => c.UserId == user.Id)
                 .Select(c => new { c.ID, c.Name })
                 .ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             //put recived data into ViewData for display in select
             ViewData["MainCategoryId"] = new SelectList(
                 mainCategories,
@@ -89,10 +88,12 @@ namespace Centek.Controllers
         // GET: SubCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return NotFound();
 
             var subCategory = await _context.SubCategories.FindAsync(id);
-            if (subCategory == null) return NotFound();
+            if (subCategory == null)
+                return NotFound();
 
             //populate main category dropdown
             await GenerateMainCategoryDropdownAsync(subCategory.MainCategoryId);
@@ -115,7 +116,8 @@ namespace Centek.Controllers
                 {
                     //get current subCategory from database
                     var subCategoryInDb = await _context.SubCategories.FindAsync(id);
-                    if (subCategoryInDb == null) return NotFound();
+                    if (subCategoryInDb == null)
+                        return NotFound();
 
                     //update SAME subCategory that is in database
                     subCategoryInDb.Name = subCategory.Name;
