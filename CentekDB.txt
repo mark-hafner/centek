@@ -1,0 +1,259 @@
+CREATE TABLE [dbo].[AspNetRoles] (
+[Id] nvarchar(450) NOT NULL,
+[Name] nvarchar(256),
+[NormalizedName] nvarchar(256),
+[ConcurrencyStamp] nvarchar(max),
+PRIMARY KEY ([Id])
+);
+
+CREATE TABLE [dbo].[RecurringPayment] (
+[ID] int NOT NULL IDENTITY(1,1),
+[Name] nvarchar(max),
+[Mote] nvarchar(max),
+[Type] bit NOT NULL,
+[Value] real NOT NULL,
+[StartDate] datetime2(7) NOT NULL,
+[EndDate] datetime2(7),
+[RecFrequency] int NOT NULL,
+[RecInterval] int NOT NULL,
+[AccountId] int NOT NULL,
+[MainCategoryId] int,
+[SubCategoryId] int,
+PRIMARY KEY ([ID])
+);
+
+CREATE TABLE [dbo].[Payments] (
+[ID] int NOT NULL IDENTITY(1,1),
+[Name] nvarchar(max),
+[Note] nvarchar(max),
+[Type] bit NOT NULL,
+[Value] real NOT NULL,
+[Date] datetime2(7) NOT NULL,
+[AccountId] int NOT NULL,
+[MainCategoryId] int,
+[SubCategoryId] int,
+PRIMARY KEY ([ID])
+);
+
+CREATE TABLE [dbo].[AspNetUserLogins] (
+[LoginProvider] nvarchar(128) NOT NULL,
+[ProviderKey] nvarchar(128) NOT NULL,
+[ProviderDisplayName] nvarchar(max),
+[UserId] nvarchar(450) NOT NULL,
+PRIMARY KEY ([LoginProvider], [ProviderKey])
+);
+
+CREATE TABLE [dbo].[AspNetRoleClaims] (
+[Id] int NOT NULL IDENTITY(1,1),
+[RoleId] nvarchar(450) NOT NULL,
+[ClaimType] nvarchar(max),
+[ClaimValue] nvarchar(max),
+PRIMARY KEY ([Id])
+);
+
+CREATE TABLE [dbo].[SubCategories] (
+[ID] int NOT NULL IDENTITY(1,1),
+[Name] nvarchar(max) NOT NULL,
+[MainCategoryId] int NOT NULL,
+PRIMARY KEY ([ID])
+);
+
+CREATE TABLE [dbo].[MainCategories] (
+[ID] int NOT NULL IDENTITY(1,1),
+[Name] nvarchar(max) NOT NULL,
+[UserId] nvarchar(450) NOT NULL,
+PRIMARY KEY ([ID])
+);
+
+CREATE TABLE [dbo].[__EFMigrationsHistory] (
+[MigrationId] nvarchar(150) NOT NULL,
+[ProductVersion] nvarchar(32) NOT NULL,
+PRIMARY KEY ([MigrationId])
+);
+
+CREATE TABLE [dbo].[AspNetUserClaims] (
+[Id] int NOT NULL IDENTITY(1,1),
+[UserId] nvarchar(450) NOT NULL,
+[ClaimType] nvarchar(max),
+[ClaimValue] nvarchar(max),
+PRIMARY KEY ([Id])
+);
+
+CREATE TABLE [dbo].[AspNetUsers] (
+[Id] nvarchar(450) NOT NULL,
+[Name] nvarchar(max) NOT NULL,
+[Surname] nvarchar(max),
+[UserName] nvarchar(256),
+[NormalizedUserName] nvarchar(256),
+[Email] nvarchar(256),
+[NormalizedEmail] nvarchar(256),
+[EmailConfirmed] bit NOT NULL,
+[PasswordHash] nvarchar(max),
+[SecurityStamp] nvarchar(max),
+[ConcurrencyStamp] nvarchar(max),
+[PhoneNumber] nvarchar(max),
+[PhoneNumberConfirmed] bit NOT NULL,
+[TwoFactorEnabled] bit NOT NULL,
+[LockoutEnd] datetimeoffset(7),
+[LockoutEnabled] bit NOT NULL,
+[AccessFailedCount] int NOT NULL,
+PRIMARY KEY ([Id])
+);
+
+CREATE TABLE [dbo].[AspNetUserTokens] (
+[UserId] nvarchar(450) NOT NULL,
+[LoginProvider] nvarchar(128) NOT NULL,
+[Name] nvarchar(128) NOT NULL,
+[Value] nvarchar(max),
+PRIMARY KEY ([UserId], [LoginProvider], [Name])
+);
+
+CREATE TABLE [dbo].[Accounts] (
+[ID] int NOT NULL IDENTITY(1,1),
+[Name] nvarchar(max) NOT NULL,
+[UserId] nvarchar(450) DEFAULT (N'') NOT NULL,
+PRIMARY KEY ([ID])
+);
+
+CREATE TABLE [dbo].[AspNetUserRoles] (
+[UserId] nvarchar(450) NOT NULL,
+[RoleId] nvarchar(450) NOT NULL,
+PRIMARY KEY ([UserId], [RoleId])
+);
+
+
+ALTER TABLE [dbo].[RecurringPayment]
+ADD CONSTRAINT [FK_RecurringPayment_MainCategories_MainCategoryId]
+FOREIGN KEY ([MainCategoryId]) 
+REFERENCES [dbo].[MainCategories]([ID])
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[RecurringPayment]
+ADD CONSTRAINT [FK_RecurringPayment_SubCategories_SubCategoryId]
+FOREIGN KEY ([SubCategoryId]) 
+REFERENCES [dbo].[SubCategories]([ID])
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[RecurringPayment]
+ADD CONSTRAINT [FK_RecurringPayment_Accounts_AccountId]
+FOREIGN KEY ([AccountId]) 
+REFERENCES [dbo].[Accounts]([ID])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[Payments]
+ADD CONSTRAINT [FK_Payments_MainCategories_MainCategoryId]
+FOREIGN KEY ([MainCategoryId]) 
+REFERENCES [dbo].[MainCategories]([ID])
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[Payments]
+ADD CONSTRAINT [FK_Payments_SubCategories_SubCategoryId]
+FOREIGN KEY ([SubCategoryId]) 
+REFERENCES [dbo].[SubCategories]([ID])
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[Payments]
+ADD CONSTRAINT [FK_Payments_Accounts_AccountId]
+FOREIGN KEY ([AccountId]) 
+REFERENCES [dbo].[Accounts]([ID])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[AspNetUserLogins]
+ADD CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId]
+FOREIGN KEY ([UserId]) 
+REFERENCES [dbo].[AspNetUsers]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[AspNetRoleClaims]
+ADD CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId]
+FOREIGN KEY ([RoleId]) 
+REFERENCES [dbo].[AspNetRoles]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[SubCategories]
+ADD CONSTRAINT [FK_SubCategories_MainCategories_MainCategoryId]
+FOREIGN KEY ([MainCategoryId]) 
+REFERENCES [dbo].[MainCategories]([ID])
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[MainCategories]
+ADD CONSTRAINT [FK_MainCategories_AspNetUsers_UserId]
+FOREIGN KEY ([UserId]) 
+REFERENCES [dbo].[AspNetUsers]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[AspNetUserClaims]
+ADD CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId]
+FOREIGN KEY ([UserId]) 
+REFERENCES [dbo].[AspNetUsers]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[AspNetUserTokens]
+ADD CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId]
+FOREIGN KEY ([UserId]) 
+REFERENCES [dbo].[AspNetUsers]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[Accounts]
+ADD CONSTRAINT [FK_Accounts_AspNetUsers_UserId]
+FOREIGN KEY ([UserId]) 
+REFERENCES [dbo].[AspNetUsers]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[AspNetUserRoles]
+ADD CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId]
+FOREIGN KEY ([UserId]) 
+REFERENCES [dbo].[AspNetUsers]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
+ALTER TABLE [dbo].[AspNetUserRoles]
+ADD CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId]
+FOREIGN KEY ([RoleId]) 
+REFERENCES [dbo].[AspNetRoles]([Id])
+ON DELETE CASCADE
+ON UPDATE NO ACTION;
+
+
+
