@@ -21,10 +21,17 @@
     {
         <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     }
+    @* only load categories.css when Categories page is on *@
     @if (Context.Request.Path.StartsWithSegments("/MainCategories") ||
         Context.Request.Path.StartsWithSegments("/SubCategories"))
     {
         <link rel="stylesheet" href="~/css/categories.css" asp-append-version="true" />
+    }
+    @* only load payments.css when Payments page is on *@
+    @if (Context.Request.Path.StartsWithSegments("/Payments") ||
+        Context.Request.Path.StartsWithSegments("/RecurringPayments"))
+    {
+        <link rel="stylesheet" href="~/css/payments.css" asp-append-version="true" />
     }
     @RenderSection("Styles", required: false)
 

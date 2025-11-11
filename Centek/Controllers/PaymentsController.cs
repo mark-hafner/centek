@@ -1,14 +1,18 @@
+using System.Net.Sockets;
 using Centek.Data;
 using Centek.Models;
 using Centek.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 namespace Centek.Controllers
 {
-    public class PaymentsController(CentekContext context, UserManager<User> userManager) : Controller
+    [Authorize]
+    public class PaymentsController(CentekContext context, UserManager<User> userManager)
+        : Controller
     {
         private readonly CentekContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
@@ -45,20 +49,20 @@ namespace Centek.Controllers
             return View(payment);
         }
 
+        // Helper for generating items in the Main and Sub Category dropdown menu
         private async Task GenerateMainAndSubCategoryDropdownAsync(
             int? selectedMainCategoryId = null,
             int? selectedSubCategoryId = null
         )
         {
-            var user = await _userManager.GetUserAsync(User); // current user
+            var user = await _userManager.GetUserAsync(User);
 
-            // Fetch user's main categories
+            // Main categories
             var mainCategories = await _context
                 .MainCategories.Where(c => c.UserId == user.Id)
                 .Select(c => new { c.ID, c.Name })
                 .ToListAsync();
 
-            // If no main categories, keep empty lists to prevent null refs
             ViewData["MainCategoryId"] = new SelectList(
                 mainCategories,
                 "ID",
@@ -66,11 +70,12 @@ namespace Centek.Controllers
                 selectedMainCategoryId
             );
 
-            IEnumerable<object> subCategories = [];
-            if (mainCategories.Count != 0)
+            IEnumerable<object> subCategories = Enumerable.Empty<object>();
+
+            if (mainCategories.Any() && selectedMainCategoryId.HasValue)
             {
                 subCategories = await _context
-                    .SubCategories.Where(sc => sc.MainCategory.UserId == user.Id)
+                    .SubCategories.Where(sc => sc.MainCategoryId == selectedMainCategoryId.Value)
                     .Select(sc => new { sc.ID, sc.Name })
                     .ToListAsync();
             }
@@ -89,6 +94,7 @@ namespace Centek.Controllers
             await GenerateMainAndSubCategoryDropdownAsync();
             return View();
         }
+
 
         // POST: Payments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
