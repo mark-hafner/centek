@@ -21,6 +21,13 @@ namespace Centek.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // User → Account
+            modelBuilder.Entity<Account>()
+                .HasOne(a => a.User)
+                .WithMany(u => u.Accounts)
+                .HasForeignKey(a => a.UserId)
+                .IsRequired();
+
             // Account → Payment
             modelBuilder.Entity<Payment>()
                 .HasOne(p => p.Account)
