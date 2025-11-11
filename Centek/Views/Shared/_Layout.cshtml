@@ -21,6 +21,10 @@
     {
         <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     }
+    @if (Context.Request.Path.StartsWithSegments("/Account"))
+    {
+        <link rel="stylesheet" href="~/css/accounts.css" asp-append-version="true" />
+    }
     @if (Context.Request.Path.StartsWithSegments("/MainCategories") ||
         Context.Request.Path.StartsWithSegments("/SubCategories"))
     {
