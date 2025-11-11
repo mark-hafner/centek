@@ -58,6 +58,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @* shows only when user is logged in *@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
@@ -66,6 +67,10 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                     asp-action="Overview">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Payments"
+                                    asp-action="Index">Payments</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="MainCategories"
