@@ -27,7 +27,7 @@ input[type="button"]:hover {
     /* hover color */
 }
 
-form#createForm {
+form#CreateForm {
     background-color: white;
     max-width: 450px;
     padding: 30px;
@@ -35,7 +35,7 @@ form#createForm {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.form#createForm input.form-control {
+.form#CreateForm input.form-control {
     border-radius: 8px;
     margin-bottom: 15px;
     padding: 10px;

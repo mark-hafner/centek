@@ -15,13 +15,13 @@
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @(Model.Name ?? "NONE")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Note)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Note)
+            @Html.DisplayFor(model => model.Note ?? "NONE")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Type)
@@ -42,13 +42,19 @@
             @Html.DisplayFor(model => model.Date)
         </dd>
         <dt class="col-sm-2">
+            Account
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Account?.Name ?? "NONE")
+        </dd>
+        <dt class="col-sm-2">
             Main Category
         </dt>
         <dd class="col-sm-10">
             @(Model.MainCategory?.Name ?? "NONE")
         </dd>
         <dt class="col-sm-2">
-            Main Category
+            Sub Category
         </dt>
         <dd class="col-sm-10">
             @(Model.SubCategory?.Name ?? "NONE")

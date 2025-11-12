@@ -4,58 +4,109 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Payment</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+
+        <form id="EditForm" asp-action="Edit">
+
+            <h1>Edit Payment</h1>
+            <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+            @* name input *@
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            @* Note input *@
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Type" /> @Html.DisplayNameFor(model => model.Type)
-                </label>
+            @* Type input *@
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <div>
+                    <div id="button-3" class="button r">
+                        <input class="checkbox" type="checkbox" asp-for="Type">
+                        <div class="knobs"></div>
+                        <div class="layer"></div>
+                    </div>
+                </div>
             </div>
+            @* Amount input *@
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
+            @* Date input *@
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
+            @* Account dropdown *@
             <div class="form-group">
-                <label asp-for="MainCategoryId" class="control-label"></label>
-                <select asp-for="MainCategoryId" class="form-control" asp-items="ViewBag.MainCategoryId"></select>
+                <label asp-for="AccountId" class="control-label">Account</label>
+                <select asp-for="AccountId" asp-items="ViewBag.Accounts" class="form-control">
+                    <option value="">-- Select Account --</option>
+                </select>
+                <span asp-validation-for="AccountId" class="text-danger"></span>
+            </div>
+
+            @* Main Category dropdown *@
+            <div class="form-group">
+                <label asp-for="MainCategoryId" class="control-label">Main Category</label>
+                <select asp-for="MainCategoryId" asp-items="ViewBag.MainCategories" class="form-control"
+                    id="MainCategoryId">
+                    <option value="">-- Select Main Category --</option>
+                </select>
                 <span asp-validation-for="MainCategoryId" class="text-danger"></span>
             </div>
+
+            @* Subcategory dropdown *@
             <div class="form-group">
-                <label asp-for="SubCategoryId" class="control-label"></label>
-                <select asp-for="SubCategoryId" class="form-control" asp-items="ViewBag.SubCategoryId"></select>
+                <label asp-for="SubCategoryId" class="control-label">Sub Category</label>
+                <select asp-for="SubCategoryId" asp-items="ViewBag.SubCategories" class="form-control"
+                    id="SubCategoryId">
+                    <option value="">-- Select Sub Category --</option>
+                </select>
                 <span asp-validation-for="SubCategoryId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
+            <div>
+                <a asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@* script for updating SubCategory dropdown *@
+@section Scripts {
+    <script>
+        // start script only when page is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const main = document.getElementById('MainCategoryId');
+            const sub = document.getElementById('SubCategoryId');
 
+
+            // wait for change in mainCategoryId
+            main?.addEventListener('change', () => {
+                sub.innerHTML = '<option value="">-- Select Sub Category --</option>';
+                if (!main.value) return;
+
+                // get data for subCategory from selected Main Categories
+                fetch(`/Payments/GetSubCategories?mainCategoryId=${main.value}`)
+                    .then(res => res.json())
+                    .then(data => data.forEach(sc =>
+                        sub.appendChild(new Option(sc.name, sc.id))
+                    ));
+            });
+        });
+    </script>
+}

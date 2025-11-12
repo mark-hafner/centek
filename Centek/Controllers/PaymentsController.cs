@@ -4,6 +4,7 @@ using Centek.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Centek.Controllers
@@ -24,14 +25,16 @@ namespace Centek.Controllers
             {
                 Payments = await _context
                     .Payments.Where(p => p.Account.UserId == user.Id)
+                    .Include(p => p.Account)
                     .Include(p => p.MainCategory)
                     .Include(p => p.SubCategory)
                     .ToListAsync(),
 
                 RecurringPayments = await _context
                     .RecurringPayment.Where(rp => rp.Account.UserId == user.Id)
-                    .Include(p => p.MainCategory)
-                    .Include(p => p.SubCategory)
+                    .Include(rp => rp.Account)
+                    .Include(rp => rp.MainCategory)
+                    .Include(rp => rp.SubCategory)
                     .ToListAsync(),
             };
 
@@ -42,20 +45,21 @@ namespace Centek.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
+            // Include navigation properties if you need them
             var payment = await _context
-                .Payments.Include(p => p.MainCategory)
+                .Payments.Include(p => p.Account)
+                .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (payment == null)
-            {
-                return NotFound();
-            }
+                .FirstOrDefaultAsync(p => p.ID == id);
 
-            return View(payment);
+            if (payment == null)
+                return NotFound();
+
+            await PopulateViewBag(payment); // pass payment to pre-select dropdowns
+
+            return View(payment); // pass the model to the view
         }
 
         // Helper for generating items in the Sub Category dropdown menu
@@ -71,18 +75,35 @@ namespace Centek.Controllers
         }
 
         // helper for populating ViewBag for dropdown
-        public async Task PopulateViewBag()
+        public async Task PopulateViewBag(Payment? payment = null)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            // Populate Accounts and MainCategories
-            ViewBag.Accounts = await _context
-                .Accounts.Where(a => a.UserId == user.Id)
-                .ToListAsync();
+            var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+            ViewBag.Accounts = new SelectList(accounts, "ID", "Name", payment?.AccountId);
 
-            ViewBag.MainCategories = await _context
+            var mainCategories = await _context
                 .MainCategories.Where(c => c.UserId == user.Id)
                 .ToListAsync();
+            ViewBag.MainCategories = new SelectList(
+                mainCategories,
+                "ID",
+                "Name",
+                payment?.MainCategoryId
+            );
+
+            var subCategories =
+                payment?.MainCategoryId != null
+                    ? await _context
+                        .SubCategories.Where(sc => sc.MainCategoryId == payment.MainCategoryId)
+                        .ToListAsync()
+                    : new List<SubCategory>();
+            ViewBag.SubCategories = new SelectList(
+                subCategories,
+                "ID",
+                "Name",
+                payment?.SubCategoryId
+            );
         }
 
         // GET: Payments/Create
@@ -111,17 +132,21 @@ namespace Centek.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var payment = await _context.Payments.FindAsync(id);
+            // Include navigation properties if you need them
+            var payment = await _context
+                .Payments.Include(p => p.Account)
+                .Include(p => p.MainCategory)
+                .Include(p => p.SubCategory)
+                .FirstOrDefaultAsync(p => p.ID == id);
+
             if (payment == null)
-            {
                 return NotFound();
-            }
-            await PopulateViewBag();
-            return View();
+
+            await PopulateViewBag(payment); // pass payment to pre-select dropdowns
+
+            return View(payment); // pass the model to the view
         }
 
         // POST: Payments/Edit/5
@@ -162,20 +187,21 @@ namespace Centek.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
+            // Include navigation properties if you need them
             var payment = await _context
-                .Payments.Include(p => p.MainCategory)
+                .Payments.Include(p => p.Account)
+                .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (payment == null)
-            {
-                return NotFound();
-            }
+                .FirstOrDefaultAsync(p => p.ID == id);
 
-            return View(payment);
+            if (payment == null)
+                return NotFound();
+
+            await PopulateViewBag(payment); // pass payment to pre-select dropdowns
+
+            return View(payment); // pass the model to the view
         }
 
         // POST: Payments/Delete/5

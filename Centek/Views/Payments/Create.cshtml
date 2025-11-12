@@ -2,15 +2,12 @@
 
 @{
     ViewData["Title"] = "Create";
-    var Accounts = ViewBag.Accounts as List<Centek.Models.Account>;
-    var MainCategories = ViewBag.MainCategories as List<Centek.Models.MainCategory>;
-    var SubCategories = ViewBag.SubCategories as List<Centek.Models.SubCategory>;
 }
 
 <div class="row">
     <div class="col-md-4">
 
-        <form id="createForm" asp-action="Create">
+        <form id="CreateForm" asp-action="Create">
 
             <h1>Create New Payment</h1>
             <hr />
@@ -53,15 +50,8 @@
             @* Account dropdown *@
             <div class="form-group">
                 <label asp-for="AccountId" class="control-label">Account</label>
-                <select asp-for="AccountId" class="form-control">
+                <select asp-for="AccountId" asp-items="ViewBag.Accounts" class="form-control">
                     <option value="">-- Select Account --</option>
-                    @if (Accounts?.Any() == true)
-                    {
-                        @foreach (var acc in Accounts)
-                        {
-                            <option value="@acc.ID">@acc.Name</option>
-                        }
-                    }
                 </select>
                 <span asp-validation-for="AccountId" class="text-danger"></span>
             </div>
@@ -69,15 +59,9 @@
             @* Main Category dropdown *@
             <div class="form-group">
                 <label asp-for="MainCategoryId" class="control-label">Main Category</label>
-                <select asp-for="MainCategoryId" class="form-control" id="MainCategoryId">
+                <select asp-for="MainCategoryId" asp-items="ViewBag.MainCategories" class="form-control"
+                    id="MainCategoryId">
                     <option value="">-- Select Main Category --</option>
-                    @if (MainCategories?.Any() == true)
-                    {
-                        @foreach (var mc in MainCategories)
-                        {
-                            <option value="@mc.ID">@mc.Name</option>
-                        }
-                    }
                 </select>
                 <span asp-validation-for="MainCategoryId" class="text-danger"></span>
             </div>
@@ -85,15 +69,9 @@
             @* Subcategory dropdown *@
             <div class="form-group">
                 <label asp-for="SubCategoryId" class="control-label">Sub Category</label>
-                <select asp-for="SubCategoryId" class="form-control" id="SubCategoryId">
+                <select asp-for="SubCategoryId" asp-items="ViewBag.SubCategories" class="form-control"
+                    id="SubCategoryId">
                     <option value="">-- Select Sub Category --</option>
-                    @if (SubCategories?.Any() == true)
-                    {
-                        @foreach (var sc in SubCategories)
-                        {
-                            <option value="@sc.ID">@sc.Name</option>
-                        }
-                    }
                 </select>
                 <span asp-validation-for="SubCategoryId" class="text-danger"></span>
             </div>

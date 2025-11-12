@@ -19,20 +19,21 @@ namespace Centek.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
+            // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Include(r => r.MainCategory)
-                .Include(r => r.SubCategory)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (recurringPayment == null)
-            {
-                return NotFound();
-            }
+                .RecurringPayment.Include(p => p.Account)
+                .Include(p => p.MainCategory)
+                .Include(p => p.SubCategory)
+                .FirstOrDefaultAsync(p => p.ID == id);
 
-            return View(recurringPayment);
+            if (recurringPayment == null)
+                return NotFound();
+
+            await PopulateViewBag(recurringPayment); // pass payment to pre-select dropdowns
+
+            return View(recurringPayment); // pass the model to the view
         }
 
         // Helper for generating items in the Sub Category dropdown menu
@@ -48,18 +49,37 @@ namespace Centek.Controllers
         }
 
         // helper for populating ViewBag for dropdown
-        public async Task PopulateViewBag()
+        public async Task PopulateViewBag(RecurringPayment? recurringPayment = null)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            // Populate Accounts and MainCategories
-            ViewBag.Accounts = await _context
-                .Accounts.Where(a => a.UserId == user.Id)
-                .ToListAsync();
+            var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+            ViewBag.Accounts = new SelectList(accounts, "ID", "Name", recurringPayment?.AccountId);
 
-            ViewBag.MainCategories = await _context
+            var mainCategories = await _context
                 .MainCategories.Where(c => c.UserId == user.Id)
                 .ToListAsync();
+            ViewBag.MainCategories = new SelectList(
+                mainCategories,
+                "ID",
+                "Name",
+                recurringPayment?.MainCategoryId
+            );
+
+            var subCategories =
+                recurringPayment?.MainCategoryId != null
+                    ? await _context
+                        .SubCategories.Where(sc =>
+                            sc.MainCategoryId == recurringPayment.MainCategoryId
+                        )
+                        .ToListAsync()
+                    : new List<SubCategory>();
+            ViewBag.SubCategories = new SelectList(
+                subCategories,
+                "ID",
+                "Name",
+                recurringPayment?.SubCategoryId
+            );
         }
 
         // GET: RecurringPayments/Create
@@ -88,17 +108,21 @@ namespace Centek.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var recurrinPayment = await _context.RecurringPayment.FindAsync(id);
-            if (recurrinPayment == null)
-            {
+            // Include navigation properties if you need them
+            var recurringPayment = await _context
+                .RecurringPayment.Include(p => p.Account)
+                .Include(p => p.MainCategory)
+                .Include(p => p.SubCategory)
+                .FirstOrDefaultAsync(p => p.ID == id);
+
+            if (recurringPayment == null)
                 return NotFound();
-            }
-            await PopulateViewBag();
-            return View();
+
+            await PopulateViewBag(recurringPayment); // pass payment to pre-select dropdowns
+
+            return View(recurringPayment); // pass the model to the view
         }
 
         // POST: RecurringPayments/Edit/5
@@ -139,20 +163,21 @@ namespace Centek.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
+            // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Include(r => r.MainCategory)
-                .Include(r => r.SubCategory)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (recurringPayment == null)
-            {
-                return NotFound();
-            }
+                .RecurringPayment.Include(p => p.Account)
+                .Include(p => p.MainCategory)
+                .Include(p => p.SubCategory)
+                .FirstOrDefaultAsync(p => p.ID == id);
 
-            return View(recurringPayment);
+            if (recurringPayment == null)
+                return NotFound();
+
+            await PopulateViewBag(recurringPayment); // pass payment to pre-select dropdowns
+
+            return View(recurringPayment); // pass the model to the view
         }
 
         // POST: RecurringPayments/Delete/5

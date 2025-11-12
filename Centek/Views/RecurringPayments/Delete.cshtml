@@ -15,13 +15,13 @@
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @(Model.Name ?? "NONE")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Note)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Note)
+            @(Model.Note ?? "NONE")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Type)
@@ -45,8 +45,9 @@
             End Date
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
+            @(Model.EndDate.HasValue? Model.EndDate.Value.ToShortDateString() : "NONE")
         </dd>
+
         <dt class="col-sm-2">
             Recurring Frequency
         </dt>
@@ -58,6 +59,12 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RecInterval)
+        </dd>
+        <dt class="col-sm-2">
+            Account
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Account?.Name ?? "NONE")
         </dd>
         <dt class="col-sm-2">
             Main Category
