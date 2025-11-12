@@ -33,7 +33,7 @@
                 <td>@item.Name</td>
                 <td>@item.Note</td>
                 <td>@(item.Type ? "Income" : "Expense")</td>
-                <td>@item.Value</td>
+                <td>@item.Amount</td>
                 <td>@item.Date.ToShortDateString()</td>
                 <td>@item.MainCategory?.Name</td>
                 <td>@item.SubCategory?.Name</td>
@@ -70,9 +70,9 @@
         {
             <tr>
                 <td>@item.Name</td>
-                <td>@item.Mote</td>
+                <td>@item.Note</td>
                 <td>@(item.Type ? "Income" : "Expense")</td>
-                <td>@item.Value</td>
+                <td>@item.Amount</td>
                 <td>@item.StartDate.ToShortDateString()</td>
                 <td>@item.EndDate?.ToShortDateString()</td>
                 <td>@item.RecFrequency</td>

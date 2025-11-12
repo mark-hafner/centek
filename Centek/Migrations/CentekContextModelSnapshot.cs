@@ -79,6 +79,9 @@ namespace Centek.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -96,9 +99,6 @@ namespace Centek.Migrations
 
                     b.Property<bool>("Type")
                         .HasColumnType("bit");
-
-                    b.Property<float>("Value")
-                        .HasColumnType("real");
 
                     b.HasKey("ID");
 
@@ -122,16 +122,19 @@ namespace Centek.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("MainCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Mote")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RecFrequency")
@@ -148,9 +151,6 @@ namespace Centek.Migrations
 
                     b.Property<bool>("Type")
                         .HasColumnType("bit");
-
-                    b.Property<float>("Value")
-                        .HasColumnType("real");
 
                     b.HasKey("ID");
 

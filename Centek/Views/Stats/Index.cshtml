@@ -131,7 +131,7 @@
     <tbody>
         @foreach (var p in Model)
         {
-            var displayValue = p.Type ? p.Value : -p.Value;
+            var displayValue = p.Type ? p.Amount : -p.Amount;
             <tr class="@(p.Type ? "table-success" : "table-danger")">
                 <td>@p.Date.ToShortDateString()</td>
                 <td>@p.Account?.Name</td>

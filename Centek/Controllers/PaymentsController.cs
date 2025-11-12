@@ -59,7 +59,7 @@ namespace Centek.Controllers
             return View(payment);
         }
 
-        // Helper for generating items in the Main and Sub Category dropdown menu
+        // Helper for generating items in the Sub Category dropdown menu
         [HttpGet]
         public async Task<JsonResult> GetSubCategories(int mainCategoryId)
         {
@@ -77,14 +77,13 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             // Populate Accounts and MainCategories
-            ViewBag.Accounts = await _context.Accounts
-                .Where(a => a.UserId == user.Id)
+            ViewBag.Accounts = await _context
+            .Accounts.Where(a => a.UserId == user.Id)
                 .ToListAsync();
 
-            ViewBag.MainCategories = await _context.MainCategories
-                .Where(c => c.UserId == user.Id)
+            ViewBag.MainCategories = await _context
+            .MainCategories.Where(c => c.UserId == user.Id)
                 .ToListAsync();
-
         }
 
         // GET: Payments/Create
@@ -132,10 +131,7 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            int id,
-            [Bind("ID,Name,Note,Type,Value,Date,MainCategoryId,SubCategoryId")] Payment payment
-        )
+        public async Task<IActionResult> Edit(int id, Payment payment)
         {
             if (id != payment.ID)
             {
