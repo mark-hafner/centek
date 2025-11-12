@@ -20,14 +20,24 @@ namespace Centek.Controllers
         // GET: Payments
         public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var viewModel = new PaymentsViewModel
             {
-                Payments = await _context.Payments.ToListAsync(),
-                RecurringPayments = await _context.RecurringPayment.ToListAsync(),
+                Payments = await _context
+                    .Payments.Where(p => p.Account != null && p.Account.UserId == user.Id)
+                    .ToListAsync(),
+
+                RecurringPayments = await _context
+                    .RecurringPayment.Where(rp =>
+                        rp.Account != null && rp.Account.UserId == user.Id
+                    )
+                    .ToListAsync(),
             };
 
             return View(viewModel);
         }
+
 
         // GET: Payments/Details/5
         public async Task<IActionResult> Details(int? id)
