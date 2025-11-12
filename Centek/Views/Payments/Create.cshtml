@@ -79,6 +79,10 @@
                 <label asp-for="SubCategoryId" class="control-label">Sub Category</label>
                 <select asp-for="SubCategoryId" class="form-control" id="SubCategoryId">
                     <option value="">-- Select Sub Category --</option>
+                    @foreach (var sc in ViewBag.SubCategories as List<Centek.Models.SubCategory>)
+                    {
+                        <option value="@sc.ID">@sc.Name</option>
+                    }
                 </select>
                 <span asp-validation-for="SubCategoryId" class="text-danger"></span>
             </div>
