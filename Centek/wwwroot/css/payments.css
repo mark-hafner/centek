@@ -1,6 +1,6 @@
 body {
     background: linear-gradient(135deg, #ffd139, #ff9100, #ffd139);
-    font-family: 'Segoe UI', sans-serif;
+    font-family: "Segoe UI", sans-serif;
 }
 
 button,
@@ -28,6 +28,7 @@ input[type="button"]:hover {
 }
 
 /* The slider */
+/* button container */
 .toggle-button-cover {
     display: table-cell;
     position: relative;
@@ -36,12 +37,12 @@ input[type="button"]:hover {
     box-sizing: border-box;
 }
 
+/* box around slider */
 .button-cover {
     height: 150px;
     background-color: #fff;
     box-shadow: 0 10px 20px -8px #c5d6d6;
     border-radius: var(--bs-border-radius);
-
 }
 
 .button-cover:before {
@@ -85,10 +86,12 @@ input[type="button"]:hover {
     z-index: 3;
 }
 
+/* show knobs (slider) above everything */
 .knobs {
     z-index: 2;
 }
 
+/* background of slider */
 .layer {
     width: 100%;
     background-color: #ffffff;
@@ -117,23 +120,23 @@ input[type="button"]:hover {
     padding: 9px 4px;
     background-color: #ff9100;
     border-radius: var(--bs-border-radius);
-    transition: 0.2s ease all, left 0.2s cubic-bezier(0.18, 0.89, 0.35, 1.05);
+    transition: 0.01s ease all, left 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
-#button-3 .checkbox:active+.knobs:before {
+/* slider mid animation */
+#button-3 .checkbox:active + .knobs:before {
     width: 80px;
     border-radius: 15px;
 }
 
-#button-3 .checkbox:checked:active+.knobs:before {
-    margin-left: -5%;
+#button-3 .checkbox:checked:active + .knobs:before {
+    margin-left: -2%;
 }
 
 /* when button is to right - expense */
-#button-3 .checkbox:checked+.knobs:before {
+#button-3 .checkbox:checked + .knobs:before {
     content: "EXPENSE";
     left: calc(98% - 70px);
     background-color: #ff9100;

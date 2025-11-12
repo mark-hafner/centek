@@ -95,15 +95,10 @@ namespace Centek.Controllers
             return View();
         }
 
-
         // POST: Payments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("ID,Name,Note,Type,Value,Date,MainCategoryId,SubCategoryId")] Payment payment
-        )
+        public async Task<IActionResult> Create(Payment payment)
         {
             if (ModelState.IsValid)
             {
