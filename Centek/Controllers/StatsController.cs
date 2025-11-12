@@ -42,7 +42,7 @@ namespace Centek.Controllers
             if (subCategoryId.HasValue)
                 paymentsQuery = paymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
 
-             if (type.HasValue)
+            if (type.HasValue)
                 paymentsQuery = paymentsQuery.Where(p => p.Type == type);
 
             if (fromDate.HasValue)
@@ -79,8 +79,16 @@ namespace Centek.Controllers
 
             // From
             ViewData["FromDate"] = fromDate?.ToString("yyyy-MM-dd");
-            
+
             // To
+            ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
+
+
+            ViewData["SelectedAccountId"] = accountId;
+            ViewData["SelectedMainCategoryId"] = mainCategoryId;
+            ViewData["SelectedSubCategoryId"] = subCategoryId;
+            ViewData["SelectedType"] = type;
+            ViewData["FromDate"] = fromDate?.ToString("yyyy-MM-dd");
             ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
 
             return View(payments);
