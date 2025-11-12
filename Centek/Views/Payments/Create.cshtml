@@ -4,13 +4,14 @@
     ViewData["Title"] = "Create";
 }
 
-<form class="create-form" asp-action="Create">
+<div class="row">
+    <div class="col-md-4">
 
-    <h1>Create New Payment</h1>
+        <form id="createForm" asp-action="Create">
 
-    <hr />
-    <div class="row">
-        <div class="col-md-4">
+            <h1>Create New Payment</h1>
+
+            <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @* name input *@
             <div class="form-group">
@@ -47,31 +48,36 @@
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
-            @* Account input *@
+            @* Account dropdown *@
             <div class="form-group">
                 <label asp-for="AccountId" class="control-label">Account</label>
-                @* get list of Main Categories and set them in select form *@
-                <select asp-for="AccountId" class="form-control" asp-items="@(ViewData["AccountId"] as SelectList)">
+                <select asp-for="AccountId" class="form-control">
                     <option value="">-- Select Account --</option>
+                    @foreach (var acc in ViewBag.Accounts as List<Centek.Models.Account>)
+                    {
+                        <option value="@acc.ID">@acc.Name</option>
+                    }
                 </select>
                 <span asp-validation-for="AccountId" class="text-danger"></span>
             </div>
-            @* Main Category input *@
+
+            @* Main Category dropdown *@
             <div class="form-group">
                 <label asp-for="MainCategoryId" class="control-label">Main Category</label>
-                @* get list of Main Categories and set them in select form *@
-                <select asp-for="MainCategoryId" class="form-control"
-                    asp-items="@(ViewData["MainCategoryId"] as SelectList)" onchange="this.form.submit()">
+                <select asp-for="MainCategoryId" class="form-control" id="MainCategoryId">
                     <option value="">-- Select Main Category --</option>
+                    @foreach (var mc in ViewBag.MainCategories as List<Centek.Models.MainCategory>)
+                    {
+                        <option value="@mc.ID">@mc.Name</option>
+                    }
                 </select>
                 <span asp-validation-for="MainCategoryId" class="text-danger"></span>
             </div>
-            @* Sub Category input *@
+
+            @* Subcategory dropdown *@
             <div class="form-group">
                 <label asp-for="SubCategoryId" class="control-label">Sub Category</label>
-                @* get list of Sub Categories and set them in select form *@
-                <select asp-for="SubCategoryId" class="form-control"
-                    asp-items="@(ViewData["SubCategoryId"] as SelectList)">
+                <select asp-for="SubCategoryId" class="form-control" id="SubCategoryId">
                     <option value="">-- Select Sub Category --</option>
                 </select>
                 <span asp-validation-for="SubCategoryId" class="text-danger"></span>
@@ -80,9 +86,30 @@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-        </div>
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </form>
     </div>
-</form>
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
+
+@* script for updating SubCategory dropdown *@
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const main = document.getElementById('MainCategoryId');
+            const sub = document.getElementById('SubCategoryId');
+
+            main?.addEventListener('change', () => {
+                sub.innerHTML = '<option value="">-- Select Sub Category --</option>';
+                if (!main.value) return;
+
+                fetch(`/Payments/GetSubCategories?mainCategoryId=${main.value}`)
+                    .then(res => res.json())
+                    .then(data => data.forEach(sc =>
+                        sub.appendChild(new Option(sc.name, sc.id))
+                    ));
+            });
+        });
+    </script>
+}

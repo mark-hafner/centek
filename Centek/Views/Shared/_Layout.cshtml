@@ -22,7 +22,7 @@
         <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     }
     @* only load accounts.css when Accounts page is on *@
-    @if (Context.Request.Path.StartsWithSegments("/Account"))
+    @if (Context.Request.Path.StartsWithSegments("/Accounts"))
     {
         <link rel="stylesheet" href="~/css/accounts.css" asp-append-version="true" />
     }

@@ -27,6 +27,20 @@ input[type="button"]:hover {
     /* hover color */
 }
 
+form#createForm {
+    background-color: white;
+    max-width: 450px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.form#createForm input.form-control {
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
 /* The slider */
 /* button container */
 .toggle-button-cover {
@@ -93,11 +107,12 @@ input[type="button"]:hover {
     transition: 1s ease all;
     z-index: 1;
     border-radius: var(--bs-border-radius);
+    border: var(--bs-border-width) solid var(--bs-border-color);
 }
 
 /* when button is to left - income */
 #button-3 .knobs:before {
-    content: "INCOME";
+    content: "EXPENSE";
     position: absolute;
     top: 4px;
     bottom: 4px;
@@ -120,7 +135,7 @@ input[type="button"]:hover {
 
 /* when button is to right - expense */
 #button-3 .checkbox:checked+.knobs:before {
-    content: "EXPENSE";
+    content: "INCOME";
     left: calc(98% - 70px);
     background-color: #ff9100;
     color: #161515;
