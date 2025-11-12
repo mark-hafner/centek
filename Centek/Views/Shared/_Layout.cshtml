@@ -21,6 +21,7 @@
     {
         <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     }
+    @* only load categories.css when Categories page is on *@
     @if (Context.Request.Path.StartsWithSegments("/Account"))
     {
         <link rel="stylesheet" href="~/css/accounts.css" asp-append-version="true" />
@@ -29,6 +30,12 @@
         Context.Request.Path.StartsWithSegments("/SubCategories"))
     {
         <link rel="stylesheet" href="~/css/categories.css" asp-append-version="true" />
+    }
+    @* only load payments.css when Payments page is on *@
+    @if (Context.Request.Path.StartsWithSegments("/Payments") ||
+        Context.Request.Path.StartsWithSegments("/RecurringPayments"))
+    {
+        <link rel="stylesheet" href="~/css/payments.css" asp-append-version="true" />
     }
     @RenderSection("Styles", required: false)
 
@@ -62,6 +69,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @* shows only when user is logged in *@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
@@ -72,6 +80,10 @@
                                     asp-action="Overview">Overview</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Payments"
+                                    asp-action="Index">Payments</a>
+                            </li>
+                            <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Accounts"
                                     asp-action="Index">Accounts</a>
                             </li>

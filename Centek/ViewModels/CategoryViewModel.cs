@@ -1,4 +1,4 @@
-namespace Centek.Models
+namespace Centek.Models.ViewModels
 {
     //join both categories together for display on page
     public class CategoryViewModel
