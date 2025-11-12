@@ -12,9 +12,9 @@ namespace Centek.Models
 
         public int ID { get; set; }
         public string? Name { get; set; }
-        public string? Mote { get; set; }
+        public string? Note { get; set; }
         public bool Type { get; set; }
-        public float Value { get; set; }
+        public float Amount { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public Frequency RecFrequency { get; set; }

@@ -6,7 +6,7 @@ namespace Centek.Models
         public string? Name { get; set; }
         public string? Note { get; set; }
         public bool Type { get; set; }
-        public float Value { get; set; }
+        public float Amount { get; set; }
         public DateTime Date { get; set; }
 
         public int? AccountId { get; set; }

@@ -55,7 +55,7 @@ namespace Centek.Controllers
             var payments = await paymentsQuery.OrderByDescending(p => p.Date).ToListAsync();
 
             // Total sum
-            var total = payments.Sum(p => p.Type ? p.Value : -p.Value);
+            var total = payments.Sum(p => p.Type ? p.Amount : -p.Amount);
 
             // Send to View
             // Total sum

@@ -80,7 +80,7 @@ namespace Centek.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +89,8 @@ namespace Centek.Migrations
                         name: "FK_Accounts_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -225,7 +226,7 @@ namespace Centek.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<bool>(type: "bit", nullable: false),
-                    Value = table.Column<float>(type: "real", nullable: false),
+                    Amount = table.Column<float>(type: "real", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     MainCategoryId = table.Column<int>(type: "int", nullable: true),
@@ -259,9 +260,9 @@ namespace Centek.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Mote = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<bool>(type: "bit", nullable: false),
-                    Value = table.Column<float>(type: "real", nullable: false),
+                    Amount = table.Column<float>(type: "real", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RecFrequency = table.Column<int>(type: "int", nullable: false),
