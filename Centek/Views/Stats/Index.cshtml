@@ -1,0 +1,82 @@
+@model IEnumerable<Centek.Models.Payment>
+@{
+    ViewData["Title"] = "Statistics";
+    var total = ViewData["Total"];
+    var accounts = ViewData["Accounts"] as List<Centek.Models.Account>;
+    var mainCategories = ViewData["MainCategories"] as List<Centek.Models.MainCategory>;
+    var subCategories = ViewData["SubCategories"] as List<Centek.Models.SubCategory>;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/stats.css" asp-append-version="true" /> @* style for index page *@
+}
+
+<div class="text-center">
+    <h1 class="display-4">Here you can see your stats</h1>
+</div>
+
+<h2>Payment Statistics</h2>
+
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <select name="accountId" class="form-control">
+                <option value="">All Accounts</option>
+                @foreach (var acc in accounts)
+                {
+                    <option value="@acc.ID">@acc.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="mainCategoryId" class="form-control">
+                <option value="">All Main Categories</option>
+                @foreach (var cat in mainCategories)
+                {
+                    <option value="@cat.ID">@cat.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="subCategoryId" class="form-control">
+                <option value="">All Subcategories</option>
+                @foreach (var sub in subCategories)
+                {
+                    <option value="@sub.ID">@sub.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Account</th>
+            <th>Main Category</th>
+            <th>Sub Category</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Date.ToShortDateString()</td>
+                <td>@p.Account?.Name</td>
+                <td>@p.MainCategory?.Name</td>
+                <td>@p.SubCategory?.Name</td>
+                <td>@p.Value.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Total: @total €</h4>

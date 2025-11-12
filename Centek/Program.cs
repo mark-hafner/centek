@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Centek.Models;
 using Centek.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,10 @@ using Microsoft.Extensions.Logging;
 using System;
 
 
+
+var cultureInfo = new CultureInfo("sl-SI"); // ali "de-DE" če želiš drugačen format
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
 
