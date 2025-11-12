@@ -47,12 +47,21 @@
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
+            @* Account input *@
+            <div class="form-group">
+                <label asp-for="AccountId" class="control-label">Account</label>
+                @* get list of Main Categories and set them in select form *@
+                <select asp-for="AccountId" class="form-control" asp-items="@(ViewData["AccountId"] as SelectList)">
+                    <option value="">-- Select Account --</option>
+                </select>
+                <span asp-validation-for="AccountId" class="text-danger"></span>
+            </div>
             @* Main Category input *@
             <div class="form-group">
                 <label asp-for="MainCategoryId" class="control-label">Main Category</label>
                 @* get list of Main Categories and set them in select form *@
                 <select asp-for="MainCategoryId" class="form-control"
-                    asp-items="@(ViewData["MainCategoryId"] as SelectList)" onchange="this.form.submit()">s
+                    asp-items="@(ViewData["MainCategoryId"] as SelectList)" onchange="this.form.submit()">
                     <option value="">-- Select Main Category --</option>
                 </select>
                 <span asp-validation-for="MainCategoryId" class="text-danger"></span>
