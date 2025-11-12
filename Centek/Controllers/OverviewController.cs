@@ -39,8 +39,43 @@ namespace Centek.Controllers
                 .Where(p => p.Account.UserId == user.Id)
                 .AsQueryable();
 
-            return View();
+            // Filters
+            if (accountId.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.AccountId == accountId);
 
+            if (mainCategoryId.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.MainCategoryId == mainCategoryId);
+
+            if (subCategoryId.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
+
+            if (type.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.Type == type);
+
+            if (fromDate.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.Date >= fromDate);
+
+            if (toDate.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.Date <= toDate);
+
+            // Execute query
+            var payments = await paymentsQuery.ToListAsync();
+
+            //ACCOUNTS
+            var accountGroups = payments
+                .GroupBy(p => p.Account.Name)
+                .Select(g => new
+                {
+                    Label = g.Key,
+                    Value = g.Sum(p => p.Type ? p.Amount : -p.Amount),
+                })
+                .ToList();
+
+
+            ViewBag.AccountLabels = accountGroups.Select(x => x.Label).ToList();
+            ViewBag.AccountValues = accountGroups.Select(x => x.Value).ToList();
+
+            return View();
         }
     }
 }

@@ -12,11 +12,7 @@ body {
     /* move chart up or down */
     align-items: center;
 
-    /* make chart wider or narrower */
     width: 100%;
-    /* limit how wide chart can get */
-    /* max-width: 600px; */
-    /* make chart taller or shorter */
     height: 400px;
 
     /* horizontal positioning left*/
@@ -25,10 +21,8 @@ body {
     position: relative;
 }
 
-/* Chart canvas */
-.overview-chart-container canvas {
-    /* make chart wider or narrower */
-    width: 50%;
-    /*  make chart taller or shorter */
+
+.overview-single-chart {
+    text-align: center;
     height: 100%;
 }

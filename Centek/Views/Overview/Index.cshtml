@@ -13,45 +13,26 @@
 </div>
 
 <div class="overview-chart-container">
-    <canvas id="account_Chart"></canvas>
-    <canvas id="payment_Chart"></canvas>
+    <div class="overview-single-chart">
+        <p>ACCOUNTS</p>
+        <canvas id="accountChart"></canvas>
+    </div>
+    <canvas id="paymentChart"></canvas>
 </div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // graph accounts
-        const ctxAccounts = document.getElementById('account_Chart').getContext('2d');
+        const ctxAccounts = document.getElementById('accountChart');
+
+        const accountLabels = @Html.Raw(Json.Serialize(ViewBag.AccountLabels));
+        const accountData = @Html.Raw(Json.Serialize(ViewBag.AccountValues));
+
+        // Account Chart
         new Chart(ctxAccounts, {
             type: 'pie',
-            data: {
-                labels: ['Nlb', 'Cash', 'Drugs'],
-                datasets: [{
-                    label: 'Accounts',
-                    data: [
-                        Math.floor(Math.random() * 11),
-                        Math.floor(Math.random() * 11),
-                        Math.floor(Math.random() * 11)
-                    ],
-                }]
-            },
+            data: { labels: accountLabels, datasets: [{ label: 'Accounts', data: accountData }] }
         });
 
-        // graph payments
-        const ctxPayments = document.getElementById('payment_Chart').getContext('2d');
-        new Chart(ctxPayments, {
-            type: 'pie',
-            data: {
-                labels: ['shop', 'mechanic', 'restaurants'],
-                datasets: [{
-                    label: 'payments',
-                    data: [
-                        Math.floor(Math.random() * 11),
-                        Math.floor(Math.random() * 11),
-                        Math.floor(Math.random() * 11)
-                    ],
-                }]
-            },
-        });
     </script>
 }
