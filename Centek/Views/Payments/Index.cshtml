@@ -35,7 +35,7 @@
                 <td>@(item.Note ?? "NONE")</td>
                 <td>@(item.Type ? "Income" : "Expense")</td>
                 <td>@item.Amount</td>
-                <td>@item.Date.ToShortDateString()</td>
+                <td>@item.Date?.ToShortDateString()</td>
                 <td>@(item.Account?.Name ?? "NONE")</td>
                 <td>@(item.MainCategory?.Name ?? "NONE")</td>
                 <td>@(item.SubCategory?.Name ?? "NONE")</td>
@@ -76,7 +76,7 @@
                 <td>@(item.Note ?? "NONE")</td>
                 <td>@(item.Type ? "Income" : "Expense")</td>
                 <td>@item.Amount</td>
-                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.StartDate?.ToShortDateString()</td>
                 <td>@(item.EndDate?.ToShortDateString() ?? "NONE")</td>
                 <td>@item.RecFrequency</td>
                 <td>@item.RecInterval</td>

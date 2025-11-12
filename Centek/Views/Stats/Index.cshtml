@@ -133,7 +133,7 @@
         {
             var displayValue = p.Type ? p.Amount : -p.Amount;
             <tr class="@(p.Type ? "table-success" : "table-danger")">
-                <td>@p.Date.ToShortDateString()</td>
+                <td>@p.Date?.ToShortDateString()</td>
                 <td>@p.Account?.Name</td>
                 <td>@p.MainCategory?.Name</td>
                 <td>@p.SubCategory?.Name</td>
