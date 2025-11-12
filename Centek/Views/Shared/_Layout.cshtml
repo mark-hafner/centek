@@ -103,7 +103,7 @@
             </div>
         </nav>
     </header>
-    <div class="loader"></div>
+
     <div class="container">
         <main id="page-content" role="main" class="pb-3">
             @RenderBody()
@@ -119,13 +119,22 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    @* loader script *@
-    <script>
-        $(window).on('load', function () {
-            $('.loader').fadeOut("slow");
-        });
-    </script>
+    @* hide loader on specified pages *@
+    @{
+        @* get current page path *@
+        var path = Context.Request.Path.Value;
+    }
+    @* ignore these pages *@
+    @if (path != "/Payments/Create" && path != "Payments/Edit" &&
+        path != "/RecurringPayments/Create" && path != "RecurringPayments/Edit")
+    {
+        <div class="loader"></div>
+        <script>
+            $(window).on('load', function () {
+                $('.loader').fadeOut("slow");
+            });
+        </script>
+    }
 </body>
 
 </html>

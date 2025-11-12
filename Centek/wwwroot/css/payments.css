@@ -72,9 +72,9 @@ input[type="button"]:hover {
     width: 100%;
     height: 37px;
     overflow: hidden;
-    /* box-shadow: #161515 0px 2px 8px 0px; */
 }
 
+/* main interacion works like checkbox */
 .checkbox {
     position: relative;
     width: 100%;
@@ -86,21 +86,12 @@ input[type="button"]:hover {
     z-index: 3;
 }
 
-/* show knobs (slider) above everything */
-.knobs {
-    z-index: 2;
-}
-
 /* background of slider */
 .layer {
     width: 100%;
     background-color: #ffffff;
     transition: 1s ease all;
     z-index: 1;
-}
-
-.button.r,
-.button.r .layer {
     border-radius: var(--bs-border-radius);
 }
 
@@ -124,19 +115,11 @@ input[type="button"]:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-/* slider mid animation */
-#button-3 .checkbox:active + .knobs:before {
-    width: 80px;
-    border-radius: 15px;
-}
-
-#button-3 .checkbox:checked:active + .knobs:before {
-    margin-left: -2%;
+    z-index: 2;
 }
 
 /* when button is to right - expense */
-#button-3 .checkbox:checked + .knobs:before {
+#button-3 .checkbox:checked+.knobs:before {
     content: "EXPENSE";
     left: calc(98% - 70px);
     background-color: #ff9100;
