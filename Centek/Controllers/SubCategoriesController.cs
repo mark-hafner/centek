@@ -46,12 +46,10 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User); // current user
             // Get only MainCategories for this user
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var mainCategories = await _context
                 .MainCategories.Where(c => c.UserId == user.Id)
                 .Select(c => new { c.ID, c.Name })
                 .ToListAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             //put recived data into ViewData for display in select
             ViewData["MainCategoryId"] = new SelectList(
                 mainCategories,

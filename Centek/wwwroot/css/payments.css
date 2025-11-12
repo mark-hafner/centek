@@ -1,0 +1,144 @@
+body {
+    background: linear-gradient(135deg, #ffd139, #ff9100, #ffd139);
+    font-family: "Segoe UI", sans-serif;
+}
+
+button,
+button.btn,
+input[type="submit"],
+input[type="button"] {
+    background-color: #ff5500 !important;
+    /* your color */
+    color: #fff !important;
+    /* text color */
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 20px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: 0.2s !important;
+}
+
+button:hover,
+button.btn:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background-color: #ff3700 !important;
+    /* hover color */
+}
+
+/* The slider */
+/* button container */
+.toggle-button-cover {
+    display: table-cell;
+    position: relative;
+    width: 100%;
+    height: 37px;
+    box-sizing: border-box;
+}
+
+/* box around slider */
+.button-cover {
+    height: 150px;
+    background-color: #fff;
+    box-shadow: 0 10px 20px -8px #c5d6d6;
+    border-radius: var(--bs-border-radius);
+}
+
+.button-cover:before {
+    counter-increment: button-counter;
+    content: counter(button-counter);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #d7e3e3;
+    font-size: 12px;
+    line-height: 1;
+    padding: 5px;
+}
+
+.button-cover,
+.knobs,
+.layer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.button {
+    position: relative;
+    width: 100%;
+    height: 37px;
+    overflow: hidden;
+    /* box-shadow: #161515 0px 2px 8px 0px; */
+}
+
+.checkbox {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
+
+/* show knobs (slider) above everything */
+.knobs {
+    z-index: 2;
+}
+
+/* background of slider */
+.layer {
+    width: 100%;
+    background-color: #ffffff;
+    transition: 1s ease all;
+    z-index: 1;
+}
+
+.button.r,
+.button.r .layer {
+    border-radius: var(--bs-border-radius);
+}
+
+/* when button is to left - income */
+#button-3 .knobs:before {
+    content: "INCOME";
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 2%;
+    width: 70px;
+    color: #161515;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+    padding: 9px 4px;
+    background-color: #ff9100;
+    border-radius: var(--bs-border-radius);
+    transition: 0.01s ease all, left 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* slider mid animation */
+#button-3 .checkbox:active + .knobs:before {
+    width: 80px;
+    border-radius: 15px;
+}
+
+#button-3 .checkbox:checked:active + .knobs:before {
+    margin-left: -2%;
+}
+
+/* when button is to right - expense */
+#button-3 .checkbox:checked + .knobs:before {
+    content: "EXPENSE";
+    left: calc(98% - 70px);
+    background-color: #ff9100;
+    color: #161515;
+}

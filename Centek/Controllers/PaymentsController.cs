@@ -1,29 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Sockets;
+using Centek.Data;
+using Centek.Models;
+using Centek.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Centek.Data;
-using Centek.Models;
 
 namespace Centek.Controllers
 {
-    public class PaymentsController : Controller
+    [Authorize]
+    public class PaymentsController(CentekContext context, UserManager<User> userManager)
+        : Controller
     {
-        private readonly CentekContext _context;
-
-        public PaymentsController(CentekContext context)
-        {
-            _context = context;
-        }
+        private readonly CentekContext _context = context;
+        private readonly UserManager<User> _userManager = userManager;
 
         // GET: Payments
         public async Task<IActionResult> Index()
         {
-            var centekContext = _context.Payments.Include(p => p.MainCategory).Include(p => p.SubCategory);
-            return View(await centekContext.ToListAsync());
+            var viewModel = new PaymentsViewModel
+            {
+                Payments = await _context.Payments.ToListAsync(),
+                RecurringPayments = await _context.RecurringPayment.ToListAsync(),
+            };
+
+            return View(viewModel);
         }
 
         // GET: Payments/Details/5
@@ -34,8 +37,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var payment = await _context.Payments
-                .Include(p => p.MainCategory)
+            var payment = await _context
+                .Payments.Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (payment == null)
@@ -46,20 +49,56 @@ namespace Centek.Controllers
             return View(payment);
         }
 
-        // GET: Payments/Create
-        public IActionResult Create()
+        // Helper for generating items in the Main and Sub Category dropdown menu
+        private async Task GenerateMainAndSubCategoryDropdownAsync(
+            int? selectedMainCategoryId = null,
+            int? selectedSubCategoryId = null
+        )
         {
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID");
-            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID");
+            var user = await _userManager.GetUserAsync(User);
+
+            // Main categories
+            var mainCategories = await _context
+                .MainCategories.Where(c => c.UserId == user.Id)
+                .Select(c => new { c.ID, c.Name })
+                .ToListAsync();
+
+            ViewData["MainCategoryId"] = new SelectList(
+                mainCategories,
+                "ID",
+                "Name",
+                selectedMainCategoryId
+            );
+
+            IEnumerable<object> subCategories = Enumerable.Empty<object>();
+
+            if (mainCategories.Any() && selectedMainCategoryId.HasValue)
+            {
+                subCategories = await _context
+                    .SubCategories.Where(sc => sc.MainCategoryId == selectedMainCategoryId.Value)
+                    .Select(sc => new { sc.ID, sc.Name })
+                    .ToListAsync();
+            }
+
+            ViewData["SubCategoryId"] = new SelectList(
+                subCategories,
+                "ID",
+                "Name",
+                selectedSubCategoryId
+            );
+        }
+
+        // GET: Payments/Create
+        public async Task<IActionResult> Create()
+        {
+            await GenerateMainAndSubCategoryDropdownAsync();
             return View();
         }
 
         // POST: Payments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Note,Type,Value,Date,MainCategoryId,SubCategoryId")] Payment payment)
+        public async Task<IActionResult> Create(Payment payment)
         {
             if (ModelState.IsValid)
             {
@@ -67,8 +106,10 @@ namespace Centek.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.SubCategoryId);
+            await GenerateMainAndSubCategoryDropdownAsync(
+                payment.MainCategoryId,
+                payment.SubCategoryId
+            );
             return View(payment);
         }
 
@@ -85,8 +126,10 @@ namespace Centek.Controllers
             {
                 return NotFound();
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.SubCategoryId);
+            await GenerateMainAndSubCategoryDropdownAsync(
+                payment.MainCategoryId,
+                payment.SubCategoryId
+            );
             return View(payment);
         }
 
@@ -95,7 +138,10 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Note,Type,Value,Date,MainCategoryId,SubCategoryId")] Payment payment)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("ID,Name,Note,Type,Value,Date,MainCategoryId,SubCategoryId")] Payment payment
+        )
         {
             if (id != payment.ID)
             {
@@ -122,8 +168,10 @@ namespace Centek.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.MainCategories, "ID", "ID", payment.SubCategoryId);
+            await GenerateMainAndSubCategoryDropdownAsync(
+                payment.MainCategoryId,
+                payment.SubCategoryId
+            );
             return View(payment);
         }
 
@@ -135,8 +183,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var payment = await _context.Payments
-                .Include(p => p.MainCategory)
+            var payment = await _context
+                .Payments.Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (payment == null)

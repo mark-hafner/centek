@@ -1,71 +1,92 @@
-@model IEnumerable<Centek.Models.Payment>
+@model Centek.Models.ViewModels.PaymentsViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Payments";
 }
 
-<h1>Index</h1>
+<h1>Payments</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div id="header" style="display: flex; gap: 10px; align-items: center;">
+    <a asp-action="Create" class="btn btn-primary">Create New Payment</a>
+    <a asp-controller="RecurringPayments" asp-action="Create" class="btn btn-primary">Create New Recurring Payment</a>
+</div>
+
+<!-- Regular Payments Table -->
+<h2>One-Time Payments</h2>
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Value)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MainCategory)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubCategory)
-            </th>
+            <th>Name</th>
+            <th>Note</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Date</th>
+            <th>Main Category</th>
+            <th>Sub Category</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Value)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MainCategory.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SubCategory.ID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Payments)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Note</td>
+                <td>@(item.Type ? "Income" : "Expense")</td>
+                <td>@item.Value</td>
+                <td>@item.Date.ToShortDateString()</td>
+                <td>@item.MainCategory?.Name</td>
+                <td>@item.SubCategory?.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
+</table>
+
+@* Recurring Payments Table *@
+<h2>Recurring Payments</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Note</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Frequency</th>
+            <th>Interval</th>
+            <th>Main Category</th>
+            <th>Sub Category</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.RecurringPayments)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Mote</td>
+                <td>@(item.Type ? "Income" : "Expense")</td>
+                <td>@item.Value</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate?.ToShortDateString()</td>
+                <td>@item.RecFrequency</td>
+                <td>@item.RecInterval</td>
+                <td>@item.MainCategory?.Name</td>
+                <td>@item.SubCategory?.Name</td>
+                <td>
+                    <a asp-controller="RecurringPayments" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-controller="RecurringPayments" asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-controller="RecurringPayments" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 </table>
