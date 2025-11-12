@@ -29,13 +29,6 @@ namespace Centek.Controllers
         {
             return View();
         }
-
-        [Authorize]
-        public IActionResult Overview()
-        {
-            return View();
-        }
-
         public IActionResult Privacy()
         {
             return View();

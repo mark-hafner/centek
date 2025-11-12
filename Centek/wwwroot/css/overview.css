@@ -1,4 +1,9 @@
-/* overview charts */
+body {
+    background: linear-gradient(135deg, #ffd139, #ff9100, #ffd139);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* charts */
 .overview-chart-container {
     /* centering method for chart */
     display: flex;
