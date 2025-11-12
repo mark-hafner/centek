@@ -50,58 +50,37 @@ namespace Centek.Controllers
         }
 
         // Helper for generating items in the Main and Sub Category dropdown menu
-        private async Task GenerateMainAndSubCategoryDropdownAsync(
-            int? selectedAccountId = null,
-            int? selectedMainCategoryId = null,
-            int? selectedSubCategoryId = null
-        )
+        [HttpGet]
+        public async Task<JsonResult> GetSubCategories(int mainCategoryId)
         {
-            // get current user
+            var subCategories = await _context.SubCategories
+                .Where(sc => sc.MainCategoryId == mainCategoryId)
+                .Select(sc => new { sc.ID, sc.Name })
+                .ToListAsync();
+
+            return Json(subCategories);
+        }
+
+        // helper for populating ViewBag for dropdown
+        public async Task PopulateViewBag()
+        {
             var user = await _userManager.GetUserAsync(User);
 
-            //Accounts
-            var accounts = await _context
-                .Accounts.Where(a => a.UserId == user.Id)
-                .Select(c => new { c.ID, c.Name })
+            // Populate Accounts and MainCategories
+            ViewBag.Accounts = await _context.Accounts
+                .Where(a => a.UserId == user.Id)
                 .ToListAsync();
 
-            ViewData["AccountId"] = new SelectList(accounts, "ID", "Name", selectedAccountId);
-
-            // Main categories
-            var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user.Id)
-                .Select(c => new { c.ID, c.Name })
+            ViewBag.MainCategories = await _context.MainCategories
+                .Where(c => c.UserId == user.Id)
                 .ToListAsync();
 
-            ViewData["MainCategoryId"] = new SelectList(
-                mainCategories,
-                "ID",
-                "Name",
-                selectedMainCategoryId
-            );
-
-            IEnumerable<object> subCategories = Enumerable.Empty<object>();
-
-            if (mainCategories.Any() && selectedMainCategoryId.HasValue)
-            {
-                subCategories = await _context
-                    .SubCategories.Where(sc => sc.MainCategoryId == selectedMainCategoryId.Value)
-                    .Select(sc => new { sc.ID, sc.Name })
-                    .ToListAsync();
-            }
-
-            ViewData["SubCategoryId"] = new SelectList(
-                subCategories,
-                "ID",
-                "Name",
-                selectedSubCategoryId
-            );
         }
 
         // GET: Payments/Create
         public async Task<IActionResult> Create()
         {
-            await GenerateMainAndSubCategoryDropdownAsync();
+            await PopulateViewBag();
             return View();
         }
 
@@ -112,16 +91,13 @@ namespace Centek.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(payment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            await GenerateMainAndSubCategoryDropdownAsync(
-                payment.AccountId,
-                payment.MainCategoryId,
-                payment.SubCategoryId
-            );
-            return View(payment);
+            await PopulateViewBag();
+            return View();
         }
 
         // GET: Payments/Edit/5
@@ -137,11 +113,8 @@ namespace Centek.Controllers
             {
                 return NotFound();
             }
-            await GenerateMainAndSubCategoryDropdownAsync(
-                payment.MainCategoryId,
-                payment.SubCategoryId
-            );
-            return View(payment);
+            await PopulateViewBag();
+            return View();
         }
 
         // POST: Payments/Edit/5
@@ -179,11 +152,8 @@ namespace Centek.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            await GenerateMainAndSubCategoryDropdownAsync(
-                payment.MainCategoryId,
-                payment.SubCategoryId
-            );
-            return View(payment);
+            await PopulateViewBag();
+            return View();
         }
 
         // GET: Payments/Delete/5
