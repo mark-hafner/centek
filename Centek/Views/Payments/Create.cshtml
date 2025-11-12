@@ -4,12 +4,13 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create New Payment</h1>
+<form class="create-form" asp-action="Create">
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <h1>Create New Payment</h1>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @* name input *@
             <div class="form-group">
@@ -70,10 +71,9 @@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-        </form>
+        </div>
     </div>
-</div>
-
+</form>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
