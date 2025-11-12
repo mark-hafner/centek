@@ -123,12 +123,12 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    @* hide loader on specified pages *@
+    @* hide loader on specified pages
     @{
-        @* get current page path *@
+        
         var path = Context.Request.Path.Value;
     }
-    @* ignore these pages *@
+    
     @if (path != "/Payments/Create" && path != "Payments/Edit" &&
         path != "/RecurringPayments/Create" && path != "RecurringPayments/Edit")
     {
@@ -138,7 +138,7 @@
                 $('.loader').fadeOut("slow");
             });
         </script>
-    }
+    } *@
 </body>
 
 </html>
