@@ -1,11 +1,9 @@
-using System.Net.Sockets;
 using Centek.Data;
 using Centek.Models;
 using Centek.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Centek.Controllers
@@ -25,19 +23,20 @@ namespace Centek.Controllers
             var viewModel = new PaymentsViewModel
             {
                 Payments = await _context
-                    .Payments.Where(p => p.Account != null && p.Account.UserId == user.Id)
+                    .Payments.Where(p => p.Account.UserId == user.Id)
+                    .Include(p => p.MainCategory)
+                    .Include(p => p.SubCategory)
                     .ToListAsync(),
 
                 RecurringPayments = await _context
-                    .RecurringPayment.Where(rp =>
-                        rp.Account != null && rp.Account.UserId == user.Id
-                    )
+                    .RecurringPayment.Where(rp => rp.Account.UserId == user.Id)
+                    .Include(p => p.MainCategory)
+                    .Include(p => p.SubCategory)
                     .ToListAsync(),
             };
 
             return View(viewModel);
         }
-
 
         // GET: Payments/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -63,8 +62,8 @@ namespace Centek.Controllers
         [HttpGet]
         public async Task<JsonResult> GetSubCategories(int mainCategoryId)
         {
-            var subCategories = await _context.SubCategories
-                .Where(sc => sc.MainCategoryId == mainCategoryId)
+            var subCategories = await _context
+                .SubCategories.Where(sc => sc.MainCategoryId == mainCategoryId)
                 .Select(sc => new { sc.ID, sc.Name })
                 .ToListAsync();
 
@@ -78,11 +77,11 @@ namespace Centek.Controllers
 
             // Populate Accounts and MainCategories
             ViewBag.Accounts = await _context
-            .Accounts.Where(a => a.UserId == user.Id)
+                .Accounts.Where(a => a.UserId == user.Id)
                 .ToListAsync();
 
             ViewBag.MainCategories = await _context
-            .MainCategories.Where(c => c.UserId == user.Id)
+                .MainCategories.Where(c => c.UserId == user.Id)
                 .ToListAsync();
         }
 
@@ -100,7 +99,6 @@ namespace Centek.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 _context.Add(payment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -127,8 +125,6 @@ namespace Centek.Controllers
         }
 
         // POST: Payments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Payment payment)

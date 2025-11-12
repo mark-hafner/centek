@@ -1,3 +1,4 @@
+@using Microsoft.CodeAnalysis.CSharp
 @model Centek.Models.RecurringPayment
 
 @{
@@ -45,23 +46,31 @@
             </div>
             @* Start Date input *@
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
+                <label asp-for="StartDate" class="control-label">Start Date</label>
                 <input asp-for="StartDate" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             @* Start Date input *@
             <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
+                <label asp-for="EndDate" class="control-label">End Date</label>
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
+            @* Recurring Frequency *@
             <div class="form-group">
-                <label asp-for="RecFrequency" class="control-label"></label>
-                <select asp-for="RecFrequency" class="form-control"></select>
+                <label asp-for="RecFrequency" class="control-label">Recurring Frequency</label>
+                <select asp-for="RecFrequency" class="form-control">
+                    <option value="">-- Select Ocurring Frequency --</option>
+                    @foreach (var freq in new List<String> { "Daily", "Weekly", "Monthly", "Yearly" })
+                    {
+                        <option value="@freq">@freq</option>
+                    }
+                </select>
                 <span asp-validation-for="RecFrequency" class="text-danger"></span>
             </div>
+            @* Recurring Interval *@
             <div class="form-group">
-                <label asp-for="RecInterval" class="control-label"></label>
+                <label asp-for="RecInterval" class="control-label">Recurring Interval</label>
                 <input asp-for="RecInterval" class="form-control" />
                 <span asp-validation-for="RecInterval" class="text-danger"></span>
             </div>
@@ -122,3 +131,28 @@
 <div>
     <a asp-controller="Payments" asp-action="Index">Back to List</a>
 </div>
+
+@* script for updating SubCategory dropdown *@
+@section Scripts {
+    <script>
+        // start script only when page is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const main = document.getElementById('MainCategoryId');
+            const sub = document.getElementById('SubCategoryId');
+
+
+            // wait for change in mainCategoryId
+            main?.addEventListener('change', () => {
+                sub.innerHTML = '<option value="">-- Select Sub Category --</option>';
+                if (!main.value) return;
+
+                // get data for subCategory from selected Main Categories
+                fetch(`/Payments/GetSubCategories?mainCategoryId=${main.value}`)
+                    .then(res => res.json())
+                    .then(data => data.forEach(sc =>
+                        sub.appendChild(new Option(sc.name, sc.id))
+                    ));
+            });
+        });
+    </script>
+}
