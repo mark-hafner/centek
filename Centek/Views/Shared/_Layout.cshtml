@@ -21,11 +21,12 @@
     {
         <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     }
-    @* only load categories.css when Categories page is on *@
+    @* only load accounts.css when Accounts page is on *@
     @if (Context.Request.Path.StartsWithSegments("/Account"))
     {
         <link rel="stylesheet" href="~/css/accounts.css" asp-append-version="true" />
     }
+    @* only load categories.css when Categories page is on *@
     @if (Context.Request.Path.StartsWithSegments("/MainCategories") ||
         Context.Request.Path.StartsWithSegments("/SubCategories"))
     {
@@ -79,13 +80,13 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                     asp-action="Overview">Overview</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Payments"
-                                    asp-action="Index">Payments</a>
-                            </li>
                             <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Accounts"
                                     asp-action="Index">Accounts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Payments"
+                                    asp-action="Index">Payments</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="MainCategories"
@@ -102,7 +103,7 @@
             </div>
         </nav>
     </header>
-    <div class="loader"></div>
+
     <div class="container">
         <main id="page-content" role="main" class="pb-3">
             @RenderBody()
@@ -118,13 +119,22 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    @* loader script *@
-    <script>
-        $(window).on('load', function () {
-            $('.loader').fadeOut("slow");
-        });
-    </script>
+    @* hide loader on specified pages *@
+    @{
+        @* get current page path *@
+        var path = Context.Request.Path.Value;
+    }
+    @* ignore these pages *@
+    @if (path != "/Payments/Create" && path != "Payments/Edit" &&
+        path != "/RecurringPayments/Create" && path != "RecurringPayments/Edit")
+    {
+        <div class="loader"></div>
+        <script>
+            $(window).on('load', function () {
+                $('.loader').fadeOut("slow");
+            });
+        </script>
+    }
 </body>
 
 </html>

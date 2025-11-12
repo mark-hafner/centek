@@ -20,8 +20,8 @@ namespace Centek.Models
         public Frequency RecFrequency { get; set; }
         public int RecInterval { get; set; }
 
-        public required int AccountId { get; set; }
-        public required Account Account { get; set; }
+        public int? AccountId { get; set; }
+        public Account? Account { get; set; }
         public int? MainCategoryId { get; set; }
         public int? SubCategoryId { get; set; }
         public MainCategory? MainCategory { get; set; }

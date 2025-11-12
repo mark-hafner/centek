@@ -51,11 +51,21 @@ namespace Centek.Controllers
 
         // Helper for generating items in the Main and Sub Category dropdown menu
         private async Task GenerateMainAndSubCategoryDropdownAsync(
+            int? selectedAccountId = null,
             int? selectedMainCategoryId = null,
             int? selectedSubCategoryId = null
         )
         {
+            // get current user
             var user = await _userManager.GetUserAsync(User);
+
+            //Accounts
+            var accounts = await _context
+                .Accounts.Where(a => a.UserId == user.Id)
+                .Select(c => new { c.ID, c.Name })
+                .ToListAsync();
+
+            ViewData["AccountId"] = new SelectList(accounts, "ID", "Name", selectedAccountId);
 
             // Main categories
             var mainCategories = await _context
@@ -107,6 +117,7 @@ namespace Centek.Controllers
                 return RedirectToAction(nameof(Index));
             }
             await GenerateMainAndSubCategoryDropdownAsync(
+                payment.AccountId,
                 payment.MainCategoryId,
                 payment.SubCategoryId
             );

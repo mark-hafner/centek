@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Centek.Data;
+using Centek.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Centek.Data;
-using Centek.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Centek.Controllers
 {
@@ -31,11 +31,9 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             // Get Accounts for this user
-            var accounts = await _context
-                .Accounts.Where(a => a.UserId == user.Id)
-                .ToListAsync();
+            var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
 
-            return View(await _context.Accounts.ToListAsync());
+            return View(accounts);
         }
 
         // GET: Accounts/Details/5
@@ -46,8 +44,7 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var account = await _context.Accounts
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var account = await _context.Accounts.FirstOrDefaultAsync(m => m.ID == id);
             if (account == null)
             {
                 return NotFound();
@@ -93,7 +90,8 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id);
+                a.ID == id && a.UserId == user.Id
+            );
             if (account == null)
             {
                 return NotFound();
@@ -111,7 +109,8 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id);
+                a.ID == id && a.UserId == user.Id
+            );
 
             if (existingAccount == null)
             {
@@ -154,7 +153,8 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id);
+                a.ID == id && a.UserId == user.Id
+            );
 
             if (account == null)
             {
@@ -169,10 +169,11 @@ namespace Centek.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-             var user = await _userManager.GetUserAsync(User); //get current user
+            var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id);
+                a.ID == id && a.UserId == user.Id
+            );
 
             if (account != null)
             {
