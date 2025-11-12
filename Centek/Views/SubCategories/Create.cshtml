@@ -16,8 +16,7 @@
             <div class="form-group">
                 <label asp-for="MainCategoryId" class="control-label">Main Category</label>
                 @* get list of Main Categories and set them in select form *@
-                <select asp-for="MainCategoryId" class="form-control"
-                    asp-items="@(ViewData["MainCategoryId"] as SelectList)">
+                <select asp-for="MainCategoryId" asp-items="ViewBag.MainCategories" class="form-control">
                     <option value="">-- Select Main Category --</option>
                 </select>
                 <span asp-validation-for="MainCategoryId" class="text-danger"></span>

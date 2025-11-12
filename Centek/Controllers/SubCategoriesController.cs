@@ -50,13 +50,8 @@ namespace Centek.Controllers
                 .MainCategories.Where(c => c.UserId == user.Id)
                 .Select(c => new { c.ID, c.Name })
                 .ToListAsync();
-            //put recived data into ViewData for display in select
-            ViewData["MainCategoryId"] = new SelectList(
-                mainCategories,
-                "ID",
-                "Name",
-                selectedValue
-            );
+            //put recived data into ViewBag for display in select
+            ViewBag.MainCategories = new SelectList(mainCategories, "ID", "Name", selectedValue);
         }
 
         // GET: SubCategories/Create
