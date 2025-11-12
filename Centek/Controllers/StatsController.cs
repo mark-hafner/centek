@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Numerics;
 
 namespace Centek.Controllers
 {
@@ -19,7 +20,7 @@ namespace Centek.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int? accountId, int? mainCategoryId, int? subCategoryId)
+        public async Task<IActionResult> Index(int? accountId, int? mainCategoryId, int? subCategoryId, bool? type, DateTime? fromDate, DateTime? toDate)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -41,11 +42,20 @@ namespace Centek.Controllers
             if (subCategoryId.HasValue)
                 paymentsQuery = paymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
 
+             if (type.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.Type == type);
+
+            if (fromDate.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.Date >= fromDate);
+
+            if (toDate.HasValue)
+                paymentsQuery = paymentsQuery.Where(p => p.Date <= toDate);
+
             // Query
-            var payments = await paymentsQuery.ToListAsync();
+            var payments = await paymentsQuery.OrderByDescending(p => p.Date).ToListAsync();
 
             // Total sum
-            var total = payments.Sum(p => p.Value);
+            var total = payments.Sum(p => p.Type ? p.Value : -p.Value);
 
             // Send to View
             // Total sum
@@ -66,6 +76,12 @@ namespace Centek.Controllers
                 .Where(sc => sc.MainCategory.UserId == user.Id && sc.Payments.Any())
                 .Include(sc => sc.MainCategory)
                 .ToListAsync();
+
+            // From
+            ViewData["FromDate"] = fromDate?.ToString("yyyy-MM-dd");
+            
+            // To
+            ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
 
             return View(payments);
         }
