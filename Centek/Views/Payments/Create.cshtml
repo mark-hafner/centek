@@ -12,18 +12,21 @@
             <h1>Create New Payment</h1>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             @* name input *@
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
             @* Note input *@
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
+
             @* Type input *@
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
@@ -35,18 +38,21 @@
                     </div>
                 </div>
             </div>
+
             @* Amount input *@
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
+
             @* Date input *@
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
+
             @* Account dropdown *@
             <div class="form-group">
                 <label asp-for="AccountId" class="control-label">Account</label>
@@ -54,8 +60,10 @@
                     <option value="">-- Select Account --</option>
                 </select>
                 <span asp-validation-for="AccountId" class="text-danger"></span>
-                <a asp-controller="Accounts" asp-action="Create" class="btn btn-primary">
-                    Create New Account</a>
+                <div>
+                    <a asp-controller="Accounts" asp-action="Create" class="btn btn-primary">
+                        Create New Account</a>
+                </div>
             </div>
 
             @* Main Category dropdown *@

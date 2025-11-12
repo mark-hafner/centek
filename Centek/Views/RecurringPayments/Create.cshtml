@@ -18,12 +18,14 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
             @* Note input *@
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
+
             @* Type input *@
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
@@ -35,24 +37,28 @@
                     </div>
                 </div>
             </div>
+
             @* Amount input *@
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
+
             @* Start Date input *@
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label">Start Date</label>
                 <input asp-for="StartDate" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
+
             @* Start Date input *@
             <div class="form-group">
                 <label asp-for="EndDate" class="control-label">End Date</label>
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
+
             @* Recurring Frequency *@
             <div class="form-group">
                 <label asp-for="RecFrequency" class="control-label">Recurring Frequency</label>
@@ -71,6 +77,7 @@
                 <input asp-for="RecInterval" class="form-control" />
                 <span asp-validation-for="RecInterval" class="text-danger"></span>
             </div>
+
             @* Account dropdown *@
             <div class="form-group">
                 <label asp-for="AccountId" class="control-label">Account</label>
@@ -78,8 +85,10 @@
                     <option value="">-- Select Account --</option>
                 </select>
                 <span asp-validation-for="AccountId" class="text-danger"></span>
-                <a asp-controller="Accounts" asp-action="Create" class="btn btn-primary">
-                    Create New Account</a>
+                <div>
+                    <a asp-controller="Accounts" asp-action="Create" class="btn btn-primary">
+                        Create New Account</a>
+                </div>
             </div>
 
             @* Main Category dropdown *@
