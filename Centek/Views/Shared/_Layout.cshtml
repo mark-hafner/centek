@@ -22,6 +22,10 @@
         <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     }
     @* only load categories.css when Categories page is on *@
+    @if (Context.Request.Path.StartsWithSegments("/Account"))
+    {
+        <link rel="stylesheet" href="~/css/accounts.css" asp-append-version="true" />
+    }
     @if (Context.Request.Path.StartsWithSegments("/MainCategories") ||
         Context.Request.Path.StartsWithSegments("/SubCategories"))
     {
@@ -78,6 +82,10 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Payments"
                                     asp-action="Index">Payments</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Accounts"
+                                    asp-action="Index">Accounts</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="MainCategories"

@@ -51,7 +51,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(m => m.ID == id);
+            var mainCategory = await _context.MainCategories
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (mainCategory == null)
             {
                 return NotFound();
@@ -126,10 +127,24 @@ namespace Centek.Controllers
 
             if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Update(existingCategory);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MainCategoryExists(existingCategory.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-
             return View(existingCategory);
         }
 

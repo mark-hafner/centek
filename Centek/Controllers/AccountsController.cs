@@ -7,21 +7,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Centek.Controllers
 {
+    [Authorize]
     public class AccountsController : Controller
     {
         private readonly CentekContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public AccountsController(CentekContext context)
+        public AccountsController(CentekContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Accounts
         public async Task<IActionResult> Index()
         {
+            // get user specific accounts
+            var user = await _userManager.GetUserAsync(User);
+
+            // Get Accounts for this user
+            var accounts = await _context
+                .Accounts.Where(a => a.UserId == user.Id)
+                .ToListAsync();
+
             return View(await _context.Accounts.ToListAsync());
         }
 
@@ -54,8 +67,12 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name")] Account account)
+        public async Task<IActionResult> Create(Account account)
         {
+            var user = await _userManager.GetUserAsync(User); //get current user
+
+            account.UserId = user.Id;
+            account.User = user;
             if (ModelState.IsValid)
             {
                 _context.Add(account);
@@ -73,7 +90,10 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var account = await _context.Accounts.FindAsync(id);
+            var user = await _userManager.GetUserAsync(User); //get current user
+            // show only accounts from current user
+            var account = await _context.Accounts.FirstOrDefaultAsync(a =>
+                a.ID == id && a.UserId == user.Id);
             if (account == null)
             {
                 return NotFound();
@@ -86,23 +106,30 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name")] Account account)
+        public async Task<IActionResult> Edit(int id, Account updatedAccount)
         {
-            if (id != account.ID)
+            var user = await _userManager.GetUserAsync(User); //get current user
+            // show only accounts from current user
+            var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a =>
+                a.ID == id && a.UserId == user.Id);
+
+            if (existingAccount == null)
             {
                 return NotFound();
             }
+
+            existingAccount.Name = updatedAccount.Name;
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(account);
+                    _context.Update(existingAccount);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AccountExists(account.ID))
+                    if (!AccountExists(existingAccount.ID))
                     {
                         return NotFound();
                     }
@@ -113,7 +140,7 @@ namespace Centek.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(account);
+            return View(existingAccount);
         }
 
         // GET: Accounts/Delete/5
@@ -124,8 +151,11 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var account = await _context.Accounts
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var user = await _userManager.GetUserAsync(User); //get current user
+            // show only accounts from current user
+            var account = await _context.Accounts.FirstOrDefaultAsync(a =>
+                a.ID == id && a.UserId == user.Id);
+
             if (account == null)
             {
                 return NotFound();
@@ -139,7 +169,11 @@ namespace Centek.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var account = await _context.Accounts.FindAsync(id);
+             var user = await _userManager.GetUserAsync(User); //get current user
+            // show only accounts from current user
+            var account = await _context.Accounts.FirstOrDefaultAsync(a =>
+                a.ID == id && a.UserId == user.Id);
+
             if (account != null)
             {
                 _context.Accounts.Remove(account);
