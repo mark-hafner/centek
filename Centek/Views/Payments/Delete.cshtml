@@ -21,7 +21,7 @@
             @Html.DisplayNameFor(model => model.Note)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Note ?? "NONE")
+            @(Model.Note ?? "NONE")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Type)

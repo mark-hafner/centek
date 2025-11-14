@@ -18,7 +18,7 @@ namespace Centek.Models
         public bool Type { get; set; }
 
         [Required(ErrorMessage = "Amount is required.")]
-        public float? Amount { get; set; }
+        public decimal? Amount { get; set; }
 
         [Required(ErrorMessage = "Start Date is required.")]
         public DateTime? StartDate { get; set; }
