@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Centek.Controllers
 {
@@ -16,6 +17,25 @@ namespace Centek.Controllers
         {
             _context = context;
             _userManager = userManager;
+        }
+
+        public async Task<SubCategory> GetSubcategories(int? id)
+        {
+            var user = await _userManager.GetUserAsync(User); // current user
+            // Get only MainCategories for this user
+            // get all main categories for user
+            var mainCategoryIds = await _context.MainCategories
+                .Where(c => c.UserId == user.Id)
+                .Select(c => c.ID)        // only IDs!
+                .ToListAsync();
+            if (mainCategoryIds.IsNullOrEmpty())
+            {
+                return null;
+            }
+            // get all subcategories for these categories
+            var subCategory = await _context.SubCategories
+                .FirstOrDefaultAsync(s => s.ID == id && mainCategoryIds.Contains(s.MainCategoryId));
+            return subCategory;
         }
 
         // GET: SubCategories
@@ -31,8 +51,8 @@ namespace Centek.Controllers
             {
                 return NotFound();
             }
+            var subCategory = await GetSubcategories(id);
 
-            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(m => m.ID == id);
             if (subCategory == null)
             {
                 return NotFound();
@@ -50,7 +70,7 @@ namespace Centek.Controllers
                 .MainCategories.Where(c => c.UserId == user.Id)
                 .Select(c => new { c.ID, c.Name })
                 .ToListAsync();
-            //put recived data into ViewBag for display in select
+            // put recived data into ViewBag for display in select
             ViewBag.MainCategories = new SelectList(mainCategories, "ID", "Name", selectedValue);
         }
 
@@ -83,8 +103,8 @@ namespace Centek.Controllers
         {
             if (id == null)
                 return NotFound();
+            var subCategory = await GetSubcategories(id);
 
-            var subCategory = await _context.SubCategories.FindAsync(id);
             if (subCategory == null)
                 return NotFound();
 
@@ -141,8 +161,8 @@ namespace Centek.Controllers
             {
                 return NotFound();
             }
+            var subCategory = await GetSubcategories(id);
 
-            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(m => m.ID == id);
             if (subCategory == null)
             {
                 return NotFound();

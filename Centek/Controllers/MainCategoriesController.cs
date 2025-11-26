@@ -51,8 +51,10 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var mainCategory = await _context.MainCategories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var user = await _userManager.GetUserAsync(User); //get current user
+            // show only categories from current user
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
+                c.ID == id && c.UserId == user.Id);
             if (mainCategory == null)
             {
                 return NotFound();

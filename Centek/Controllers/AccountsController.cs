@@ -44,7 +44,11 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var account = await _context.Accounts.FirstOrDefaultAsync(m => m.ID == id);
+            var user = await _userManager.GetUserAsync(User); //get current user
+            // show only accounts from current user
+            var account = await _context.Accounts.FirstOrDefaultAsync(a =>
+                a.ID == id && a.UserId == user.Id
+            );
             if (account == null)
             {
                 return NotFound();
