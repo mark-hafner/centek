@@ -22,6 +22,12 @@ namespace Centek.Controllers
 
         public async Task<IActionResult> Index(int? accountId, int? mainCategoryId, int? subCategoryId, bool? type, DateTime? fromDate, DateTime? toDate)
         {
+            var defaultFrom = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            var defaultTo = DateTime.Today;
+
+            fromDate = fromDate ?? defaultFrom;
+            toDate = toDate ?? defaultTo;
+
             var user = await _userManager.GetUserAsync(User);
 
             // All payments from user
@@ -32,27 +38,109 @@ namespace Centek.Controllers
                 .Where(p => p.Account.UserId == user.Id)
                 .AsQueryable();
 
+            // All recurring payments from user
+            var recPaymentsQuery = _context.RecurringPayment
+                .Include(p => p.Account)
+                .Include(p => p.MainCategory)
+                .Include(p => p.SubCategory)
+                .Where(p => p.Account.UserId == user.Id)
+                .AsQueryable();
+
             // Filters
             if (accountId.HasValue)
+            {
                 paymentsQuery = paymentsQuery.Where(p => p.AccountId == accountId);
+                recPaymentsQuery = recPaymentsQuery.Where(p => p.AccountId == accountId);
+            }
 
             if (mainCategoryId.HasValue)
+            {
                 paymentsQuery = paymentsQuery.Where(p => p.MainCategoryId == mainCategoryId);
+                recPaymentsQuery = recPaymentsQuery.Where(p => p.MainCategoryId == mainCategoryId);
+            }
 
             if (subCategoryId.HasValue)
+            {
                 paymentsQuery = paymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
+                recPaymentsQuery = recPaymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
+            }
 
             if (type.HasValue)
+            {
                 paymentsQuery = paymentsQuery.Where(p => p.Type == type);
+                recPaymentsQuery = recPaymentsQuery.Where(p => p.Type == type);
+            }
 
             if (fromDate.HasValue)
+            {
                 paymentsQuery = paymentsQuery.Where(p => p.Date >= fromDate);
+                recPaymentsQuery = recPaymentsQuery.Where(p => !p.EndDate.HasValue || p.EndDate >= fromDate);
+            }
 
             if (toDate.HasValue)
+            {
                 paymentsQuery = paymentsQuery.Where(p => p.Date <= toDate);
+                recPaymentsQuery = recPaymentsQuery.Where(p => p.StartDate <= toDate);
+            }
 
             // Query
-            var payments = await paymentsQuery.OrderByDescending(p => p.Date).ToListAsync();
+            var payments = await paymentsQuery.ToListAsync();
+            var recPayments = await recPaymentsQuery.ToListAsync();
+
+            foreach (var recurringPayment in recPayments)
+            {
+                var calculatedPayments = new List<Payment>();
+                var frequency = recurringPayment.RecFrequency;
+                var interval = recurringPayment.RecInterval;
+                DateTime startDate = (DateTime)recurringPayment.StartDate;
+                DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
+                DateTime date = startDate;
+                while (date <= toDate)
+                {
+                    calculatedPayments.Add(new Payment
+                    {
+                        Name = recurringPayment.Name,
+                        Note = recurringPayment.Note,
+                        Type = recurringPayment.Type,
+                        Amount = recurringPayment.Amount,
+                        Date = date,
+                        AccountId = recurringPayment.AccountId,
+                        MainCategoryId = recurringPayment.MainCategoryId,
+                        SubCategoryId = recurringPayment.SubCategoryId,
+                        Account = recurringPayment.Account,
+                        MainCategory = recurringPayment.MainCategory,
+                        SubCategory = recurringPayment.SubCategory
+                    });
+
+
+                    // increase date correctly
+                    switch (frequency)
+                    {
+                        case RecurringPayment.Frequency.daily:
+                            date = date.AddDays((double)interval);
+                            break;
+
+                        case RecurringPayment.Frequency.weekly:
+                            date = date.AddDays((double)(interval * 7));
+                            break;
+
+                        case RecurringPayment.Frequency.monthly:
+                            date = date.AddMonths((int)interval);
+                            break;
+
+                        case RecurringPayment.Frequency.yearly:
+                            date = date.AddYears((int)interval);
+                            break;
+                    }
+                }
+
+                // Add to main payments list
+                payments.AddRange(calculatedPayments);
+            }
+
+            payments = payments
+                .OrderByDescending(p => p.Date)
+                .ToList();
 
             // Total sum
             var total = payments.Sum(p => p.Type ? p.Amount : -p.Amount);

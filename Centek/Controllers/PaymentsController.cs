@@ -17,25 +17,6 @@ namespace Centek.Controllers
         private readonly CentekContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
 
-        public async Task<Payment> GetSubcategories(int? id)
-        {
-            var user = await _userManager.GetUserAsync(User); // current user
-            // Get only Accounts for this user
-            // get all Accounts for user
-            var accountIds = await _context.Accounts
-                .Where(a => a.UserId == user.Id)
-                .Select(c => c.ID)        // only IDs!
-                .ToListAsync();
-            if (accountIds.IsNullOrEmpty())
-            {
-                return null;
-            }
-            // get all payments for these accounts
-            var payment = await _context.Payments
-                .FirstOrDefaultAsync(p => p.ID == id && accountIds.Contains(p.AccountId));
-            return payment;
-        }
-
         // GET: Payments
         public async Task<IActionResult> Index()
         {

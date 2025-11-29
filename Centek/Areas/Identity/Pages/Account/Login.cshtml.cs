@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Centek.Areas.Identity.Pages.Account
 {
@@ -22,11 +23,14 @@ namespace Centek.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<User> _userManager;
+        private readonly CentekContext _context;
 
-        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger, UserManager<User> userManager, CentekContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -116,6 +120,13 @@ namespace Centek.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    // Redirects if user doesn't have accounts
+                    var user = await _userManager.GetUserAsync(User);
+                    var accounts = await 
+                    if (user.Accounts.IsNullOrEmpty())
+                        {
+                            returnUrl = Url.Content("~/Accounts/Create");
+                        }
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
