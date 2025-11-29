@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Centek.Controllers
 {
@@ -15,6 +16,25 @@ namespace Centek.Controllers
     {
         private readonly CentekContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
+
+        public async Task<Payment> GetSubcategories(int? id)
+        {
+            var user = await _userManager.GetUserAsync(User); // current user
+            // Get only Accounts for this user
+            // get all Accounts for user
+            var accountIds = await _context.Accounts
+                .Where(a => a.UserId == user.Id)
+                .Select(c => c.ID)        // only IDs!
+                .ToListAsync();
+            if (accountIds.IsNullOrEmpty())
+            {
+                return null;
+            }
+            // get all payments for these accounts
+            var payment = await _context.Payments
+                .FirstOrDefaultAsync(p => p.ID == id && accountIds.Contains(p.AccountId));
+            return payment;
+        }
 
         // GET: Payments
         public async Task<IActionResult> Index()
@@ -47,9 +67,12 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+
             // Include navigation properties if you need them
             var payment = await _context
-                .Payments.Include(p => p.Account)
+                .Payments.Where(p => p.Account.UserId == user.Id)
+                .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(p => p.ID == id);
@@ -134,9 +157,12 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+
             // Include navigation properties if you need them
             var payment = await _context
-                .Payments.Include(p => p.Account)
+                .Payments.Where(p => p.Account.UserId == user.Id)
+                .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(p => p.ID == id);
@@ -189,9 +215,12 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+
             // Include navigation properties if you need them
             var payment = await _context
-                .Payments.Include(p => p.Account)
+                .Payments.Where(p => p.Account.UserId == user.Id)
+                .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(p => p.ID == id);

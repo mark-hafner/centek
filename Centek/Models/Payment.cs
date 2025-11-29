@@ -19,7 +19,7 @@ namespace Centek.Models
         public DateTime? Date { get; set; }
 
         [Required(ErrorMessage = "Account is required.")]
-        public int? AccountId { get; set; }
+        public int AccountId { get; set; }
         public Account? Account { get; set; }
         public int? MainCategoryId { get; set; }
         public int? SubCategoryId { get; set; }

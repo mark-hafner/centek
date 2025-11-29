@@ -21,9 +21,12 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Include(p => p.Account)
+                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(p => p.ID == id);
@@ -110,9 +113,12 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Include(p => p.Account)
+                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(p => p.ID == id);
@@ -165,9 +171,12 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Include(p => p.Account)
+                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .FirstOrDefaultAsync(p => p.ID == id);
