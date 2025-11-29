@@ -2,20 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Centek.Models;
+using Centek.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Centek.Areas.Identity.Pages.Account
 {
@@ -31,6 +27,7 @@ namespace Centek.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _userManager = userManager;
+            _context = context;
         }
 
         /// <summary>
@@ -122,11 +119,11 @@ namespace Centek.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     // Redirects if user doesn't have accounts
                     var user = await _userManager.GetUserAsync(User);
-                    var accounts = await 
-                    if (user.Accounts.IsNullOrEmpty())
-                        {
-                            returnUrl = Url.Content("~/Accounts/Create");
-                        }
+                    var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+                    if (accounts.IsNullOrEmpty())
+                    {
+                        returnUrl = Url.Content("~/Accounts/Create");
+                    }
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
