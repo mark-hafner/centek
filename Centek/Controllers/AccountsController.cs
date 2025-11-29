@@ -68,7 +68,7 @@ namespace Centek.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Account account)
+        public async Task<IActionResult> Create(Account account, decimal initialBalance)
         {
             var user = await _userManager.GetUserAsync(User); //get current user
 
@@ -78,6 +78,21 @@ namespace Centek.Controllers
             {
                 _context.Add(account);
                 await _context.SaveChangesAsync();
+
+                var type = (initialBalance > 0) ? true : false;
+                var initialPayment = new Payment
+                {
+                    Name = "Initial Balance",
+                    Note = "Initial payment on account creation",
+                    Amount = initialBalance,
+                    Type = type,
+                    Date = DateTime.Now,
+                    AccountId = account.ID
+                };
+
+                _context.Payments.Add(initialPayment);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(account);

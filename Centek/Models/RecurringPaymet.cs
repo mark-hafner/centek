@@ -6,10 +6,10 @@ namespace Centek.Models
     {
         public enum Frequency
         {
-            daily,
-            weekly,
-            monthly,
-            yearly,
+            Daily,
+            Weekly,
+            Monthly,
+            Yearly,
         }
 
         public int ID { get; set; }

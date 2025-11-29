@@ -123,7 +123,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    @* hide loader on specified pages
+    @* hide loader on specified pages *@
     @{
         
         var path = Context.Request.Path.Value;
@@ -132,13 +132,21 @@
     @if (path != "/Payments/Create" && path != "Payments/Edit" &&
         path != "/RecurringPayments/Create" && path != "RecurringPayments/Edit")
     {
-        <div class="loader"></div>
-        <script>
-            $(window).on('load', function () {
-                $('.loader').fadeOut("slow");
-            });
-        </script>
-    } *@
+        <div class="loader" style="display:none;"></div> <!-- loader skrit po defaultu -->
+
+    <script>
+        let loaderTimeout = setTimeout(function () {
+            // pokaži loader, če stran še ni naložena po določenem času
+            $('.loader').fadeIn('fast');
+        }, 0.001); // cca 0,00001 sekunde
+
+        $(window).on('load', function () {
+            // če se je stran nalozila ustavi timer
+            clearTimeout(loaderTimeout);
+            $('.loader').fadeOut('fast');
+        });
+    </script>
+    }
 </body>
 
 </html>

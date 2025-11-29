@@ -27,6 +27,7 @@ namespace Centek.Controllers
 
             fromDate = fromDate ?? defaultFrom;
             toDate = toDate ?? defaultTo;
+            toDate = toDate.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
             var user = await _userManager.GetUserAsync(User);
 
@@ -97,38 +98,40 @@ namespace Centek.Controllers
                 DateTime date = startDate;
                 while (date <= toDate)
                 {
-                    calculatedPayments.Add(new Payment
+                    if (date >= fromDate)
                     {
-                        Name = recurringPayment.Name,
-                        Note = recurringPayment.Note,
-                        Type = recurringPayment.Type,
-                        Amount = recurringPayment.Amount,
-                        Date = date,
-                        AccountId = recurringPayment.AccountId,
-                        MainCategoryId = recurringPayment.MainCategoryId,
-                        SubCategoryId = recurringPayment.SubCategoryId,
-                        Account = recurringPayment.Account,
-                        MainCategory = recurringPayment.MainCategory,
-                        SubCategory = recurringPayment.SubCategory
-                    });
-
+                        calculatedPayments.Add(new Payment
+                        {
+                            Name = recurringPayment.Name,
+                            Note = recurringPayment.Note,
+                            Type = recurringPayment.Type,
+                            Amount = recurringPayment.Amount,
+                            Date = date,
+                            AccountId = recurringPayment.AccountId,
+                            MainCategoryId = recurringPayment.MainCategoryId,
+                            SubCategoryId = recurringPayment.SubCategoryId,
+                            Account = recurringPayment.Account,
+                            MainCategory = recurringPayment.MainCategory,
+                            SubCategory = recurringPayment.SubCategory
+                        });
+                    }
 
                     // increase date correctly
                     switch (frequency)
                     {
-                        case RecurringPayment.Frequency.daily:
+                        case RecurringPayment.Frequency.Daily:
                             date = date.AddDays((double)interval);
                             break;
 
-                        case RecurringPayment.Frequency.weekly:
+                        case RecurringPayment.Frequency.Weekly:
                             date = date.AddDays((double)(interval * 7));
                             break;
 
-                        case RecurringPayment.Frequency.monthly:
+                        case RecurringPayment.Frequency.Monthly:
                             date = date.AddMonths((int)interval);
                             break;
 
-                        case RecurringPayment.Frequency.yearly:
+                        case RecurringPayment.Frequency.Yearly:
                             date = date.AddYears((int)interval);
                             break;
                     }

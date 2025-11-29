@@ -114,7 +114,14 @@ namespace Centek.Controllers
         public async Task<IActionResult> Create()
         {
             await PopulateViewBag();
-            return View();
+
+            var now = DateTime.Now;
+            var payment = new Payment
+            {
+                Date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0)
+            };
+            
+            return View(payment);
         }
 
         // POST: Payments/Create

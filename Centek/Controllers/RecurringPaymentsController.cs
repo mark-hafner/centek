@@ -89,7 +89,14 @@ namespace Centek.Controllers
         public async Task<IActionResult> Create()
         {
             await PopulateViewBag();
-            return View();
+
+            var now = DateTime.Now;
+            var payment = new RecurringPayment
+            {
+                StartDate = new DateTime(now.Year, now.Month, now.Day)
+            };
+
+            return View(payment);
         }
 
         // POST: RecurringPayments/Create
