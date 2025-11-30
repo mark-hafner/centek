@@ -22,12 +22,12 @@ Delovala bo kot spletna in mobilna aplikacija, ki bosta povezani preko skupnega 
 - Uporabnik vpisuje prihodke in odhodke ter pri vsakem navede, od kod je denar prišel in kje je bil
     porabljen
 - Pri vsakem vnosu določi:
-    o Ali je prihodek ali odhodek
-    o Znesek transakcije
-    o Ime in opis transakcije
-    o Račun, na ketegem se ta transakcija izvede
-    o Kategorijo pod katero ta spada (npr. hrana, prevoz, šport...)
-    o Podkategorijo(npr. Špar, McDonalds, Avtobus ...)
+    - Ali je prihodek ali odhodek
+    - Znesek transakcije
+    - Ime in opis transakcije
+    - Račun, na ketegem se ta transakcija izvede
+    - Kategorijo pod katero ta spada (npr. hrana, prevoz, šport...)
+    - Podkategorijo(npr. Špar, McDonalds, Avtobus ...)
 - Pri kategorijah lahko izbira med nekaterimi standardnimi, lahko pa tudi doda svoje.
 - Lahko določi tudi ponavljajoče transakcije.
 
@@ -39,5 +39,5 @@ Delovala bo kot spletna in mobilna aplikacija, ki bosta povezani preko skupnega 
 
 ## TEHNOLOGIJE
 
-Spletna aplikacija bo narejena z ASP.NET z MVC
-Mobilna aplikacija bo narejena v React Native
+Spletna aplikacija bo narejena z ASP.NET z MVC.
+Mobilna aplikacija bo narejena v React Native.
