@@ -79,13 +79,12 @@ namespace Centek.Controllers
                 _context.Add(account);
                 await _context.SaveChangesAsync();
 
-                var type = (initialBalance >= 0) ? true : false;
                 var initialPayment = new Payment
                 {
                     Name = "Initial Balance",
                     Note = "Initial payment on account creation",
-                    Amount = initialBalance,
-                    Type = type,
+                    Amount = Math.Abs(initialBalance),
+                    Type = initialBalance >= 0,
                     Date = DateTime.Now,
                     AccountId = account.ID
                 };

@@ -98,6 +98,7 @@ namespace Centek.Controllers
                 DateTime date = startDate;
                 while (date <= toDate)
                 {
+                    if (date >= endDate) break;
                     if (date >= fromDate)
                     {
                         calculatedPayments.Add(new Payment
