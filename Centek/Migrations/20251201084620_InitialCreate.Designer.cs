@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Centek.Migrations
 {
     [DbContext(typeof(CentekContext))]
-    [Migration("20251129212234_RecurringPaymentsFrequencyRename")]
-    partial class RecurringPaymentsFrequencyRename
+    [Migration("20251201084620_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
