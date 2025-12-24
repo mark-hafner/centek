@@ -4,6 +4,7 @@ using Centek.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 namespace Centek.Controllers
@@ -63,7 +64,7 @@ namespace Centek.Controllers
 
             //ACCOUNTS
             var accountGroups = payments
-                .GroupBy(p => p.Account.Name)
+                .GroupBy(p => p.Account?.Name)
                 .Select(g => new
                 {
                     Label = g.Key,
@@ -71,11 +72,55 @@ namespace Centek.Controllers
                 })
                 .ToList();
 
-
             ViewBag.AccountLabels = accountGroups.Select(x => x.Label).ToList();
             ViewBag.AccountValues = accountGroups.Select(x => x.Value).ToList();
 
+            //MAIN CATEGORIES
+            var mainCatGroups = payments
+                .GroupBy(p => p.MainCategory?.Name ?? "Uncategorized")
+                .Select(g => new
+                {
+                    Label = g.Key,
+                    Value = g.Sum(p => p.Type ? p.Amount : -p.Amount),
+                })
+                .ToList();
+
+            ViewBag.MainCatLabels = mainCatGroups.Select(x => x.Label).ToList();
+            ViewBag.MainCatValues = mainCatGroups.Select(x => x.Value).ToList();
+
+
+
+            // Accounts
+            ViewBag.Accounts = await _context.Accounts
+                .Where(a => a.UserId == user.Id && a.Payments.Any())
+                .ToListAsync();
+
+            // MainCategories
+            ViewBag.MainCategories = await _context.MainCategories
+                .Where(c => c.UserId == user.Id && c.Payments.Any())
+                .ToListAsync();
+
+            // SubCategories
+            ViewBag.SubCategories = await _context.SubCategories
+                .Where(sc => sc.MainCategory.UserId == user.Id && sc.Payments.Any())
+                .Include(sc => sc.MainCategory)
+                .ToListAsync();
+
+            // From
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+
+            // To
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+
+            ViewBag.SelectedAccountId = accountId;
+            ViewBag.SelectedMainCategoryId = mainCategoryId;
+            ViewBag.SelectedSubCategoryId = subCategoryId;
+            ViewBag.SelectedType = type;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
             return View();
         }
     }
 }
+
+
