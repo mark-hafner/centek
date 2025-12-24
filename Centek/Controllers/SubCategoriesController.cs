@@ -179,6 +179,14 @@ namespace Centek.Controllers
             var subCategory = await _context.SubCategories.FindAsync(id);
             if (subCategory != null)
             {
+                var categorisedPayments = await _context
+                    .Payments.Where(p => p.SubCategoryId == subCategory.ID)
+                    .ToListAsync();
+                foreach (var catPayment in categorisedPayments)
+                {
+                    catPayment.SubCategory = null;
+                    catPayment.SubCategoryId = null;
+                }
                 _context.SubCategories.Remove(subCategory);
             }
 

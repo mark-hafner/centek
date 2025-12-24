@@ -186,6 +186,15 @@ namespace Centek.Controllers
                     .SubCategories.Where(s => s.MainCategoryId == mainCategory.ID)
                     .ToListAsync();
 
+                var categorisedPayments = await _context
+                    .Payments.Where(p => p.MainCategoryId == mainCategory.ID)
+                    .ToListAsync();
+                foreach (var catPayment in categorisedPayments)
+                {
+                    catPayment.MainCategory = null;
+                    catPayment.MainCategoryId = null;
+                }
+
                 foreach (var subCategory in subCategories)
                 {
                     if (!await _subCategoryDelete.DeleteSubCategoryAsync(subCategory.ID))

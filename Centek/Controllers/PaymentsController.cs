@@ -120,7 +120,7 @@ namespace Centek.Controllers
             {
                 Date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0)
             };
-            
+
             return View(payment);
         }
 
@@ -205,7 +205,6 @@ namespace Centek.Controllers
 
             var user = await _userManager.GetUserAsync(User);
 
-            // Include navigation properties if you need them
             var payment = await _context
                 .Payments.Where(p => p.Account.UserId == user.Id)
                 .Include(p => p.Account)
@@ -216,9 +215,9 @@ namespace Centek.Controllers
             if (payment == null)
                 return NotFound();
 
-            await PopulateViewBag(payment); // pass payment to pre-select dropdowns
+            await PopulateViewBag(payment);
 
-            return View(payment); // pass the model to the view
+            return View(payment);
         }
 
         // POST: Payments/Delete/5
