@@ -136,13 +136,52 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Account Chart
-        const ctxAccounts = document.getElementById('accountChart');
+        const ctxAccounts = document.getElementById('accountChart').getContext('2d');
         const accountLabels = @Html.Raw(Json.Serialize(ViewBag.AccountLabels));
         const accountData = @Html.Raw(Json.Serialize(ViewBag.AccountValues));
+
+        var barColors = [];
+        for (var i = 0; i < accountData.length; i++) {
+            barColors.push((accountData[i] > 0) ? "#00ff00" : "#ff0000"); 
+        };
+
         new Chart(ctxAccounts, {
-            type: 'pie',
-            data: { labels: accountLabels, datasets: [{ label: 'Accounts', data: accountData }] }
+            type: 'bar',
+            data: {
+                labels: accountLabels,
+                datasets: [{
+                    label: 'Accounts',
+                    data: accountData,
+                    backgroundColor: barColors,
+                    borderRadius: 8,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#222',
+                        padding: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#eee'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
         });
 
         // Main Categories Chart
