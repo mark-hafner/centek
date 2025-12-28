@@ -62,6 +62,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<SubCategoryDelete>();
 builder.Services.AddScoped<MainCategoryDelete>();
 
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -70,7 +72,6 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-
     app.UseHsts();
 }
 
@@ -81,6 +82,12 @@ app.UseStaticFiles();
 app.UseExceptionHandler("/Error/500");
 // Handles status codes like 404, 403, etc.
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+});
 
 app.UseRouting();
 

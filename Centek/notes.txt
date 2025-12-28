@@ -1,1 +1,2 @@
 Error.cshtml in vse v povezavi s tem se lahko izbriše... (Hopefully).
+dotnet aspnet-codegenerator controller -name SubCategoriesApiController -async -api -m Centek.Models.SubCategory -dc Centek.Data.CentekContext -outDir Controllers/Api
