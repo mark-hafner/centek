@@ -176,9 +176,9 @@ namespace Centek.Controllers
             ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
 
 
-            ViewData["SelectedAccountId"] = accountId;
-            ViewData["SelectedMainCategoryId"] = mainCategoryId;
-            ViewData["SelectedSubCategoryId"] = subCategoryId;
+            ViewData["SelectedAccountId"] = accountIds;
+            ViewData["SelectedMainCategoryId"] = mainCategoryIds;
+            ViewData["SelectedSubCategoryId"] = subCategoryIds;
             ViewData["SelectedType"] = type;
             ViewData["FromDate"] = fromDate?.ToString("yyyy-MM-dd");
             ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
