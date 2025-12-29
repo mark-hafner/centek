@@ -8,12 +8,11 @@ body {
     /* centering method for chart */
     display: flex;
     /* move chart left, right, or center */
-    justify-content: space-between;
+    justify-content: space-evenly;
     /* move chart up or down */
     align-items: center;
 
-    width: 100%;
-    height: 400px;
+    
 
     /* horizontal positioning left*/
     margin: auto;

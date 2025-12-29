@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Security.AccessControl;
 using Centek.Data;
 using Centek.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,9 +23,9 @@ namespace Centek.Controllers
         }
 
         public async Task<IActionResult> Index(
-            int? accountId,
-            int? mainCategoryId,
-            int? subCategoryId,
+            List<int?>? accountIds,
+            List<int?>? mainCategoryIds,
+            List<int?>? subCategoryIds,
             bool? type,
             DateTime? fromDate,
             DateTime? toDate
@@ -41,14 +42,14 @@ namespace Centek.Controllers
                 .AsQueryable();
 
             // Filters
-            if (accountId.HasValue)
-                paymentsQuery = paymentsQuery.Where(p => p.AccountId == accountId);
+            if (accountIds.Any())
+                paymentsQuery = paymentsQuery.Where(p => accountIds.Contains(p.AccountId));
 
-            if (mainCategoryId.HasValue)
-                paymentsQuery = paymentsQuery.Where(p => p.MainCategoryId == mainCategoryId);
+            if (mainCategoryIds.Any())
+                paymentsQuery = paymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
 
-            if (subCategoryId.HasValue)
-                paymentsQuery = paymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
+            if (subCategoryIds.Any())
+                paymentsQuery = paymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
 
             if (type.HasValue)
                 paymentsQuery = paymentsQuery.Where(p => p.Type == type);
@@ -61,6 +62,65 @@ namespace Centek.Controllers
 
             // Execute query
             var payments = await paymentsQuery.ToListAsync();
+            var recPayments = await recPaymentsQuery.ToListAsync();
+
+            foreach (var recurringPayment in recPayments)
+            {
+                var calculatedPayments = new List<Payment>();
+                var frequency = recurringPayment.RecFrequency;
+                var interval = recurringPayment.RecInterval;
+                DateTime startDate = (DateTime)recurringPayment.StartDate;
+                DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
+                DateTime date = startDate;
+                while (date <= toDate)
+                {
+                    if (date >= endDate) break;
+                    if (date >= fromDate)
+                    {
+                        calculatedPayments.Add(new Payment
+                        {
+                            Name = recurringPayment.Name,
+                            Note = recurringPayment.Note,
+                            Type = recurringPayment.Type,
+                            Amount = recurringPayment.Amount,
+                            Date = date,
+                            AccountId = recurringPayment.AccountId,
+                            MainCategoryId = recurringPayment.MainCategoryId,
+                            SubCategoryId = recurringPayment.SubCategoryId,
+                            Account = recurringPayment.Account,
+                            MainCategory = recurringPayment.MainCategory,
+                            SubCategory = recurringPayment.SubCategory
+                        });
+                    }
+
+                    // increase date correctly
+                    switch (frequency)
+                    {
+                        case RecurringPayment.Frequency.Daily:
+                            date = date.AddDays((double)interval);
+                            break;
+
+                        case RecurringPayment.Frequency.Weekly:
+                            date = date.AddDays((double)(interval * 7));
+                            break;
+
+                        case RecurringPayment.Frequency.Monthly:
+                            date = date.AddMonths((int)interval);
+                            break;
+
+                        case RecurringPayment.Frequency.Yearly:
+                            date = date.AddYears((int)interval);
+                            break;
+                    }
+                }
+
+                // Add to main payments list
+                payments.AddRange(calculatedPayments);
+            }
+
+            payments = payments
+                .OrderByDescending(p => p.Date)
+                .ToList();
 
             //ACCOUNTS
             var accountGroups = payments
@@ -112,9 +172,10 @@ namespace Centek.Controllers
             // To
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
 
-            ViewBag.SelectedAccountId = accountId;
-            ViewBag.SelectedMainCategoryId = mainCategoryId;
-            ViewBag.SelectedSubCategoryId = subCategoryId;
+
+            ViewBag.SelectedAccountIds = accountIds;
+            ViewBag.SelectedMainCategoryIds = mainCategoryIds;
+            ViewBag.SelectedSubCategoryIds = subCategoryIds;
             ViewBag.SelectedType = type;
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
