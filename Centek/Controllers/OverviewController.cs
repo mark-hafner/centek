@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Security.AccessControl;
 using Centek.Data;
 using Centek.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,9 +23,9 @@ namespace Centek.Controllers
         }
 
         public async Task<IActionResult> Index(
-            int? accountId,
-            int? mainCategoryId,
-            int? subCategoryId,
+            List<int?>? accountIds,
+            List<int?>? mainCategoryIds,
+            List<int?>? subCategoryIds,
             bool? type,
             DateTime? fromDate,
             DateTime? toDate
@@ -41,14 +42,14 @@ namespace Centek.Controllers
                 .AsQueryable();
 
             // Filters
-            if (accountId.HasValue)
-                paymentsQuery = paymentsQuery.Where(p => p.AccountId == accountId);
+            if (accountIds.Any())
+                paymentsQuery = paymentsQuery.Where(p => accountIds.Contains(p.AccountId));
 
-            if (mainCategoryId.HasValue)
-                paymentsQuery = paymentsQuery.Where(p => p.MainCategoryId == mainCategoryId);
+            if (mainCategoryIds.Any())
+                paymentsQuery = paymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
 
-            if (subCategoryId.HasValue)
-                paymentsQuery = paymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
+            if (subCategoryIds.Any())
+                paymentsQuery = paymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
 
             if (type.HasValue)
                 paymentsQuery = paymentsQuery.Where(p => p.Type == type);
@@ -111,10 +112,13 @@ namespace Centek.Controllers
 
             // To
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+            
+            accountIds.ForEach(i => Console.Write(i.ToString() + ", "));
+            Console.WriteLine(" ");
 
-            ViewBag.SelectedAccountId = accountId;
-            ViewBag.SelectedMainCategoryId = mainCategoryId;
-            ViewBag.SelectedSubCategoryId = subCategoryId;
+            ViewBag.SelectedAccountIds = accountIds;
+            ViewBag.SelectedMainCategoryIds = mainCategoryIds;
+            ViewBag.SelectedSubCategoryIds = subCategoryIds;
             ViewBag.SelectedType = type;
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");

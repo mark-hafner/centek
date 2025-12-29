@@ -13,10 +13,12 @@
     var accounts = ViewBag.Accounts as List<Centek.Models.Account>;
     var mainCategories = ViewBag.MainCategories as List<Centek.Models.MainCategory>;
     var subCategories = ViewBag.SubCategories as List<Centek.Models.SubCategory>;
-    var selectedAccountId = ViewBag.SelectedAccountId?.ToString();
-    var selectedMainCategoryId = ViewBag.SelectedMainCategoryId?.ToString();
-    var selectedSubCategoryId = ViewBag.SelectedSubCategoryId?.ToString();
+
+    var selectedAccountIds = ViewBag.SelectedAccountIds as List<int?> ?? new List<int?>();
+    var selectedMainCategoryIds = ViewBag.SelectedMainCategoryIds as List<int?> ?? new List<int?>();
+    var selectedSubCategoryIds = ViewBag.SelectedSubCategoryIds as List<int?> ?? new List<int?>();
     var selectedType = ViewBag.SelectedType?.ToString();
+
     var fromDate = ViewBag.FromDate as string;
     var toDate = ViewBag.ToDate as string;
 }
@@ -30,13 +32,12 @@
     <div class="row g-3 align-items-end">
         <div class="col-md-2">
             <label class="form-label">Account</label>
-            <select name="accountId" class="form-control">
-                <option value="">All Accounts</option>
+            <select name="accountIds" class="form-control" multiple size="1">
                 @foreach (var acc in accounts)
                 {
-                    if (selectedAccountId == acc.ID.ToString())
+                    if (selectedAccountIds.Contains(acc.ID))
                     {
-                        <option value="@acc.ID" selected="selected">@acc.Name</option>
+                        <option value="@acc.ID" selected>@acc.Name</option>
                     }
                     else
                     {
@@ -48,11 +49,10 @@
 
         <div class="col-md-2">
             <label class="form-label">Main Category</label>
-            <select name="mainCategoryId" class="form-control">
-                <option value="">All Main Categories</option>
+            <select name="mainCategoryIds" class="form-control" multiple size="1">
                 @foreach (var cat in mainCategories)
                 {
-                    if (selectedMainCategoryId == cat.ID.ToString())
+                    if (selectedMainCategoryIds.Contains(cat.ID))
                     {
                         <option value="@cat.ID" selected="selected">@cat.Name</option>
                     }
@@ -66,11 +66,10 @@
 
         <div class="col-md-2">
             <label class="form-label">Sub Category</label>
-            <select name="subCategoryId" class="form-control">
-                <option value="">All Sub Categories</option>
+            <select name="subCategoryIds" class="form-control" multiple size="1">
                 @foreach (var sub in subCategories)
                 {
-                    if (selectedSubCategoryId == sub.ID.ToString())
+                    if (selectedSubCategoryIds.Contains(sub.ID))
                     {
                         <option value="@sub.ID" selected="selected">@sub.Name</option>
                     }
@@ -142,7 +141,8 @@
 
         var barColors = [];
         for (var i = 0; i < accountData.length; i++) {
-            barColors.push((accountData[i] > 0) ? "#00ff00" : "#ff0000"); 
+            console.log(accountData[i]);
+            barColors.push((accountData[i] > 0) ? "#00ff00" : "#ff0000");
         };
 
         new Chart(ctxAccounts, {
@@ -173,6 +173,9 @@
                         beginAtZero: true,
                         grid: {
                             color: '#eee'
+                        },
+                        ticks: {
+                            precision: 2
                         }
                     },
                     x: {
@@ -190,7 +193,7 @@
         const mainCatData = @Html.Raw(Json.Serialize(ViewBag.MainCatValues));
         new Chart(ctxMainCat, {
             type: 'pie',
-            data: { labels: mainCatLabels, datasets: [{ label: 'mainCats', data: mainCatData }] }
+            data: { labels: mainCatLabels, datasets: [{ data: mainCatData }] }
         });
 
     </script>
