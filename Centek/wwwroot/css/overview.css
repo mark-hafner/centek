@@ -1,0 +1,27 @@
+body {
+    background: linear-gradient(135deg, #ffd139, #ff9100, #ffd139);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* charts */
+.overview-chart-container {
+    /* centering method for chart */
+    display: flex;
+    /* move chart left, right, or center */
+    justify-content: space-evenly;
+    /* move chart up or down */
+    align-items: center;
+
+    
+
+    /* horizontal positioning left*/
+    margin: auto;
+    /* Required for chart layout */
+    position: relative;
+}
+
+
+.overview-single-chart {
+    text-align: center;
+    height: 100%;
+}
