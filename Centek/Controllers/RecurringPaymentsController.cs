@@ -16,6 +16,7 @@ namespace Centek.Controllers
         private readonly UserManager<User> _userManager = userManager;
 
         // GET: RecurringPayments/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -86,6 +87,7 @@ namespace Centek.Controllers
         }
 
         // GET: RecurringPayments/Create
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             await PopulateViewBag();
@@ -115,6 +117,7 @@ namespace Centek.Controllers
         }
 
         // GET: RecurringPayments/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -173,6 +176,7 @@ namespace Centek.Controllers
         }
 
         // GET: RecurringPayments/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

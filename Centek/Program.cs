@@ -64,8 +64,22 @@ builder.Services.AddScoped<MainCategoryDelete>();
 
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:8081") // origin tvojega Expo/Web
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
+
+var app = builder.Build();
+app.UseCors("AllowReactApp");
+
+app.MapControllers();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -86,7 +100,7 @@ app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
 });
 
 app.UseRouting();

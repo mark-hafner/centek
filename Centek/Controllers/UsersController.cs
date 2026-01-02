@@ -20,12 +20,14 @@ namespace Centek.Controllers
         }
 
         // GET: Users
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
 
         // GET: Users/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -44,6 +46,7 @@ namespace Centek.Controllers
         }
 
         // GET: Users/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -66,6 +69,7 @@ namespace Centek.Controllers
         }
 
         // GET: Users/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -117,6 +121,7 @@ namespace Centek.Controllers
         }
 
         // GET: Users/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)

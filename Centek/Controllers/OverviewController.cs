@@ -22,6 +22,7 @@ namespace Centek.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(
             List<int?>? accountIds,
             List<int?>? mainCategoryIds,
@@ -62,65 +63,65 @@ namespace Centek.Controllers
 
             // Execute query
             var payments = await paymentsQuery.ToListAsync();
-            var recPayments = await recPaymentsQuery.ToListAsync();
+            // var recPayments = await recPaymentsQuery.ToListAsync();
 
-            foreach (var recurringPayment in recPayments)
-            {
-                var calculatedPayments = new List<Payment>();
-                var frequency = recurringPayment.RecFrequency;
-                var interval = recurringPayment.RecInterval;
-                DateTime startDate = (DateTime)recurringPayment.StartDate;
-                DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
-                DateTime date = startDate;
-                while (date <= toDate)
-                {
-                    if (date >= endDate) break;
-                    if (date >= fromDate)
-                    {
-                        calculatedPayments.Add(new Payment
-                        {
-                            Name = recurringPayment.Name,
-                            Note = recurringPayment.Note,
-                            Type = recurringPayment.Type,
-                            Amount = recurringPayment.Amount,
-                            Date = date,
-                            AccountId = recurringPayment.AccountId,
-                            MainCategoryId = recurringPayment.MainCategoryId,
-                            SubCategoryId = recurringPayment.SubCategoryId,
-                            Account = recurringPayment.Account,
-                            MainCategory = recurringPayment.MainCategory,
-                            SubCategory = recurringPayment.SubCategory
-                        });
-                    }
+            // foreach (var recurringPayment in recPayments)
+            // {
+            //     var calculatedPayments = new List<Payment>();
+            //     var frequency = recurringPayment.RecFrequency;
+            //     var interval = recurringPayment.RecInterval;
+            //     DateTime startDate = (DateTime)recurringPayment.StartDate;
+            //     DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
+            //     DateTime date = startDate;
+            //     while (date <= toDate)
+            //     {
+            //         if (date >= endDate) break;
+            //         if (date >= fromDate)
+            //         {
+            //             calculatedPayments.Add(new Payment
+            //             {
+            //                 Name = recurringPayment.Name,
+            //                 Note = recurringPayment.Note,
+            //                 Type = recurringPayment.Type,
+            //                 Amount = recurringPayment.Amount,
+            //                 Date = date,
+            //                 AccountId = recurringPayment.AccountId,
+            //                 MainCategoryId = recurringPayment.MainCategoryId,
+            //                 SubCategoryId = recurringPayment.SubCategoryId,
+            //                 Account = recurringPayment.Account,
+            //                 MainCategory = recurringPayment.MainCategory,
+            //                 SubCategory = recurringPayment.SubCategory
+            //             });
+            //         }
 
-                    // increase date correctly
-                    switch (frequency)
-                    {
-                        case RecurringPayment.Frequency.Daily:
-                            date = date.AddDays((double)interval);
-                            break;
+            //         // increase date correctly
+            //         switch (frequency)
+            //         {
+            //             case RecurringPayment.Frequency.Daily:
+            //                 date = date.AddDays((double)interval);
+            //                 break;
 
-                        case RecurringPayment.Frequency.Weekly:
-                            date = date.AddDays((double)(interval * 7));
-                            break;
+            //             case RecurringPayment.Frequency.Weekly:
+            //                 date = date.AddDays((double)(interval * 7));
+            //                 break;
 
-                        case RecurringPayment.Frequency.Monthly:
-                            date = date.AddMonths((int)interval);
-                            break;
+            //             case RecurringPayment.Frequency.Monthly:
+            //                 date = date.AddMonths((int)interval);
+            //                 break;
 
-                        case RecurringPayment.Frequency.Yearly:
-                            date = date.AddYears((int)interval);
-                            break;
-                    }
-                }
+            //             case RecurringPayment.Frequency.Yearly:
+            //                 date = date.AddYears((int)interval);
+            //                 break;
+            //         }
+            //     }
 
-                // Add to main payments list
-                payments.AddRange(calculatedPayments);
-            }
+            //     // Add to main payments list
+            //     payments.AddRange(calculatedPayments);
+            // }
 
-            payments = payments
-                .OrderByDescending(p => p.Date)
-                .ToList();
+            // payments = payments
+            //     .OrderByDescending(p => p.Date)
+            //     .ToList();
 
             //ACCOUNTS
             var accountGroups = payments

@@ -20,6 +20,7 @@ namespace Centek.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(int? accountId, int? mainCategoryId, int? subCategoryId, bool? type, DateTime? fromDate, DateTime? toDate)
         {
             var defaultFrom = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
@@ -176,9 +177,9 @@ namespace Centek.Controllers
             ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
 
 
-            ViewData["SelectedAccountId"] = accountIds;
-            ViewData["SelectedMainCategoryId"] = mainCategoryIds;
-            ViewData["SelectedSubCategoryId"] = subCategoryIds;
+            ViewData["SelectedAccountId"] = accountId;
+            ViewData["SelectedMainCategoryId"] = mainCategoryId;
+            ViewData["SelectedSubCategoryId"] = subCategoryId;
             ViewData["SelectedType"] = type;
             ViewData["FromDate"] = fromDate?.ToString("yyyy-MM-dd");
             ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");

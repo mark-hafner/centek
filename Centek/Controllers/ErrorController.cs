@@ -5,6 +5,7 @@ namespace Centek.Controllers
     public class ErrorController : Controller
     {
         [Route("Error/{statusCode}")]
+        [HttpGet]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
             switch (statusCode)
@@ -22,6 +23,7 @@ namespace Centek.Controllers
         }
 
         [Route("Error/500")]
+        [HttpGet]
         public IActionResult ServerError()
         {
             Response.StatusCode = 500;

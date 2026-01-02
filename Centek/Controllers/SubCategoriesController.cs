@@ -19,6 +19,7 @@ namespace Centek.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
         public async Task<SubCategory> GetSubcategories(int? id)
         {
             var user = await _userManager.GetUserAsync(User); // current user
@@ -39,12 +40,14 @@ namespace Centek.Controllers
         }
 
         // GET: SubCategories
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _context.SubCategories.ToListAsync());
         }
 
         // GET: SubCategories/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -75,6 +78,7 @@ namespace Centek.Controllers
         }
 
         // GET: SubCategories/Create
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             //populate main category dropdown
@@ -99,6 +103,7 @@ namespace Centek.Controllers
         }
 
         // GET: SubCategories/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -155,6 +160,7 @@ namespace Centek.Controllers
         }
 
         // GET: SubCategories/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -16,6 +16,7 @@ namespace Centek.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
+        [HttpGet]
         public IActionResult Welcome()
         {
             if (_signInManager.IsSignedIn(User))
@@ -25,16 +26,19 @@ namespace Centek.Controllers
             return View();
         }
         [Authorize]
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [HttpGet]
         public IActionResult Error()
         {
             return View(

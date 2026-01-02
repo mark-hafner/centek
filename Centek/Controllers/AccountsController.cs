@@ -25,6 +25,7 @@ namespace Centek.Controllers
         }
 
         // GET: Accounts
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             // get user specific accounts
@@ -37,6 +38,7 @@ namespace Centek.Controllers
         }
 
         // GET: Accounts/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,6 +60,7 @@ namespace Centek.Controllers
         }
 
         // GET: Accounts/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -98,6 +101,7 @@ namespace Centek.Controllers
         }
 
         // GET: Accounts/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -161,6 +165,7 @@ namespace Centek.Controllers
         }
 
         // GET: Accounts/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -17,6 +17,8 @@ namespace Centek.Controllers
         private readonly SubCategoryDelete _subCategoryDelete = subCategoryDelete;
 
         // GET: MainCategories
+        [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             // get user specific categories
@@ -44,6 +46,7 @@ namespace Centek.Controllers
         }
 
         // GET: MainCategories/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -64,6 +67,7 @@ namespace Centek.Controllers
         }
 
         // GET: MainCategories/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -90,6 +94,7 @@ namespace Centek.Controllers
         }
 
         // GET: MainCategories/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -151,6 +156,7 @@ namespace Centek.Controllers
         }
 
         // GET: MainCategories/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

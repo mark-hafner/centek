@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Centek.Filters;
 
 namespace Centek.Controllers_Api
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/mainCategories")]
     [ApiController]
+    [ApiKeyAuth]
     public class MainCategoriesApiController : ControllerBase
     {
         private readonly CentekContext _context;

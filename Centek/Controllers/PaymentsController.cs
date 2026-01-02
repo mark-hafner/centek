@@ -18,6 +18,7 @@ namespace Centek.Controllers
         private readonly UserManager<User> _userManager = userManager;
 
         // GET: Payments
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -43,6 +44,7 @@ namespace Centek.Controllers
         }
 
         // GET: Payments/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -111,6 +113,7 @@ namespace Centek.Controllers
         }
 
         // GET: Payments/Create
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             await PopulateViewBag();
@@ -140,6 +143,7 @@ namespace Centek.Controllers
         }
 
         // GET: Payments/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -198,6 +202,7 @@ namespace Centek.Controllers
         }
 
         // GET: Payments/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
