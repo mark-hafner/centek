@@ -1,5 +1,5 @@
 import Button from "@/components/button";
-import loginToApp from "@/services/loginChecker";
+import loginToApp from "@/services/loginHandler";
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
