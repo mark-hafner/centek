@@ -1,15 +1,27 @@
-import Button from "@/components/button";
+import { Button } from "@/components/allComponents";
+import { styles } from '@/components/styles';
 import loginToApp from "@/services/loginHandler";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from "expo-router";
 import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 
-const TextInputExample = () => {
+const LoginPage = () => {
+    const router = useRouter();
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
-    const handleLogin = () => {
-        loginToApp(email, password);
+
+    const handleLogin = async () => {
+        const user = await loginToApp(email, password);
+
+        if (user) {
+            await AsyncStorage.setItem("user", JSON.stringify(user));
+            router.replace("/");
+        } else {
+            alert("USER DOESNT EXIST");
+        }
     };
 
     return (
@@ -26,6 +38,7 @@ const TextInputExample = () => {
                     style={styles.input}
                     onChangeText={setPassword}
                     value={password}
+                    secureTextEntry={true}
                     placeholder="password"
                     keyboardType="default"
                 />
@@ -37,20 +50,5 @@ const TextInputExample = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    input: {
-        height: 50,
-        margin: 10,
-        borderColor: '#000',
-        borderWidth: 2,
-        marginBottom: 12,
-        paddingHorizontal: 20,
-        borderRadius: 12,
-    },
-    footerContainer: {
-        flex: 1 / 3,
-        alignItems: 'center',
-    },
-});
 
-export default TextInputExample;
+export default LoginPage;
