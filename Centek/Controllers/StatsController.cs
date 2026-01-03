@@ -21,7 +21,14 @@ namespace Centek.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int? accountId, int? mainCategoryId, int? subCategoryId, bool? type, DateTime? fromDate, DateTime? toDate)
+        public async Task<IActionResult> Index(
+            List<int?>? accountIds,
+            List<int?>? mainCategoryIds,
+            List<int?>? subCategoryIds,
+            bool? type,
+            DateTime? fromDate,
+            DateTime? toDate
+        )
         {
             var defaultFrom = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             var defaultTo = DateTime.Today;
@@ -49,22 +56,22 @@ namespace Centek.Controllers
                 .AsQueryable();
 
             // Filters
-            if (accountId.HasValue)
+            if (accountIds.Any())
             {
-                paymentsQuery = paymentsQuery.Where(p => p.AccountId == accountId);
-                recPaymentsQuery = recPaymentsQuery.Where(p => p.AccountId == accountId);
+                paymentsQuery = paymentsQuery.Where(p => accountIds.Contains(p.AccountId));
+                recPaymentsQuery = recPaymentsQuery.Where(p => accountIds.Contains(p.AccountId));
             }
 
-            if (mainCategoryId.HasValue)
+            if (mainCategoryIds.Any())
             {
-                paymentsQuery = paymentsQuery.Where(p => p.MainCategoryId == mainCategoryId);
-                recPaymentsQuery = recPaymentsQuery.Where(p => p.MainCategoryId == mainCategoryId);
+                paymentsQuery = paymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
+                recPaymentsQuery = recPaymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
             }
 
-            if (subCategoryId.HasValue)
+            if (subCategoryIds.Any())
             {
-                paymentsQuery = paymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
-                recPaymentsQuery = recPaymentsQuery.Where(p => p.SubCategoryId == subCategoryId);
+                paymentsQuery = paymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
+                recPaymentsQuery = recPaymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
             }
 
             if (type.HasValue)
@@ -177,9 +184,9 @@ namespace Centek.Controllers
             ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
 
 
-            ViewData["SelectedAccountId"] = accountId;
-            ViewData["SelectedMainCategoryId"] = mainCategoryId;
-            ViewData["SelectedSubCategoryId"] = subCategoryId;
+            ViewData["SelectedAccountIds"] = accountIds;
+            ViewData["SelectedMainCategoryIds"] = mainCategoryIds;
+            ViewData["SelectedSubCategoryIds"] = subCategoryIds;
             ViewData["SelectedType"] = type;
             ViewData["FromDate"] = fromDate?.ToString("yyyy-MM-dd");
             ViewData["ToDate"] = toDate?.ToString("yyyy-MM-dd");
