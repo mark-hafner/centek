@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
 using Centek.Filters;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Centek.Controllers_Api
 {
@@ -17,10 +19,12 @@ namespace Centek.Controllers_Api
     public class UsersApiController : ControllerBase
     {
         private readonly CentekContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UsersApiController(CentekContext context)
+        public UsersApiController(CentekContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/UsersApi
@@ -74,6 +78,36 @@ namespace Centek.Controllers_Api
 
             return NoContent();
         }
+
+        // POST: api/UsersApi
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> LoginUser([FromBody] LoginRequest request)
+        
+
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+                return BadRequest(new { message = "Missing credentials" });
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+                return NotFound(new { message = "User not found" });
+
+            bool valid = await _userManager.CheckPasswordAsync(user, request.Password);
+
+            if (!valid)
+                return Unauthorized("Invalid password");
+
+            return Ok(
+                new
+                {
+                    user.Id,
+                    user.UserName,
+                    surname = user.Surname,
+                }
+            );
+        }
+
 
         // POST: api/UsersApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
