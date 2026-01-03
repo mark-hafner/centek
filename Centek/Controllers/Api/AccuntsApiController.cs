@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
 using Centek.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Centek.Controllers_Apigi
 {
@@ -27,7 +23,10 @@ namespace Centek.Controllers_Apigi
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
         {
-            return await _context.Accounts.ToListAsync();
+            var userId = HttpContext.Request.Headers["UserId"].ToString();
+
+            var userAccount = await _context.Accounts.Where(a => a.UserId == userId).ToListAsync();
+            return userAccount;
         }
 
         // GET: api/AccuntsApi/5

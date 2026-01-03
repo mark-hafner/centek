@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
 using Centek.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Centek.Controllers_Api
 {
@@ -27,6 +23,8 @@ namespace Centek.Controllers_Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubCategory>>> GetSubCategories()
         {
+            var userId = HttpContext.Request.Headers["UserId"].ToString();
+            // var subCategory = await _context.SubCategories.FindAsync();
             return await _context.SubCategories.ToListAsync();
         }
 

@@ -82,16 +82,16 @@ namespace Centek.Controllers_Api
         // POST: api/UsersApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("login")]
-        public async Task<ActionResult<User>> LoginUser([FromBody] LoginRequest request)
-        
+        public async Task<ActionResult> LoginUser([FromBody] LoginRequest request)
+        {
 
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                return BadRequest(new { message = "Missing credentials" });
+                return BadRequest(new { statusText = "Missing credentials" });
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
-                return NotFound(new { message = "User not found" });
+                return NotFound(new { statusText = "User not found" });
 
             bool valid = await _userManager.CheckPasswordAsync(user, request.Password);
 
@@ -102,8 +102,8 @@ namespace Centek.Controllers_Api
                 new
                 {
                     user.Id,
-                    user.UserName,
-                    surname = user.Surname,
+                    user.Name,
+                    user.Surname,
                 }
             );
         }
