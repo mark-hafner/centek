@@ -5,9 +5,10 @@
     var accounts = ViewData["Accounts"] as List<Centek.Models.Account>;
     var mainCategories = ViewData["MainCategories"] as List<Centek.Models.MainCategory>;
     var subCategories = ViewData["SubCategories"] as List<Centek.Models.SubCategory>;
-    var selectedAccountId = ViewData["SelectedAccountId"]?.ToString();
-    var selectedMainCategoryId = ViewData["SelectedMainCategoryId"]?.ToString();
-    var selectedSubCategoryId = ViewData["SelectedSubCategoryId"]?.ToString();
+
+    var selectedAccountIds = ViewData["SelectedAccountIds"] as List<int?> ?? new List<int?>();
+    var selectedMainCategoryIds = ViewData["SelectedMainCategoryIds"] as List<int?> ?? new List<int?>();
+    var selectedSubCategoryIds = ViewData["SelectedSubCategoryIds"] as List<int?> ?? new List<int?>();
     var selectedType = ViewData["SelectedType"]?.ToString();
     var fromDate = ViewData["FromDate"] as string;
     var toDate = ViewData["ToDate"] as string;
@@ -27,11 +28,10 @@
     <div class="row g-3 align-items-end">
         <div class="col-md-2">
             <label class="form-label">Account</label>
-            <select name="accountId" class="form-control">
-                <option value="">All Accounts</option>
+            <select name="accountIds" class="form-control" multiple size="1">
                 @foreach (var acc in accounts)
                 {
-                    if (selectedAccountId == acc.ID.ToString())
+                    if (selectedAccountIds.Contains(acc.ID))
                     {
                         <option value="@acc.ID" selected>@acc.Name</option>
                     }
@@ -45,13 +45,12 @@
 
         <div class="col-md-2">
             <label class="form-label">Main Category</label>
-            <select name="mainCategoryId" class="form-control">
-                <option value="">All Main Categories</option>
+            <select name="mainCategoryIds" class="form-control" multiple size="1">
                 @foreach (var cat in mainCategories)
                 {
-                    if (selectedMainCategoryId == cat.ID.ToString())
+                    if (selectedMainCategoryIds.Contains(cat.ID))
                     {
-                        <option value="@cat.ID" selected>@cat.Name</option>
+                        <option value="@cat.ID" selected="selected">@cat.Name</option>
                     }
                     else
                     {
@@ -63,13 +62,12 @@
 
         <div class="col-md-2">
             <label class="form-label">Sub Category</label>
-            <select name="subCategoryId" class="form-control">
-                <option value="">All Sub Categories</option>
+            <select name="subCategoryIds" class="form-control" multiple size="1">
                 @foreach (var sub in subCategories)
                 {
-                    if (selectedSubCategoryId == sub.ID.ToString())
+                    if (selectedSubCategoryIds.Contains(sub.ID))
                     {
-                        <option value="@sub.ID" selected>@sub.Name</option>
+                        <option value="@sub.ID" selected="selected">@sub.Name</option>
                     }
                     else
                     {
