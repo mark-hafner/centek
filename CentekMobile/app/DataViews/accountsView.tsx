@@ -1,4 +1,4 @@
-import { Loader } from '@/components/allComponents';
+import { LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useAccounts } from '@/hooks/allHooks';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,25 +10,24 @@ import { ScrollView, Text, View } from 'react-native';
 export default function AccountsView() {
     const { accounts, loading } = useAccounts();
 
+
     return (
-        <LinearGradient {...gradientStyle} style={styles.background}>
-            <Stack.Screen
-                options={{
-                    title: 'Accounts Overview',
-                    headerShown: !loading,
-                }}
-            />
-            {loading ? (<Loader />) : (
+        <LoaderScreen loading={loading} title="Accounts Overview">
+            <LinearGradient
+                {...gradientStyle}
+                style={styles.background}
+            >
+                <Stack.Screen options={{ title: 'Accounts Overview' }} />
                 <View style={styles.container}>
                     <ScrollView style={styles.scroll}>
-                        {accounts.map(account => (
-                            <Text key={account.id} style={styles.text}>
+                        {accounts.map((account, index) => (
+                            <Text key={index} style={styles.text}>
                                 ID: {account.id}, NAME: {account.name}
                             </Text>
                         ))}
                     </ScrollView>
                 </View>
-            )}
-        </LinearGradient>
+            </LinearGradient>
+        </LoaderScreen>
     );
 }

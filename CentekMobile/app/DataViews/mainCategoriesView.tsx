@@ -1,8 +1,7 @@
-import { Loader } from '@/components/allComponents';
+import { LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useMainCategories } from '@/hooks/allHooks';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Stack } from 'expo-router';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -10,18 +9,13 @@ import { ScrollView, Text, View } from 'react-native';
 export default function MainCategoriesView() {
     const { mainCategories, loading } = useMainCategories();
 
-    if (loading) return <Loader />;
 
     return (
-        <LinearGradient
-            {...gradientStyle}
-            style={styles.background}
-        > <Stack.Screen
-                options={{
-                    title: 'Main Categories Overvie',
-                    headerShown: !loading,
-                }}
-            />{loading ? (<Loader />) : (
+        <LoaderScreen loading={loading} title="Accounts Overview">
+            <LinearGradient
+                {...gradientStyle}
+                style={styles.background}
+            >
                 <View style={styles.container}>
                     <ScrollView style={styles.scroll}>
                         {mainCategories.map((mainCategory, index) => (
@@ -31,8 +25,8 @@ export default function MainCategoriesView() {
                         ))}
                     </ScrollView>
                 </View>
-            )}
-        </LinearGradient>
+            </LinearGradient >
+        </LoaderScreen >
     );
 }
 

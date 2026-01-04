@@ -1,8 +1,7 @@
-import { Loader } from '@/components/allComponents';
+import { LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useSubCategories } from '@/hooks/allHooks';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Stack } from 'expo-router';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -10,20 +9,13 @@ import { ScrollView, Text, View } from 'react-native';
 export default function SubCategoriesView() {
     const { subCategories, loading } = useSubCategories();
 
-    if (loading) return <Loader />;
 
     return (
-        <LinearGradient
-            {...gradientStyle}
-            style={styles.background}
-        >
-            <Stack.Screen
-                options={{
-                    title: 'Sub Categories Overview',
-                    headerShown: !loading,
-                }}
-            />
-            {loading ? (<Loader />) : (
+        <LoaderScreen loading={loading} title="Accounts Overview">
+            <LinearGradient
+                {...gradientStyle}
+                style={styles.background}
+            >
                 <View style={styles.container}>
                     <ScrollView style={styles.scroll}>
                         {subCategories.map((subCategory, index) => (
@@ -33,7 +25,7 @@ export default function SubCategoriesView() {
                         ))}
                     </ScrollView>
                 </View>
-            )}
-        </LinearGradient>
+            </LinearGradient >
+        </LoaderScreen >
     );
 }
