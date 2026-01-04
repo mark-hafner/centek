@@ -1,5 +1,5 @@
 import { Button, Loader } from '@/components/allComponents';
-import { styles } from '@/components/styles';
+import { gradientStyle, styles } from '@/components/styles';
 import { getUserId, getUserName, getUserSurname } from '@/services/userData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -28,28 +28,22 @@ export default function Index() {
 
   return (
     <LinearGradient
-      colors={['#ffd139', '#ff9100', '#ffd139']}
-      start={[0, 0]}
-      end={[1, 1]}
+      {...gradientStyle}
       style={styles.background}
     >
       <View style={styles.container}>
         <Button label="DEBUG: Clear Async Storage" onPress={async () => { await AsyncStorage.clear(); router.replace("/login") }} />
-        <Text style={styles.text}>Test</Text>
+        <Text style={styles.text}>VIEW YOUR DATA</Text>
         <Button label="Prikaži Accounts" onPress={() => router.push("/DataViews/accountsView")} />
         <Button label="Prikaži Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
         <Button label="Prikaži Main Categories" onPress={() => router.push("/DataViews/mainCategoriesView")} />
         {userId && (
           <Text style={styles.text}>
-            Your User ID: {userId}
+            Your UserID: {userId}
           </Text>
-        )}{userName && (
+        )}{userName && userSurname && (
           <Text style={styles.text}>
-            Your User Name: {userName}
-          </Text>
-        )}{userSurname && (
-          <Text style={styles.text}>
-            Your User Surname: {userSurname}
+            Your Name: {userName} {userSurname}
           </Text>
         )}
       </View>

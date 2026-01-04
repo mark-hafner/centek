@@ -1,7 +1,8 @@
 import { Button } from "@/components/allComponents";
-import { styles } from '@/components/styles';
+import { gradientStyle, styles } from '@/components/styles';
 import loginToApp from "@/services/loginHandler";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from 'react';
 import { TextInput, View } from 'react-native';
@@ -24,7 +25,10 @@ const LoginPage = () => {
         }
     };
 
-    return (
+    return (<LinearGradient
+        {...gradientStyle}
+        style={styles.background}
+    >
         <SafeAreaProvider>
             <SafeAreaView>
                 <TextInput
@@ -47,6 +51,7 @@ const LoginPage = () => {
                 </View>
             </SafeAreaView>
         </SafeAreaProvider>
+    </LinearGradient>
     );
 };
 

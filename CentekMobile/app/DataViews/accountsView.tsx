@@ -1,24 +1,32 @@
 import { Loader } from '@/components/allComponents';
-import { styles } from '@/components/styles';
+import { gradientStyle, styles } from '@/components/styles';
 import { useAccounts } from '@/hooks/allHooks';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Stack } from 'expo-router';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 
-export default function accountsView() {
+export default function AccountsView() {
     const { accounts, loading } = useAccounts();
 
     if (loading) return <Loader />;
 
     return (
-        <View style={styles.container}>
-            <ScrollView style={styles.scroll}>
-                {accounts.map((account, index) => (
-                    <Text key={index} style={styles.text}>
-                        ID: {account.id}, NAME: {account.name}
-                    </Text>
-                ))}
-            </ScrollView>
-        </View>
+        <LinearGradient
+            {...gradientStyle}
+            style={styles.background}
+        >
+            <Stack.Screen options={{ title: 'Accounts Overview' }} />
+            <View style={styles.container}>
+                <ScrollView style={styles.scroll}>
+                    {accounts.map((account, index) => (
+                        <Text key={index} style={styles.text}>
+                            ID: {account.id}, NAME: {account.name}
+                        </Text>
+                    ))}
+                </ScrollView>
+            </View>
+        </LinearGradient>
     );
 }

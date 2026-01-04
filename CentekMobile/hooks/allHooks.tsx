@@ -1,80 +1,22 @@
-import { apiRequest } from '@/services/sentApiRequests';
-import { useEffect, useState } from 'react';
-
-// INTERFACES
-interface MainDataInterface {
-    id: number;
-    name: string;
-}
-export interface Overview extends MainDataInterface { }
-export interface Account extends MainDataInterface { }
-export interface MainCategory extends MainDataInterface { }
-export interface SubCategory extends MainCategory {
-    mainCategoryId: string;
-}
-
-
+import { Account, MainCategory, Overview, SubCategory } from "./types";
+import useApi from './useApi';
 // FUNCTIONS
-export function useOverview() {
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [loading, setLoading] = useState(true);
+export const useOverview = () => {
+    const { data, loading, error } = useApi<Overview>('overview');
+    return { accounts: data, loading, error };
+};
 
-    useEffect(() => {
-        (async () => {
-            const data = await apiRequest('overview');
-            setAccounts(data);
-            setLoading(false);
-        })();
-    }, []);
+export const useAccounts = () => {
+    const { data, loading, error } = useApi<Account>('accounts');
+    return { accounts: data, loading, error };
+};
 
-    return { accounts, loading };
-}
+export const useMainCategories = () => {
+    const { data, loading, error } = useApi<MainCategory>('mainCategories');
+    return { mainCategories: data, loading, error };
+};
 
-
-export function useAccounts() {
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        (async () => {
-            const data = await apiRequest('accounts');
-            setAccounts(data);
-            setLoading(false);
-        })();
-    }, []);
-
-    return { accounts, loading };
-}
-
-
-export function useSubCategories() {
-    const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-    const [loading, setLoading] = useState(true);
-
-
-    useEffect(() => {
-        (async () => {
-            const data = await apiRequest('subCategories');
-            setSubCategories(data);
-            setLoading(false);
-        })();
-    }, []);
-
-    return { subCategories, loading };
-}
-
-
-export function useMainCategories() {
-    const [mainCategories, setMainCategories] = useState<MainCategory[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        (async () => {
-            const data = await apiRequest('mainCategories');
-            setMainCategories(data);
-            setLoading(false);
-        })();
-    }, []);
-
-    return { mainCategories, loading };
-}
+export const useSubCategories = () => {
+    const { data, loading, error } = useApi<SubCategory>('subCategories');
+    return { subCategories: data, loading, error };
+};
