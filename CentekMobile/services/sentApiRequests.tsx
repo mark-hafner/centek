@@ -1,15 +1,25 @@
 import { getUserId } from "./userData";
 
 
-export const fetchRequest = async (item: string): Promise<any[]> => {
+export const apiRequest = async (item: string, method: string = "GET", body?: any): Promise<any[]> => {
     try {
         const userId = await getUserId();
-        const response = await fetch(`http://localhost:5087/api/v1/${item}`, {
+        const options: RequestInit = {
+            method,
             headers: {
                 ApiKey: "VsakCentStejeSecretKey",
-                userId: userId,
-            }
-        });
+                userId,
+                "Content-Type": "application/json",
+            },
+        };
+        if (body && method !== "GET") {
+            options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);
+
+        if (response.status !== 200) return [];
+
         const data = await response.json();
         return data;
     } catch (error) {

@@ -1,6 +1,6 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { styles } from '@/components/styles';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Pressable, Text, View } from 'react-native';
 
 //! BUTTON
 type Props = {
@@ -24,10 +24,10 @@ export function Button({ label, onPress }: Props) {
 export function Loader() {
     return (
         <LinearGradient
-            colors={['#ffd139', '#ff9100', '#ffd139']} // tvoj gradient
+            colors={['#ffd139', '#ff9100', '#ffd139']}
             start={[0, 0]}
             end={[1, 1]}
-            style={styles.background} // zajame cel screen
+            style={styles.background}
         >
             <View style={styles.container}>
                 <Text style={styles.text}>Loading...</Text>

@@ -1,3 +1,4 @@
+import { apiRequest } from "./sentApiRequests";
 
 export default async function loginToApp(email: string, password: string) {
     if (!email || !password) {
@@ -6,25 +7,15 @@ export default async function loginToApp(email: string, password: string) {
     }
 
     try {
-        const response = await fetch("http://localhost:5087/api/v1/users/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "ApiKey": "VsakCentStejeSecretKey"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-            }),
-        });
-        const data = await response.json();
-        if (response.status !== 200) {
+        const data = await apiRequest('users/login', 'POST', { email, password });
+
+        if (!data || data.length === 0) {
             return null;
         }
-        return data;
 
+        return data;
     } catch (error) {
-        console.error('REST error:', error);
+        console.error('Login error:', error);
         return null;
     }
 }

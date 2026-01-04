@@ -5,8 +5,8 @@ import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 
-export default function accountsView() {
-    const { accounts, loading } = useAccounts();
+export default function overviewView() {
+    const { accounts, loading } = useOverview();
 
     if (loading) return <Loader />;
 
