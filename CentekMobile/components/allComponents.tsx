@@ -1,6 +1,7 @@
-import { styles } from '@/components/styles';
+import { gradientStyle, styles } from '@/components/styles';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Pressable, Text, View } from 'react-native';
+import { Stack } from 'expo-router';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 //! BUTTON
 type Props = {
@@ -23,17 +24,13 @@ export function Button({ label, onPress }: Props) {
 //! LOADER
 export function Loader() {
     return (
-        <LinearGradient
-            colors={['#ffd139', '#ff9100', '#ffd139']}
-            start={[0, 0]}
-            end={[1, 1]}
-            style={styles.background}
-        >
-            <View style={styles.container}>
-                <Text style={styles.text}>Loading...</Text>
+        <LinearGradient {...gradientStyle} style={styles.background}>
+            <Stack.Screen options={{ headerShown: false }} />
+            <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#fff" />
+                <Text style={styles.loaderText}>Loading...</Text>
             </View>
         </LinearGradient>
     );
-
 }
 

@@ -16,17 +16,22 @@ export default function MainCategoriesView() {
         <LinearGradient
             {...gradientStyle}
             style={styles.background}
-        >
-            <Stack.Screen options={{ title: 'Main Categories Overview' }} />
-            <View style={styles.container}>
-                <ScrollView style={styles.scroll}>
-                    {mainCategories.map((mainCategory, index) => (
-                        <Text key={index} style={styles.text}>
-                            ID: {mainCategory.id}, NAME: {mainCategory.name}
-                        </Text>
-                    ))}
-                </ScrollView>
-            </View>
+        > <Stack.Screen
+                options={{
+                    title: 'Main Categories Overvie',
+                    headerShown: !loading,
+                }}
+            />{loading ? (<Loader />) : (
+                <View style={styles.container}>
+                    <ScrollView style={styles.scroll}>
+                        {mainCategories.map((mainCategory, index) => (
+                            <Text key={index} style={styles.text}>
+                                ID: {mainCategory.id}, NAME: {mainCategory.name}
+                            </Text>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
         </LinearGradient>
     );
 }

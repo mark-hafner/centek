@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
 import { LinearGradientProps } from 'expo-linear-gradient';
+import { StyleSheet } from 'react-native';
 
 export const gradientStyle: LinearGradientProps = {
     colors: ['#ffd139', '#ff9100', '#ffd139'] as const,
@@ -71,5 +71,14 @@ export const styles = StyleSheet.create({
     loaderText: {
         color: '#fff',
         fontSize: 18,
+        marginTop: 12,
+    },
+
+    // loader containe
+    loaderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 0,
     },
 });

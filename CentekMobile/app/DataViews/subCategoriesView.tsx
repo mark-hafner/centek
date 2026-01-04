@@ -17,17 +17,23 @@ export default function SubCategoriesView() {
             {...gradientStyle}
             style={styles.background}
         >
-            <Stack.Screen options={{ title: 'Sub Categories Overview' }} />
-            <View style={styles.container}>
-                <ScrollView style={styles.scroll}>
-                    {subCategories.map((subCategory, index) => (
-                        <Text key={index} style={styles.text}>
-                            ID: {subCategory.id}, NAME: {subCategory.name}, MAIN CATEGORY ID: {subCategory.mainCategoryId}
-                        </Text>
-                    ))}
-                </ScrollView>
-            </View>
+            <Stack.Screen
+                options={{
+                    title: 'Sub Categories Overview',
+                    headerShown: !loading,
+                }}
+            />
+            {loading ? (<Loader />) : (
+                <View style={styles.container}>
+                    <ScrollView style={styles.scroll}>
+                        {subCategories.map((subCategory, index) => (
+                            <Text key={index} style={styles.text}>
+                                ID: {subCategory.id}, NAME: {subCategory.name}, MAIN CATEGORY ID: {subCategory.mainCategoryId}
+                            </Text>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
         </LinearGradient>
     );
 }
-
