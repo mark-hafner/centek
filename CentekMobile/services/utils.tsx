@@ -8,7 +8,7 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
             method,
             headers: {
                 ApiKey: "VsakCentStejeSecretKey",
-                userId,
+                "userId": userId,
                 "Content-Type": "application/json",
             },
         };
@@ -27,3 +27,23 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
         return [];
     }
 };
+
+export function FetchQueryBuilder(params: Record<string, any>) {
+    const query = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value === null || value === undefined) return;
+
+        if (Array.isArray(value)) {
+            value.forEach(v => {
+                if (v !== null && v !== undefined) {
+                    query.append(key, String(v));
+                }
+            });
+        } else {
+            query.append(key, String(value));
+        }
+    });
+
+    return query.toString();
+}

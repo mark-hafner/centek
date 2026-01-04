@@ -1,4 +1,5 @@
-import { Account, MainCategory, Overview, SubCategory } from "./types";
+import { FetchQueryBuilder } from "@/services/utils";
+import { Account, MainCategory, Overview, Stats, SubCategory } from "./types";
 import useApi from './useApi';
 // FUNCTIONS
 export const useOverview = () => {
@@ -20,3 +21,25 @@ export const useSubCategories = () => {
     const { data, loading, error } = useApi<SubCategory>('subCategories');
     return { subCategories: data, loading, error };
 };
+
+export const useStats = (
+    accountIds?: String,
+    mainCategoryIds?: String,
+    subCategoryIds?: String,
+    type?: String,
+    fromDate?: String,
+    toDate?: String,
+    userId?: String,
+) => {
+    const query = FetchQueryBuilder({
+        accountIds: accountIds,
+        mainCategoryIds: mainCategoryIds,
+        subCategoryIds: subCategoryIds,
+        type: type,
+        fromDate: fromDate,
+        toDate: toDate,
+        userId: userId,
+    });
+    const { data, loading, error } = useApi<Stats>(`stats/${query}`);
+    return { stats: data, loading, error };
+}

@@ -22,7 +22,7 @@ export default function AccountsView() {
                     <ScrollView style={styles.scroll}>
                         {accounts.map((account, index) => (
                             <Text key={index} style={styles.text}>
-                                ID: {account.id}, NAME: {account.name}
+                                ID: {account.id.toString()}, NAME: {account.name}
                             </Text>
                         ))}
                     </ScrollView>

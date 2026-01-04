@@ -20,7 +20,7 @@ export default function OverviewView() {
                     <ScrollView style={styles.scroll}>
                         {overview.map((o, index) => (
                             <Text key={index} style={styles.text}>
-                                ID: {o.id}, NAME: {o.name}
+                                ID: {o.id.toString()}, NAME: {o.name}
                             </Text>
                         ))}
                     </ScrollView>

@@ -1,4 +1,4 @@
-import { apiRequest } from '@/services/sentApiRequests';
+import { apiRequest } from '@/services/utils';
 import { useEffect, useState } from 'react';
 
 export default function useApi<T>(endpoint: string) {
@@ -9,7 +9,7 @@ export default function useApi<T>(endpoint: string) {
     useEffect(() => {
         (async () => {
             try {
-                const result = await apiRequest<T>(endpoint);
+                const result = await apiRequest(endpoint);
                 setData(result);
             } catch (err: any) {
                 setError(err.message);

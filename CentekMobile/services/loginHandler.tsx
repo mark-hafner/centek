@@ -1,4 +1,4 @@
-import { apiRequest } from "./sentApiRequests";
+import { apiRequest } from "./utils";
 
 export default async function loginToApp(email: string, password: string) {
     if (!email || !password) {

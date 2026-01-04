@@ -20,7 +20,7 @@ export default function MainCategoriesView() {
                     <ScrollView style={styles.scroll}>
                         {mainCategories.map((mainCategory, index) => (
                             <Text key={index} style={styles.text}>
-                                ID: {mainCategory.id}, NAME: {mainCategory.name}
+                                ID: {mainCategory.id.toString()}, NAME: {mainCategory.name}
                             </Text>
                         ))}
                     </ScrollView>

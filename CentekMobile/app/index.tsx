@@ -36,6 +36,7 @@ export default function Index() {
           <Button label="Prikaži Accounts" onPress={() => router.push("/DataViews/accountsView")} />
           <Button label="Prikaži Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
           <Button label="Prikaži Main Categories" onPress={() => router.push("/DataViews/mainCategoriesView")} />
+          <Button label="Prikaži Stats" onPress={() => router.push("/DataViews/statsView")} />
           {userId && (
             <Text style={styles.text}>
               Your UserID: {userId}

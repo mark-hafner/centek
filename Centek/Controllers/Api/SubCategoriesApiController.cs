@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Centek.Data;
-using Centek.Models;
 using Centek.Filters;
+using Centek.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace Centek.Controllers_Api
 {
@@ -24,8 +24,20 @@ namespace Centek.Controllers_Api
         public async Task<ActionResult<IEnumerable<SubCategory>>> GetSubCategories()
         {
             var userId = HttpContext.Request.Headers["UserId"].ToString();
-            // var subCategory = await _context.SubCategories.FindAsync();
-            return await _context.SubCategories.ToListAsync();
+            var mainCategoryIds = await _context
+                .MainCategories.Where(c => c.UserId == userId)
+                .Select(c => c.ID) // only IDs!
+                .ToListAsync();
+            if (mainCategoryIds.Count == 0)
+            {
+                return null;
+            }
+            // get all subcategories for these categories
+            // var subCategory = await _context.SubCategories.FirstOrDefaultAsync(s =>
+            //     s.ID == id && mainCategoryIds.Contains(s.MainCategoryId)
+            // );
+            var subCategory = await _context.SubCategories.ToListAsync();
+            return subCategory;
         }
 
         // GET: api/SubCategoriesApi/5

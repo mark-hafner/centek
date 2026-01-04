@@ -20,7 +20,7 @@ export default function SubCategoriesView() {
                     <ScrollView style={styles.scroll}>
                         {subCategories.map((subCategory, index) => (
                             <Text key={index} style={styles.text}>
-                                ID: {subCategory.id}, NAME: {subCategory.name}, MAIN CATEGORY ID: {subCategory.mainCategoryId}
+                                ID: {subCategory.id.toString()}, NAME: {subCategory.name}, MAIN CATEGORY ID: {subCategory.mainCategoryId}
                             </Text>
                         ))}
                     </ScrollView>
