@@ -1,8 +1,10 @@
 import { gradientStyle, styles } from '@/components/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 //! BUTTON
 type Props = {
@@ -20,6 +22,70 @@ export function Button({ label, onPress }: Props) {
         </View>
     );
 }
+
+
+//! MULTIPLE SELECT DROPDOWN
+type MultiSelectItem = {
+    label: string;
+    value: number | boolean | undefined;
+};
+
+type MultiSelectProps = {
+    data: MultiSelectItem[];
+    selecting: string;
+    value: number[];
+    onChange: (values: number[]) => void;
+};
+
+export const MultiSelectComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
+
+    return (
+        <View style={styles.container}>
+            <MultiSelect
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                search
+                data={data}
+                labelField="label"
+                valueField="value"
+                placeholder={"Select " + selecting}
+                searchPlaceholder="Search..."
+                value={value}
+                onChange={(items: number[]) => {
+                    onChange(items);
+                }}
+                selectedStyle={styles.selectedStyle}
+            />
+        </View>
+    );
+};
+
+export const DropdownComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
+
+    return (
+        <Dropdown
+            style={styles.dropdown}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={data}
+            search
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={"Select " + selecting}
+            searchPlaceholder="Search..."
+            value={value}
+            onChange={item => {
+                onChange(item.value);
+            }}
+        />
+    );
+};
 
 
 //! LOADER

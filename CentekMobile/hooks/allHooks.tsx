@@ -23,10 +23,10 @@ export const useSubCategories = () => {
 };
 
 export const useStats = (
-    accountIds?: String,
-    mainCategoryIds?: String,
-    subCategoryIds?: String,
-    type?: String,
+    accountIds?: any[],
+    mainCategoryIds?: any[],
+    subCategoryIds?: any[],
+    type?: boolean,
     fromDate?: String,
     toDate?: String,
     userId?: String,
@@ -40,6 +40,6 @@ export const useStats = (
         toDate: toDate,
         userId: userId,
     });
-    const { data, loading, error } = useApi<Stats>(`stats/${query}`);
+    const { data, loading, error } = useApi<Stats>(`stats?${query}`);
     return { stats: data, loading, error };
 }

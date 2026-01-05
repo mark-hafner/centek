@@ -1,25 +1,27 @@
 // INTERFACES
 interface MainDataInterface {
-    id: Number
-    name: String
+    id: number
+    name: string
 }
 export interface Overview extends MainDataInterface { }
 export interface Account extends MainDataInterface { }
 export interface MainCategory extends MainDataInterface { }
 export interface SubCategory extends MainCategory {
-    mainCategoryId: String
+    mainCategoryId: string
 }
 export interface Payment extends MainDataInterface {
-    note: String
+    note: string
     type: Boolean
-    amount: Number
+    amount: number
     date: Date
-    accountId: Number
-    MainCategoryId: Number
-    SubCategoryId: Number
+    account: Account
+    MainCategory: MainCategory
+    SubCategory: SubCategory
 }
 export interface Stats {
-    total: Number
-    // payments: Payment[],
-
+    total: number
+    payments: Payment[]
+    accounts: Account[]
+    mainCategories: MainCategory[]
+    subCategories: SubCategory[]
 }
