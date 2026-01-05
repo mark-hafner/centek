@@ -56,6 +56,7 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
                     onChange(items);
                 }}
                 selectedStyle={styles.selectedStyle}
+                containerStyle={{justifyContent: 'center'}}
             />
         </View>
     );

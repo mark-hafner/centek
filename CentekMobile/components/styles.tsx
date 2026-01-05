@@ -17,7 +17,9 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
+    width: "100%"
   },
 
   text: {
@@ -72,7 +74,7 @@ export const styles = StyleSheet.create({
   // Dropdown
   dropdown: {
     height: 50,
-    width: "80%",
+    width: "70%",
     alignSelf: 'center',
     backgroundColor: '#fff',
     borderWidth: 1,
