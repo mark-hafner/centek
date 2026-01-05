@@ -1,9 +1,8 @@
-import { LoaderScreen, MultiSelectComponent, DropdownComponent } from '@/components/allComponents';
-import { gradientStyle, styles } from '@/components/styles';
+import { DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
+import { styles } from '@/components/styles';
 import { useStats } from '@/hooks/allHooks';
-import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
 export default function StatsView() {
   const [accountIds, setAccountIds] = useState<number[]>([]);

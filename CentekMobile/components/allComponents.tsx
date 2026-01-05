@@ -1,10 +1,9 @@
 import { gradientStyle, styles } from '@/components/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
-import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 //! BUTTON
 type Props = {
