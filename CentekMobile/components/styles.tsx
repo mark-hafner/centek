@@ -75,7 +75,7 @@ export const styles = StyleSheet.create({
     width: "80%",
     alignSelf: 'center',
     backgroundColor: '#fff',
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderRadius: 10
   },
   placeholderStyle: {

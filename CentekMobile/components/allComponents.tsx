@@ -32,8 +32,8 @@ type MultiSelectItem = {
 type MultiSelectProps = {
     data: MultiSelectItem[];
     selecting: string;
-    value: number[];
-    onChange: (values: number[]) => void;
+    value?: any[];
+    onChange: (values: any[] | any) => void;
 };
 
 export const MultiSelectComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
@@ -52,7 +52,7 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
                 placeholder={"Select " + selecting}
                 searchPlaceholder="Search..."
                 value={value}
-                onChange={(items: number[]) => {
+                onChange={items => {
                     onChange(items);
                 }}
                 selectedStyle={styles.selectedStyle}
