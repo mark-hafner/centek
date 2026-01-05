@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { getUserId } from "./userData";
 
-
+//! SEND API REQUEST
 export const apiRequest = async (item: string, method: string = "GET", body?: any): Promise<any[]> => {
     try {
         const userId = await getUserId();
@@ -28,6 +30,7 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
     }
 };
 
+//! QUERY BUILDER FOR API REQUESTS
 export function FetchQueryBuilder(params: Record<string, any>) {
     const query = new URLSearchParams();
 
@@ -47,3 +50,18 @@ export function FetchQueryBuilder(params: Record<string, any>) {
 
     return query.toString();
 }
+
+//! CHECKER IF USER LOGGED IN
+export function useLoggedIn() {
+    const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        (async () => {
+            const user = await AsyncStorage.getItem("user");
+            setLoggedIn(!!user);
+        })();
+    }, []);
+
+    return loggedIn;
+}
+
