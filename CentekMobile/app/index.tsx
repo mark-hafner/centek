@@ -1,14 +1,16 @@
 import { Button, LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { getUserId, getUserName, getUserSurname } from '@/services/userData';
+import { useLoggedIn } from '@/services/utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from "react-native";
 
 export default function Index() {
   const router = useRouter();
+  const loggedIn = useLoggedIn();
   const [userId, setUserId] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [userSurname, setUserSurname] = useState<string>('');
@@ -16,13 +18,19 @@ export default function Index() {
 
   useEffect(() => {
     const load = async () => {
+      if (!loggedIn) return;
       setUserId(await getUserId());
       setUserName(await getUserName());
       setUserSurname(await getUserSurname());
       setLoading(false);
     };
     load();
-  }, []);
+  }, [loggedIn]);
+
+  if (loggedIn === null) {
+    return <LoaderScreen loading title="Loading..." children={undefined} />;
+  }
+  if (!loggedIn) return <Redirect href="/auth" />;
 
   return (
     <LoaderScreen loading={loading} title="Accounts Overview">
