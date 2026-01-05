@@ -45,7 +45,6 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
                 search
                 data={data}
                 labelField="label"
@@ -65,24 +64,25 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
 export const DropdownComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
 
     return (
-        <Dropdown
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={data}
-            search
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder={"Select " + selecting}
-            searchPlaceholder="Search..."
-            value={value}
-            onChange={item => {
-                onChange(item.value);
-            }}
-        />
+        <View style={styles.container}>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                data={data}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder={"Select " + selecting}
+                searchPlaceholder="Search..."
+                value={value}
+                onChange={item => {
+                    onChange(item.value);
+                }}
+            />
+        </View>
     );
 };
 

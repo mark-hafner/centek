@@ -2,7 +2,7 @@ import { DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/compone
 import { styles } from '@/components/styles';
 import { useStats } from '@/hooks/allHooks';
 import React, { useState } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 export default function StatsView() {
   const [accountIds, setAccountIds] = useState<number[]>([]);
@@ -31,7 +31,7 @@ export default function StatsView() {
 
   return (
     <LoaderScreen loading={loading} title="Stats">
-      <ScrollView>
+      <View style={[styles.container, {maxHeight: "60%"}]}>
 
         <MultiSelectComponent
           data={accountDropdown}
@@ -63,20 +63,14 @@ export default function StatsView() {
           selecting="type"
           onChange={setType}
         />
-
-        {/* <Text>Accounts: {JSON.stringify(accountIds)}</Text>
-        <Text>Main: {JSON.stringify(mainCategoryIds)}</Text>
-        <Text>Sub: {JSON.stringify(subCategoryIds)}</Text>
-        <Text>Type: {type}</Text> */}
-
+      </View>
+      <ScrollView style={[styles.scroll, { maxHeight: "40%" }]}>
+        {stats[0]?.payments?.map((p, index) => (
+          <Text key={index} style={styles.text}>
+            ID: {p.id.toString()}, NAME: {p.name}, AMOUNT: {p.amount.toString()}, TYPE: {(p.type) ? "Income" : "Expense"}
+          </Text>
+        ))}
       </ScrollView>
-      <ScrollView style={styles.scroll}>
-          {stats[0]?.payments?.map((p, index) => (
-            <Text key={index} style={styles.text}>
-              ID: {p.id.toString()}, NAME: {p.name}, AMOUNT: {p.amount.toString()}, TYPE: {(p.type) ? "Income" : "Expense"}
-            </Text>
-          ))}
-        </ScrollView>
-    </LoaderScreen>
+    </LoaderScreen >
   );
 }
