@@ -39,7 +39,7 @@ type MultiSelectProps = {
 export const MultiSelectComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
 
     return (
-        <View style={styles.container}>
+        <View style={styles.dropdownContainer}>
             <MultiSelect
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
@@ -65,11 +65,11 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
 export const DropdownComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
 
     return (
-        <View style={styles.container}>
+        <View style={styles.dropdownContainer}>
             <Dropdown
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
+                selectedTextStyle={[styles.selectedTextStyle, {paddingLeft:20}]}
                 inputSearchStyle={styles.inputSearchStyle}
                 data={data}
                 search

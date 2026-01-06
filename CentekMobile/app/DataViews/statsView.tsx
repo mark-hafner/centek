@@ -1,10 +1,11 @@
-import { DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
+import { ButtonComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useStats } from '@/hooks/allHooks';
+import { Button } from '@react-navigation/elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Modal, ScrollView, Text, View } from 'react-native';
 
 export default function StatsView() {
   const [accountIds, setAccountIds] = useState<number[]>([]);
@@ -12,6 +13,8 @@ export default function StatsView() {
   const [subCategoryIds, setSubCategoryIds] = useState<number[]>([]);
   const [type, setType] = useState<boolean | undefined>(undefined);
   const { stats, loading } = useStats(accountIds, mainCategoryIds, subCategoryIds, type);
+  const [modalVisible, setModalVisible] = useState(false);
+
 
 
   if (loading || !stats.length) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
@@ -38,46 +41,60 @@ export default function StatsView() {
         style={styles.background}
       >
         <Stack.Screen options={{ title: 'Stats' }} />
-        <View style={[styles.container, { maxHeight: "30%" }]}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.container}>
+              <View style={styles.modalView}>
+                <MultiSelectComponent
+                  data={accountDropdown}
+                  selecting="accounts"
+                  value={accountIds}
+                  onChange={setAccountIds}
+                />
 
-          <MultiSelectComponent
-            data={accountDropdown}
-            selecting="accounts"
-            value={accountIds}
-            onChange={setAccountIds}
+                <MultiSelectComponent
+                  data={mainCategoriesDropdown}
+                  selecting="main categories"
+                  value={mainCategoryIds}
+                  onChange={setMainCategoryIds}
+                />
 
-          />
+                <MultiSelectComponent
+                  data={subCategoriesDropdown}
+                  selecting="sub categories"
+                  value={subCategoryIds}
+                  onChange={setSubCategoryIds}
+                />
 
-          <MultiSelectComponent
-            data={mainCategoriesDropdown}
-            selecting="main categories"
-            value={mainCategoryIds}
-            onChange={setMainCategoryIds}
-          />
+                <DropdownComponent
+                  data={[
+                    { label: 'All', value: undefined },
+                    { label: 'Income', value: true },
+                    { label: 'Expense', value: false },
+                  ]}
+                  selecting="type"
+                  onChange={setType}
+                />
+                <ButtonComponent label={"Close Filters"} onPress={() => setModalVisible(false)} ></ButtonComponent>
 
-          <MultiSelectComponent
-            data={subCategoriesDropdown}
-            selecting="sub categories"
-            value={subCategoryIds}
-            onChange={setSubCategoryIds}
-          />
-
-          <DropdownComponent
-            data={[
-              { label: 'All', value: undefined },
-              { label: 'Income', value: true },
-              { label: 'Expense', value: false },
-            ]}
-            selecting="type"
-            onChange={setType}
-          />
-        </View>
+              </View>
+          </View>
+        </Modal>
+        <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} ></ButtonComponent>
         <ScrollView style={styles.scroll}>
-          {stats[0]?.payments?.map((p, index) => (
-            <Text key={index} style={styles.text}>
-              ID: {p.id.toString()}, NAME: {p.name}, AMOUNT: {p.amount.toString()}, TYPE: {(p.type) ? "Income" : "Expense"}
-            </Text>
-          ))}
+          <View style={styles.container}>
+            {stats[0]?.payments?.map((p, index) => (
+              <Text key={index} style={styles.text}>
+                ID: {p.id.toString()}, NAME: {p.name}, AMOUNT: {p.amount.toString()}, TYPE: {(p.type) ? "Income" : "Expense"}
+              </Text>
+            ))}
+          </View>
         </ScrollView>
       </LinearGradient>
     </LoaderScreen >

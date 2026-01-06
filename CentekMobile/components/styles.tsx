@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    width: "100%"
+    width: "100%",
   },
 
   text: {
@@ -77,14 +77,22 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  // Dropdown
+  // DROPDOWN
+  // Container za screens
+  dropdownContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    width: "100%",
+  },
   dropdown: {
     height: 50,
     width: "70%",
     alignSelf: 'center',
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderRadius: 10
+    borderRadius: 10,
   },
   placeholderStyle: {
     fontSize: 16,
@@ -93,7 +101,6 @@ export const styles = StyleSheet.create({
   selectedTextStyle: {
     fontSize: 16,
     color: "#000",
-    paddingLeft: 20
   },
   inputSearchStyle: {
     height: 40,
@@ -117,5 +124,25 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 0,
+  },
+
+  // MODAL
+  modalView: {
+    width: "100%",
+    height: "80%",
+    marginTop: "20%",
+    margin: 20,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
