@@ -83,8 +83,8 @@ export default function StatsView() {
                   selecting="type"
                   onChange={setType}
                 />
-                <ButtonComponent label={"Close Filters"} onPress={() => setModalVisible(false)} ></ButtonComponent>
               </ScrollView>
+              <ButtonComponent label={"Close Filters"} onPress={() => setModalVisible(false)} ></ButtonComponent>
             </View>
           </View>
         </Modal>
