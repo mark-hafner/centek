@@ -50,7 +50,8 @@ export default function StatsView() {
             setModalVisible(!modalVisible);
           }}>
           <View style={styles.container}>
-              <View style={styles.modalView}>
+            <View style={styles.modalView}>
+              <ScrollView style={styles.modalScroll}>
                 <MultiSelectComponent
                   data={accountDropdown}
                   selecting="accounts"
@@ -78,12 +79,13 @@ export default function StatsView() {
                     { label: 'Income', value: true },
                     { label: 'Expense', value: false },
                   ]}
+                  value={type}
                   selecting="type"
                   onChange={setType}
                 />
                 <ButtonComponent label={"Close Filters"} onPress={() => setModalVisible(false)} ></ButtonComponent>
-
-              </View>
+              </ScrollView>
+            </View>
           </View>
         </Modal>
         <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} ></ButtonComponent>

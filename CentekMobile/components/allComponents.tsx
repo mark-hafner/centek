@@ -62,14 +62,21 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
     );
 };
 
-export const DropdownComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
+type DropdownProps = {
+    data: MultiSelectItem[];
+    selecting: string;
+    value?: boolean | undefined;
+    onChange: (values: boolean | undefined) => void;
+};
+
+export const DropdownComponent = ({ data, selecting, value, onChange }: DropdownProps) => {
 
     return (
         <View style={styles.dropdownContainer}>
             <Dropdown
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={[styles.selectedTextStyle, {paddingLeft:20}]}
+                selectedTextStyle={[styles.selectedTextStyle, { paddingLeft: 20 }]}
                 inputSearchStyle={styles.inputSearchStyle}
                 data={data}
                 search

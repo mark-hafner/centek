@@ -62,6 +62,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 3,
+    alignSelf: 'center',
   },
   button: {
     backgroundColor: "#00aff5ff",
@@ -144,5 +145,9 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  modalScroll: {
+    height: "100%",
+    width: "100%"
   },
 });
