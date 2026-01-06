@@ -1,4 +1,4 @@
-import { Button, LoaderScreen } from '@/components/allComponents';
+import { ButtonComponent, LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { getUserId, getUserName, getUserSurname } from '@/services/userData';
 import { useLoggedIn } from '@/services/utils';
@@ -33,18 +33,18 @@ export default function Index() {
   if (!loggedIn) return <Redirect href="/auth" />;
 
   return (
-    <LoaderScreen loading={loading} title="Accounts Overview">
+    <LoaderScreen loading={loading} title="Home">
       <LinearGradient
         {...gradientStyle}
         style={styles.background}
       >
         <View style={styles.container}>
-          <Button label="DEBUG: Clear Async Storage" onPress={async () => { await AsyncStorage.clear(); router.replace("/login") }} />
+          <ButtonComponent label="DEBUG: Clear Async Storage" onPress={async () => { await AsyncStorage.clear(); router.replace("/login") }} />
           <Text style={styles.text}>VIEW YOUR DATA</Text>
-          <Button label="Prikaži Accounts" onPress={() => router.push("/DataViews/accountsView")} />
-          <Button label="Prikaži Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
-          <Button label="Prikaži Main Categories" onPress={() => router.push("/DataViews/mainCategoriesView")} />
-          <Button label="Prikaži Stats" onPress={() => router.push("/DataViews/statsView")} />
+          <ButtonComponent label="Prikaži Accounts" onPress={() => router.push("/DataViews/accountsView")} />
+          <ButtonComponent label="Prikaži Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
+          <ButtonComponent label="Prikaži Main Categories" onPress={() => router.push("/DataViews/mainCategoriesView")} />
+          <ButtonComponent label="Prikaži Stats" onPress={() => router.push("/DataViews/statsView")} />
           {userId && (
             <Text style={styles.text}>
               Your UserID: {userId}

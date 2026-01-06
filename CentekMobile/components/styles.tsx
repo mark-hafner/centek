@@ -33,24 +33,30 @@ export const styles = StyleSheet.create({
   },
 
   // TEXT INPUT
+  // Container za screens
+  loginContainer: {
+    flex: 1,
+    paddingTop: "80%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    width: "100%"
+  },
   input: {
     height: 50,
+    width: "75%",
     margin: 10,
     borderColor: '#000',
     borderWidth: 2,
     marginBottom: 12,
     paddingHorizontal: 20,
     borderRadius: 12,
-  },
-
-  footerContainer: {
-    flex: 1 / 3,
-    alignItems: 'center',
+    backgroundColor: "#fff",
   },
 
   // BUTTON
   buttonContainer: {
-    width: "80%",
+    width: "60%",
     height: 50,
     marginHorizontal: 20,
     alignItems: 'center',

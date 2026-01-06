@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getUserId } from "./userData";
 
 //! SEND API REQUEST
-export const apiRequest = async (item: string, method: string = "GET", body?: any): Promise<any[]> => {
+export const apiRequest = async (item: string, method: string = "GET", body?: any): Promise<any[] | false> => {
     try {
         const userId = await getUserId();
         const options: RequestInit = {
@@ -18,16 +18,16 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
             options.body = JSON.stringify(body);
         }
 
-        // const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
-        const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);
+        const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
+        // const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);
 
         if (response.status !== 200) return [];
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('REST error:', error);
-        return [];
+        alert("No internet connection");
+        return false;
     }
 };
 

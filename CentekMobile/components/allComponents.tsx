@@ -2,7 +2,7 @@ import { gradientStyle, styles } from '@/components/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import { ReactNode } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, KeyboardTypeOptions, Pressable, Text, TextInput, View } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 //! BUTTON
@@ -11,7 +11,7 @@ type Props = {
     onPress?: () => void;
 };
 
-export function Button({ label, onPress }: Props) {
+export function ButtonComponent({ label, onPress }: Props) {
 
     return (
         <View style={styles.buttonContainer}>
@@ -56,7 +56,7 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
                     onChange(items);
                 }}
                 selectedStyle={styles.selectedStyle}
-                containerStyle={{justifyContent: 'center'}}
+                containerStyle={{ justifyContent: 'center' }}
             />
         </View>
     );
@@ -87,9 +87,32 @@ export const DropdownComponent = ({ data, selecting, value, onChange }: MultiSel
     );
 };
 
+//! TEXT AREA INPUT
+type TextInputProp = {
+    placeholder: string;
+    keyboardType?: KeyboardTypeOptions;
+    hidden?: boolean;
+    value?: string;
+    onChange: (text: string) => void;
+};
+
+export const TextInputComponent = ({ placeholder = '', keyboardType = 'default', hidden = false, value, onChange }: TextInputProp) => {
+    return (
+        <TextInput
+            style={styles.input}
+            onChangeText={e => { onChange(e) }}
+            value={value}
+            autoCapitalize="none"
+            placeholderTextColor={"#000"}
+            secureTextEntry={hidden}
+            placeholder={placeholder}
+            keyboardType={keyboardType}
+        />)
+}
+
 
 //! LOADER
-interface LoaderScreenProps {
+type LoaderScreenProps = {
     loading: boolean;
     title?: string;
     children: ReactNode

@@ -1,4 +1,4 @@
-import { Button } from '@/components/allComponents';
+import { ButtonComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useRouter } from 'expo-router';
@@ -14,7 +14,7 @@ export default function NotFoundScreen() {
         >
             <Stack.Screen options={{ title: 'Oops! Not Found' }} />
             <View style={styles.container}>
-                <Button label="Go back to Home screen!" onPress={() => router.push("/")} />
+                <ButtonComponent label="Go back to Home screen!" onPress={() => router.push("/")} />
             </View>
         </LinearGradient >
     );
