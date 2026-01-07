@@ -4,6 +4,8 @@ import { Stack } from 'expo-router';
 import { ReactNode } from 'react';
 import { ActivityIndicator, KeyboardTypeOptions, Pressable, Text, TextInput, View } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import DateTimePicker, { DatePickerOptions } from '@react-native-community/datetimepicker';
+
 
 //! BUTTON
 type Props = {
@@ -117,6 +119,24 @@ export const TextInputComponent = ({ placeholder = '', keyboardType = 'default',
         />)
 }
 
+//! TEXT AREA INPUT
+type DatePickerProps = {
+    value: Date;
+    onChange: (text: Date) => void;
+};
+
+export const DatePickerComponent = ({ value, onChange }: DatePickerProps) => {
+    return (
+        <DateTimePicker
+        style={styles.dateTimePickerStyle}
+            value={value}
+            mode="date"
+            display="default"
+            onChange={(_, selectedDate) => {
+                if (selectedDate) onChange(selectedDate);
+            }}
+        />)
+}
 
 //! LOADER
 type LoaderScreenProps = {

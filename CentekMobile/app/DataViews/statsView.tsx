@@ -1,4 +1,4 @@
-import { ButtonComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
+import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useStats } from '@/hooks/allHooks';
 import { Button } from '@react-navigation/elements';
@@ -14,6 +14,8 @@ export default function StatsView() {
   const [type, setType] = useState<boolean | undefined>(undefined);
   const { stats, loading } = useStats(accountIds, mainCategoryIds, subCategoryIds, type);
   const [modalVisible, setModalVisible] = useState(false);
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
 
 
 
@@ -83,6 +85,16 @@ export default function StatsView() {
                   selecting="type"
                   onChange={setType}
                 />
+                <View style={styles.dateTimePickerContainer}>
+                  <View style={[styles.container, { paddingTop: 20 }]}>
+                    <Text>FROM</Text>
+                    <DatePickerComponent value={fromDate} onChange={setFromDate} />
+                  </View>
+                  <View style={[styles.container, { padding: 0 }]}>
+                    <Text>TO</Text>
+                    <DatePickerComponent value={toDate} onChange={setToDate} />
+                  </View>
+                </View>
               </ScrollView>
               <ButtonComponent label={"Close Filters"} onPress={() => setModalVisible(false)} ></ButtonComponent>
             </View>
@@ -91,9 +103,10 @@ export default function StatsView() {
         <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} ></ButtonComponent>
         <ScrollView style={styles.scroll}>
           <View style={styles.container}>
+            <Text style={styles.text}>TOTAL: {stats[0].total.toString()}€</Text>
             {stats[0]?.payments?.map((p, index) => (
               <Text key={index} style={styles.text}>
-                ID: {p.id.toString()}, NAME: {p.name}, AMOUNT: {p.amount.toString()}, TYPE: {(p.type) ? "Income" : "Expense"}
+                ID: {p.id.toString()}, NAME: {p.name}, AMOUNT: {p.amount.toString()}€, TYPE: {(p.type) ? "Income" : "Expense"}
               </Text>
             ))}
           </View>

@@ -112,6 +112,17 @@ export const styles = StyleSheet.create({
     backgroundColor: '#00d9ffa8',
   },
 
+  // DATETIME PICKER
+  dateTimePickerContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly"
+  },
+  dateTimePickerStyle: {
+
+  },
+
   // Loader text
   loaderText: {
     color: '#fff',
