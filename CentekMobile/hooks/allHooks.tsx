@@ -40,6 +40,7 @@ export const useStats = (
         toDate: toDate,
         userId: userId,
     });
+    console.log(query);
     const { data, loading, error } = useApi<Stats>(`stats?${query}`);
     return { stats: data, loading, error };
 }

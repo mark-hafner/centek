@@ -18,13 +18,12 @@ export default function StatsView() {
   const [toDate, setToDate] = useState(new Date());
 
   // get stats data
-  console.log(toDate.toLocaleDateString('en-CA'));
   const { stats, loading } = useStats(
     accountIds,
     mainCategoryIds, subCategoryIds,
     type,
-    toDate.toLocaleDateString('en-CA'),
-    fromDate.toLocaleDateString('en-CA')
+    fromDate.toLocaleDateString('en-CA'),
+    toDate.toLocaleDateString('en-CA')
   );
 
 
