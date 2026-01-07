@@ -159,4 +159,34 @@ export const styles = StyleSheet.create({
     height: "100%",
     width: "100%"
   },
+
+  // TABLE COMPONENTS
+  rowHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#ddd',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    width: 1000,
+  },
+
+  row: {
+    flexDirection: 'row',
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+    width: "100%",
+    backgroundColor: "#fff"
+  },
+
+  headerCell: {
+    flex: 1,
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+
+  cell: {
+    flex: 1,
+    fontSize: 12,
+  },
 });
