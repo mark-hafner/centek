@@ -17,7 +17,6 @@ export default function AccountsView() {
                 {...gradientStyle}
                 style={styles.background}
             >
-                <Stack.Screen options={{ title: 'Accounts Overview' }} />
                 <View style={styles.container}>
                     <ScrollView style={styles.scroll}>
                         {accounts.map((account, index) => (

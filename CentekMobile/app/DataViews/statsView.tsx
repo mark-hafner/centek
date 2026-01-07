@@ -13,11 +13,19 @@ export default function StatsView() {
   const [mainCategoryIds, setMainCategoryIds] = useState<number[]>([]);
   const [subCategoryIds, setSubCategoryIds] = useState<number[]>([]);
   const [type, setType] = useState<boolean | undefined>(undefined);
-  const { stats, loading } = useStats(accountIds, mainCategoryIds, subCategoryIds, type);
   const [modalVisible, setModalVisible] = useState(false);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
 
+  // get stats data
+  console.log(toDate.toLocaleDateString('en-CA'));
+  const { stats, loading } = useStats(
+    accountIds,
+    mainCategoryIds, subCategoryIds,
+    type,
+    toDate.toLocaleDateString('en-CA'),
+    fromDate.toLocaleDateString('en-CA')
+  );
 
 
   if (loading || !stats.length) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
