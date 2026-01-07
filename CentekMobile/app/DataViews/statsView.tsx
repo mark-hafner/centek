@@ -1,14 +1,30 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useStats } from '@/hooks/allHooks';
+import { Payment } from '@/hooks/types';
 import { Button } from '@react-navigation/elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import React, { useState } from 'react';
-import { Modal, Platform, ScrollView, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Modal, Platform, ScrollView, Text, View, FlatList, useWindowDimensions } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 export default function StatsView() {
+
+  useEffect(() => {
+    ScreenOrientation.unlockAsync();
+
+    return () => {
+      ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
+    };
+  }, []);
+
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
   const [accountIds, setAccountIds] = useState<number[]>([]);
   const [mainCategoryIds, setMainCategoryIds] = useState<number[]>([]);
   const [subCategoryIds, setSubCategoryIds] = useState<number[]>([]);
@@ -43,6 +59,35 @@ export default function StatsView() {
     label: s.name,
     value: s.id,
   }));
+
+  const TableHeader = () => (
+    <View style={styles.rowHeader}>
+      <Text style={styles.headerCell}>Name</Text>
+      <Text style={styles.headerCell}>Amount</Text>
+      <Text style={styles.headerCell}>Account</Text>
+      <Text style={styles.headerCell}>Category</Text>
+      <Text style={styles.headerCell}>Note</Text>
+    </View>
+  );
+
+  const PaymentRow = ({ p }: any) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{p.name}</Text>
+      <Text
+        style={[
+          styles.cell,
+          { color: p.type ? 'green' : 'red', fontWeight: 'bold' },
+        ]}
+      >
+        {p.type ? p.amount : -p.amount} €
+      </Text>
+      <Text style={styles.cell}>{p.account?.name}</Text>
+      <Text style={styles.cell}>
+        {p.mainCategory?.name} / {p.subCategory?.name}
+      </Text>
+      <Text style={styles.cell}>{p.note}</Text>
+    </View>
+  );
 
   return (
     <LoaderScreen loading={loading} title="Stats">
@@ -113,16 +158,19 @@ export default function StatsView() {
           </View>
         </Modal>
         <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} ></ButtonComponent>
-        <ScrollView style={styles.scroll}>
-          <View style={styles.container}>
-            <Text style={styles.text}>TOTAL: {stats[0].total.toString()}€</Text>
-            {stats[0]?.payments?.map((p, index) => (
-              <Text key={index} style={styles.text}>
-                ID: {p.id.toString()}, NAME: {p.name}, AMOUNT: {p.amount.toString()}€, TYPE: {(p.type) ? "Income" : "Expense"}
-              </Text>
-            ))}
-          </View>
-        </ScrollView>
+        <View style={[styles.container, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
+          <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
+            TOTAL: {stats[0].total.toFixed(2)} €
+          </Text>
+
+          <FlatList
+            data={stats[0].payments}
+            keyExtractor={(item) => item.id.toString()}
+            ListHeaderComponent={TableHeader}
+            renderItem={({ item }) => <PaymentRow p={item} />}
+            style={{ marginTop: 8 }}
+          />
+        </View>
       </LinearGradient>
     </LoaderScreen >
   );
