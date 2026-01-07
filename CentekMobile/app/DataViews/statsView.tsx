@@ -43,6 +43,8 @@ export default function StatsView() {
         {...gradientStyle}
         style={styles.background}
       >
+        <Stack.Screen options={{ title: 'Stats' }} />
+
         <Modal
           animationType="slide"
           transparent={true}
