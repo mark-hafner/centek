@@ -182,12 +182,6 @@ export function LoaderScreen({ loading, title = '', children }: LoaderScreenProp
     return (
         <SafeAreaProvider>
             <LinearGradient {...gradientStyle} style={styles.background}>
-                {Platform.OS === "ios" ? (<Stack.Screen
-                    options={{
-                        title,
-                        headerShown: !loading,
-                    }}
-                />): <></> }
                 {loading ? (
                     <View style={styles.loaderContainer}>
                         <ActivityIndicator size="large" color="#fff" />

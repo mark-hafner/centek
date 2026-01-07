@@ -9,7 +9,7 @@ export default function Layout() {
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="stats" options={{ headerShown: true }} />
+        <Stack.Screen name="statsView" options={{ title: "Stats", headerShown: true }} />
       </Stack>
     </SafeAreaProvider>
   );
