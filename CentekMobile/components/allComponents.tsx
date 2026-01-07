@@ -1,10 +1,11 @@
 import { gradientStyle, styles } from '@/components/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import { ReactNode } from 'react';
-import { ActivityIndicator, KeyboardTypeOptions, Pressable, Text, TextInput, View } from 'react-native';
+import { ReactNode, useState } from 'react';
+import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import DateTimePicker, { DatePickerOptions } from '@react-native-community/datetimepicker';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 //! BUTTON
@@ -126,17 +127,49 @@ type DatePickerProps = {
 };
 
 export const DatePickerComponent = ({ value, onChange }: DatePickerProps) => {
+    const [show, setShow] = useState(false);
+
+    const handleChange = (event: any, selectedDate?: Date) => {
+        if (Platform.OS === 'android') {
+            setShow(false);
+        }
+
+        if (event?.type === 'set' && selectedDate) {
+            onChange(selectedDate);
+        }
+    };
+
+    // iOS – native picker
+    if (Platform.OS === 'ios') {
+        return (
+            <DateTimePicker
+                style={styles.dateTimePickerStyle}
+                value={value}
+                mode="date"
+                display="default"
+                onChange={handleChange}
+            />
+        );
+    }
+
+    // Android – gumb + dialog
     return (
-        <DateTimePicker
-        style={styles.dateTimePickerStyle}
-            value={value}
-            mode="date"
-            display="default"
-            onChange={(_, selectedDate) => {
-                if (selectedDate) onChange(selectedDate);
-            }}
-        />)
-}
+        <View>
+            <ButtonComponent
+                onPress={() => setShow(true)} label={"Calender"} />
+
+
+            {show && (
+                <DateTimePicker
+                    value={value}
+                    mode="date"
+                    display="default"
+                    onChange={handleChange}
+                />
+            )}
+        </View>
+    );
+};
 
 //! LOADER
 type LoaderScreenProps = {
@@ -147,22 +180,24 @@ type LoaderScreenProps = {
 
 export function LoaderScreen({ loading, title = '', children }: LoaderScreenProps) {
     return (
-        <LinearGradient {...gradientStyle} style={styles.background}>
-            <Stack.Screen
-                options={{
-                    title,
-                    headerShown: !loading,
-                }}
-            />
-            {loading ? (
-                <View style={styles.loaderContainer}>
-                    <ActivityIndicator size="large" color="#fff" />
-                    <Text style={styles.loaderText}>Loading...</Text>
-                </View>
-            ) : (
-                children
-            )}
-        </LinearGradient>
+        <SafeAreaProvider>
+            <LinearGradient {...gradientStyle} style={styles.background}>
+                {Platform.OS === "ios" ? (<Stack.Screen
+                    options={{
+                        title,
+                        headerShown: !loading,
+                    }}
+                />): <></> }
+                {loading ? (
+                    <View style={styles.loaderContainer}>
+                        <ActivityIndicator size="large" color="#fff" />
+                        <Text style={styles.loaderText}>Loading...</Text>
+                    </View>
+                ) : (
+                    children
+                )}
+            </LinearGradient>
+        </SafeAreaProvider>
     );
 }
 

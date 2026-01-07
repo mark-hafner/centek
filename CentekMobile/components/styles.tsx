@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
     width: "100%",
   },
 
@@ -71,11 +70,11 @@ export const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
   },
   buttonLabel: {
     color: '#fff',
     fontSize: 16,
+    paddingHorizontal: "10%"
   },
 
   // DROPDOWN
@@ -114,13 +113,12 @@ export const styles = StyleSheet.create({
 
   // DATETIME PICKER
   dateTimePickerContainer: {
-    flex: 1,
+    // flex: 1,
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly"
+    // alignItems: "center",
+    // justifyContent: "flex-end"
   },
   dateTimePickerStyle: {
-
   },
 
   // Loader text

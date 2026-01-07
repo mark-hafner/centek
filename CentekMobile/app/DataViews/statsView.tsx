@@ -5,7 +5,8 @@ import { Button } from '@react-navigation/elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { Modal, ScrollView, Text, View } from 'react-native';
+import { Modal, Platform, ScrollView, Text, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function StatsView() {
   const [accountIds, setAccountIds] = useState<number[]>([]);
@@ -41,17 +42,16 @@ export default function StatsView() {
       <LinearGradient
         {...gradientStyle}
         style={styles.background}
-      >
-        <Stack.Screen options={{ title: 'Stats' }} />
+      >                
+      <Stack.Screen options={{ title: 'Stats' }} />
         <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            alert('Modal has been closed.');
             setModalVisible(!modalVisible);
           }}>
-          <View style={styles.container}>
+          <View style={[styles.container, { padding: 16 }]}>
             <View style={styles.modalView}>
               <ScrollView style={styles.modalScroll}>
                 <MultiSelectComponent
@@ -86,13 +86,17 @@ export default function StatsView() {
                   onChange={setType}
                 />
                 <View style={styles.dateTimePickerContainer}>
-                  <View style={[styles.container, { paddingTop: 20 }]}>
-                    <Text>FROM</Text>
-                    <DatePickerComponent value={fromDate} onChange={setFromDate} />
-                  </View>
                   <View style={[styles.container, { padding: 0 }]}>
+                    <Text>FROM</Text>
+                    <View style={{ alignItems: "center" }}>
+                      <DatePickerComponent value={fromDate} onChange={setFromDate} />
+                    </View>
+                  </View>
+                  <View style={[styles.container, { paddingRight: 20 }]}>
                     <Text>TO</Text>
-                    <DatePickerComponent value={toDate} onChange={setToDate} />
+                    <View style={{ alignItems: "center" }}>
+                      <DatePickerComponent value={toDate} onChange={setToDate} />
+                    </View>
                   </View>
                 </View>
               </ScrollView>
