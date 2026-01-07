@@ -2,19 +2,19 @@ import { gradientStyle, styles } from '@/components/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import { ReactNode, useState } from 'react';
-import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, Text, TextInput, TurboModuleRegistry, View } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import DateTimePicker, { DatePickerOptions } from '@react-native-community/datetimepicker';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 //! BUTTON
-type Props = {
-    label: string;
+type ButtonProps = {
+    label?: string;
     onPress?: () => void;
 };
 
-export function ButtonComponent({ label, onPress }: Props) {
+export function ButtonComponent({ label, onPress }: ButtonProps) {
 
     return (
         <View style={styles.buttonContainer}>
@@ -24,6 +24,26 @@ export function ButtonComponent({ label, onPress }: Props) {
         </View>
     );
 }
+
+export default function ToggleButtonComponent({ onPress }: ButtonProps) {
+    const [active, setActive] = useState(true);
+
+    return (
+        <Pressable
+            onPress={() => { setActive(!active); if (onPress !== undefined) onPress() }}
+            style={{
+                padding: 12,
+                borderRadius: 8,
+                backgroundColor: active ? '#4CAF50' : '#ccc',
+            }}
+        >
+            <Text style={{ color: 'white', paddingHorizontal: 6 }}>
+                {active ? '+' : '-'}
+            </Text>
+        </Pressable>
+    );
+}
+
 
 
 //! MULTIPLE SELECT DROPDOWN

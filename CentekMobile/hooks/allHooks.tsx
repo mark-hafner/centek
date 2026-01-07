@@ -29,7 +29,6 @@ export const useStats = (
     type?: boolean,
     fromDate?: String,
     toDate?: String,
-    userId?: String,
 ) => {
     const query = FetchQueryBuilder({
         accountIds: accountIds,
@@ -38,9 +37,7 @@ export const useStats = (
         type: type,
         fromDate: fromDate,
         toDate: toDate,
-        userId: userId,
     });
-    console.log(query);
     const { data, loading, error } = useApi<Stats>(`stats?${query}`);
     return { stats: data, loading, error };
 }
