@@ -20,18 +20,17 @@ export default function CreatePayment() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-
             <LinearGradient
                 {...gradientStyle}
                 style={styles.background}
             >
-                <View style={styles.container}>
-                    <TextInputComponent placeholder={"Payment name"} value={pName} onChange={(e) => setPName(e)} />
-                    <View style={[{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", maxWidth: "80%" }]}>
+                <View style={[styles.container, { maxHeight: "40%" }]}>
+                    <TextInputComponent placeholder={"Payment name"} value={pName} onChange={setPName} />
+                    <View style={[{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "75%" }]}>
                         <ToggleButtonComponent onPress={() => setPType(!pType)}></ToggleButtonComponent>
-                        <TextInputComponent placeholder={"Payment amount"} value={pAmount} keyboardType="numeric" onChange={(e) => setPAmount(e)} />
+                        <TextInputComponent customStyle={{paddingLeft: 6}} placeholder={"Payment amount"} value={pAmount} keyboardType="numeric" onChange={(e) => setPAmount(e)} />
                     </View>
-                    <DropdownAddCustomComponent data={accountsDropdown} dropdownLabel="Accounts" onChange={(e) => setPAccount(e)} />
+                    <DropdownAddCustomComponent data={accountsDropdown} dropdownLabel="Accounts" onChange={setPAccount} />
                     <ButtonComponent label={'Create'} onPress={() => alert(
                         `
 NAME: ${pName.length > 0 ? pName : "N/A"}

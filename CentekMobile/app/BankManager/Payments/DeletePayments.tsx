@@ -1,0 +1,1 @@
+export default function DeletePayment() { return <></> }
