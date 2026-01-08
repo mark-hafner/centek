@@ -1,13 +1,13 @@
 import { LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useAccounts } from '@/hooks/getHooks';
+import { useGetAccounts } from '@/hooks/getHooks';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 
 export default function AccountsView() {
-    const { accounts, loading } = useAccounts();
+    const { accounts, loading } = useGetAccounts();
 
 
     return (

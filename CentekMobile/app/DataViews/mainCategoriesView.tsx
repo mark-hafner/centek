@@ -1,13 +1,13 @@
 import { LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useMainCategories } from '@/hooks/getHooks';
+import { useGetMainCategories } from '@/hooks/getHooks';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 
 export default function MainCategoriesView() {
-    const { mainCategories, loading } = useMainCategories();
+    const { mainCategories, loading } = useGetMainCategories();
 
 
     return (

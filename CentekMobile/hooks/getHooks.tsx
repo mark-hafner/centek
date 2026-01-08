@@ -1,28 +1,28 @@
 import { FetchQueryBuilder } from "@/services/utils";
 import { Account, MainCategory, Overview, Stats, SubCategory } from "./types";
-import useApi from './useApi';
+import { useApiGet } from './useApi';
 // FUNCTIONS
-export const useOverview = () => {
-    const { data, loading, error } = useApi<Overview>('overview');
+export const useGetOverview = () => {
+    const { data, loading, error } = useApiGet<Overview>('overview');
     return { accounts: data, loading, error };
 };
 
-export const useAccounts = () => {
-    const { data, loading, error } = useApi<Account>('accounts');
+export const useGetAccounts = () => {
+    const { data, loading, error } = useApiGet<Account>('accounts');
     return { accounts: data, loading, error };
 };
 
-export const useMainCategories = () => {
-    const { data, loading, error } = useApi<MainCategory>('mainCategories');
+export const useGetMainCategories = () => {
+    const { data, loading, error } = useApiGet<MainCategory>('mainCategories');
     return { mainCategories: data, loading, error };
 };
 
-export const useSubCategories = () => {
-    const { data, loading, error } = useApi<SubCategory>('subCategories');
+export const useGetSubCategories = () => {
+    const { data, loading, error } = useApiGet<SubCategory>('subCategories');
     return { subCategories: data, loading, error };
 };
 
-export const useStats = (
+export const useGetStats = (
     accountIds?: any[],
     mainCategoryIds?: any[],
     subCategoryIds?: any[],
@@ -38,6 +38,6 @@ export const useStats = (
         fromDate: fromDate,
         toDate: toDate,
     });
-    const { data, loading, error } = useApi<Stats>(`stats?${query}`);
+    const { data, loading, error } = useApiGet<Stats>(`stats?${query}`);
     return { stats: data, loading, error };
 }

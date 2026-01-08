@@ -1,13 +1,13 @@
 import { LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useSubCategories } from '@/hooks/getHooks';
+import { useGetSubCategories } from '@/hooks/getHooks';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 
 export default function SubCategoriesView() {
-    const { subCategories, loading } = useSubCategories();
+    const { subCategories, loading } = useGetSubCategories();
 
 
     return (

@@ -1,6 +1,6 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useStats } from '@/hooks/getHooks';
+import { useGetStats } from '@/hooks/getHooks';
 import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
@@ -25,7 +25,7 @@ export default function StatsView() {
   const [toDate, setToDate] = useState(new Date());
 
   // get stats data
-  const { stats, loading } = useStats(
+  const { stats, loading } = useGetStats(
     accountIds,
     mainCategoryIds, subCategoryIds,
     type,
