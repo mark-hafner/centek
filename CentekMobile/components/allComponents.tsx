@@ -188,34 +188,34 @@ export function NumberInputComponent({
 }: NumberInputProps) {
     const maxValue = 9_999_999_999_999;
 
-    const [cents, setCents] = useState(
+    const [cents, setCents] = useState<number>(
         value !== undefined ? Math.round(value * 100) : 0
     );
 
     const maxCents =
         maxValue !== undefined ? Math.round(maxValue * 100) : undefined;
 
+    // sync iz zunanjega value
     useEffect(() => {
         if (value !== undefined) {
-            const next = Math.round(value * 100);
-            if (next !== cents) {
-                setCents(next);
-            }
+            setCents(Math.round(value * 100));
         }
     }, [value]);
 
     const format = (c: number) => {
-        const euros = Math.floor(c / 100);
-        const decimals = c % 100;
+        const abs = Math.abs(c);
+        const euros = Math.floor(abs / 100);
+        const decimals = abs % 100;
         return `${euros},${decimals.toString().padStart(2, '0')}`;
     };
 
     const handleChangeText = (text: string) => {
         const digits = text.replace(/\D/g, '');
-        const nextCents = digits === '' ? 0 : parseInt(digits, 10);
+        const nextCents = digits.length === 0 ? 0 : parseInt(digits, 10);
 
+        // MAX VALUE CHECK
         if (maxCents !== undefined && nextCents > maxCents) {
-            return;
+            return; // ignoriraj vnos
         }
 
         setCents(nextCents);
@@ -225,6 +225,7 @@ export function NumberInputComponent({
     return (
         <View style={[styles.textInputContainer, customStyle]} >
             <TextInput
+                textAlign='center'
                 style={styles.input}
                 keyboardType="numeric"
                 value={format(cents)}

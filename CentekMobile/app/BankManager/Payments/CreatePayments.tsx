@@ -1,6 +1,6 @@
 import ToggleButtonComponent, { ButtonComponent, DropdownAddCustomComponent, LoaderScreen, NumberInputComponent, TextInputComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useAccounts } from '@/hooks/allHooks';
+import { useAccounts } from '@/hooks/getHooks';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';

@@ -1,8 +1,7 @@
 import { LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useAccounts } from '@/hooks/allHooks';
+import { useAccounts } from '@/hooks/getHooks';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Stack } from 'expo-router';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
