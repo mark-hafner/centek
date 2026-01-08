@@ -45,6 +45,7 @@ export default function Index() {
           <ButtonComponent label="Show Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
           <ButtonComponent label="Show Main Categories" onPress={() => router.push("/DataViews/mainCategoriesView")} />
           <ButtonComponent label="Show Stats" onPress={() => router.push("/DataViews/statsView")} />
+          <ButtonComponent label="Show Graphs" onPress={() => router.push("/DataViews/overviewView")} />
           <ButtonComponent label="Create payment" onPress={() => router.push("/BankManager/Payments/CreatePayments")} />
 
           {userId && (
