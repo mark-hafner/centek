@@ -23,20 +23,21 @@ const LoginPage = () => {
     };
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}><LinearGradient
-            {...gradientStyle}
-            style={styles.background}
-        >
-            <SafeAreaProvider>
-                <SafeAreaView>
-                    <View style={styles.loginContainer}>
-                        <TextInputComponent placeholder={"Email"} keyboardType={"email-address"} value={email} onChange={setEmail} ></TextInputComponent>
-                        <TextInputComponent placeholder={"Password"} hidden={true} value={password} onChange={setPassword} ></TextInputComponent>
-                        <ButtonComponent label="Login" onPress={handleLogin} />
-                    </View>
-                </SafeAreaView>
-            </SafeAreaProvider>
-        </LinearGradient >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <LinearGradient
+                {...gradientStyle}
+                style={styles.background}
+            >
+                <SafeAreaProvider>
+                    <SafeAreaView>
+                        <View style={styles.loginContainer}>
+                            <TextInputComponent placeholder={"Email"} keyboardType={"email-address"} value={email} onChange={setEmail} ></TextInputComponent>
+                            <TextInputComponent placeholder={"Password"} hidden={true} value={password} onChange={setPassword} ></TextInputComponent>
+                            <ButtonComponent label="Login" onPress={handleLogin} />
+                        </View>
+                    </SafeAreaView>
+                </SafeAreaProvider>
+            </LinearGradient >
         </TouchableWithoutFeedback>
     );
 };

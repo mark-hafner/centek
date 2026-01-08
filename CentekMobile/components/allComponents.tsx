@@ -1,10 +1,9 @@
 import { gradientStyle, styles } from '@/components/styles';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Stack } from 'expo-router';
 import { ReactNode, useState } from 'react';
-import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, Text, TextInput, TurboModuleRegistry, View } from 'react-native';
+import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
-import DateTimePicker, { DatePickerOptions } from '@react-native-community/datetimepicker';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
@@ -87,12 +86,12 @@ export const MultiSelectComponent = ({ data, selecting, value, onChange }: Multi
 
 type DropdownProps = {
     data: MultiSelectItem[];
-    selecting: string;
-    value?: boolean | undefined;
-    onChange: (values: boolean | undefined) => void;
+    dropdownLabel: string;
+    value?: any;
+    onChange: (values: any) => void;
 };
 
-export const DropdownComponent = ({ data, selecting, value, onChange }: DropdownProps) => {
+export const DropdownComponent = ({ data, dropdownLabel, value, onChange }: DropdownProps) => {
 
     return (
         <View style={styles.dropdownContainer}>
@@ -106,13 +105,48 @@ export const DropdownComponent = ({ data, selecting, value, onChange }: Dropdown
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder={"Select " + selecting}
+                placeholder={"Select " + dropdownLabel}
                 searchPlaceholder="Search..."
                 value={value}
                 onChange={item => {
                     onChange(item.value);
                 }}
             />
+        </View>
+    );
+};
+
+
+export const DropdownAddCustomComponent = ({ data, dropdownLabel, value, onChange }: DropdownProps) => {
+    const [searchText, setSearchText] = useState('');
+    const [customValue, setCustomValue] = useState('');
+
+    const hasMatch = data.some(d =>
+        d.label.toLowerCase() === searchText.toLowerCase()
+    );
+    return (
+        <View style={styles.dropdownContainer}>
+            <Dropdown
+                style={styles.dropdown}
+                data={data}
+                search
+                labelField="label"
+                valueField="value"
+                placeholder={`Select ${dropdownLabel}`}
+                searchPlaceholder="Search..."
+                value={value}
+                onChange={item => onChange(item.value)}
+                onChangeText={text => setSearchText(text)}
+            />
+
+            {!hasMatch && searchText.length > 0 && (
+                <TextInput
+                    placeholder={`Use "${searchText}"`}
+                    value={customValue}
+                    onChangeText={setCustomValue}
+                    onSubmitEditing={() => onChange(customValue || searchText)}
+                />
+            )}
         </View>
     );
 };

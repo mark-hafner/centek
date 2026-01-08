@@ -1,6 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SO from 'expo-screen-orientation';
 import { useEffect, useState } from "react";
 import { getUserId } from "./userData";
+
 
 //! SEND API REQUEST
 export const apiRequest = async (item: string, method: string = "GET", body?: any): Promise<any[] | false> => {
@@ -50,6 +52,18 @@ export function FetchQueryBuilder(params: Record<string, any>) {
     });
 
     return query.toString();
+}
+
+export function ScreenOrientation() {
+    useEffect(() => {
+        SO.unlockAsync();
+
+        return () => {
+            SO.lockAsync(
+                SO.OrientationLock.PORTRAIT_UP
+            );
+        };
+    }, []);
 }
 
 //! CHECKER IF USER LOGGED IN

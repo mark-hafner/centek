@@ -1,26 +1,14 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useStats } from '@/hooks/allHooks';
-import { Payment } from '@/hooks/types';
-import { Button } from '@react-navigation/elements';
+import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import React, { useState, useEffect } from 'react';
-import { Modal, Platform, ScrollView, Text, View, FlatList, useWindowDimensions } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import * as ScreenOrientation from 'expo-screen-orientation';
+import React, { useState } from 'react';
+import { FlatList, Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 export default function StatsView() {
-
-  useEffect(() => {
-    ScreenOrientation.unlockAsync();
-
-    return () => {
-      ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP
-      );
-    };
-  }, []);
+  ScreenOrientation();
 
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
@@ -135,7 +123,7 @@ export default function StatsView() {
                     { label: 'Expense', value: false },
                   ]}
                   value={type}
-                  selecting="type"
+                  dropdownLabel="type"
                   onChange={setType}
                 />
                 <View style={styles.dateTimePickerContainer}>
