@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Centek.Data;
+using Centek.Filters;
+using Centek.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Centek.Data;
-using Centek.Models;
-using Centek.Filters;
 
 namespace Centek.Controllers_Api
 {
@@ -77,9 +77,26 @@ namespace Centek.Controllers_Api
 
         // POST: api/PaymentsApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Payment>> PostPayment(Payment payment)
+        [HttpPost("createPayment")]
+        public async Task<ActionResult<Payment>> PostPayment(
+            [FromBody] PaymentCreateRequest request
+        )
         {
+            Console.WriteLine("GOT POST REQUEST");
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(request));
+
+            var payment = new Payment
+            {
+                Name = request.Name,
+                Note = request.Note,
+                Type = request.Type,
+                Amount = request.Amount,
+                Date = request.Date,
+                AccountId = request.AccountId,
+                MainCategoryId = request.MainCategoryId > -1 ? request.MainCategoryId : null,
+                SubCategoryId = request.SubCategoryId > -1 ? request.SubCategoryId : null,
+            };
+
             _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
 
