@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 
 
 const LoginPage = () => {
@@ -31,6 +32,13 @@ const LoginPage = () => {
                     <TextInputComponent placeholder={"Email"} keyboardType={"email-address"} value={email} onChange={setEmail} />
                     <TextInputComponent placeholder={"Password"} hidden={true} value={password} onChange={setPassword} />
                     <ButtonComponent label="Login" onPress={handleLogin} />
+                    <ButtonComponent label="Create account" onPress={() => {
+                        WebBrowser.openBrowserAsync("https://subunequal-marcy-unsatirized.ngrok-free.dev/Identity/Account/Register", {
+                            enableBarCollapsing: false,
+                            readerMode: false,
+                            presentationStyle: WebBrowser.WebBrowserPresentationStyle.OVER_FULL_SCREEN
+                        });}
+                    } />
                 </View>
             </LinearGradient >
         </TouchableWithoutFeedback>
