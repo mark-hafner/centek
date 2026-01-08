@@ -1,10 +1,9 @@
 import { gradientStyle, styles } from '@/components/styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, StyleProp, Text, TextInput, View, ViewStyle } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 //! BUTTON
@@ -17,7 +16,7 @@ type ButtonProps = {
 export function ButtonComponent({ label, onPress, customStyle }: ButtonProps) {
 
     return (
-        <View style={styles.buttonContainer}>
+        <View style={[styles.buttonContainer, customStyle]}>
             <Pressable style={styles.button} onPress={onPress}>
                 <Text style={styles.buttonLabel}>{label}</Text>
             </Pressable>
@@ -152,7 +151,7 @@ export const DropdownAddCustomComponent = ({ customStyle, data, dropdownLabel, v
 
 //! TEXT AREA INPUT
 type TextInputProp = {
-    placeholder: string;
+    placeholder?: string;
     keyboardType?: KeyboardTypeOptions;
     hidden?: boolean;
     value?: string;
@@ -175,6 +174,66 @@ export const TextInputComponent = ({ placeholder = '', keyboardType = 'default',
             />
         </View >)
 }
+
+interface NumberInputProps extends Omit<TextInputProp, 'onChange' | 'value'> {
+    value?: number;
+    onChange: (data: number | undefined) => void
+};
+
+export function NumberInputComponent({
+    value,
+    onChange,
+    placeholder = '0,00',
+    customStyle,
+}: NumberInputProps) {
+    const maxValue = 9_999_999_999_999;
+
+    const [cents, setCents] = useState(
+        value !== undefined ? Math.round(value * 100) : 0
+    );
+
+    const maxCents =
+        maxValue !== undefined ? Math.round(maxValue * 100) : undefined;
+
+    useEffect(() => {
+        if (value !== undefined) {
+            const next = Math.round(value * 100);
+            if (next !== cents) {
+                setCents(next);
+            }
+        }
+    }, [value]);
+
+    const format = (c: number) => {
+        const euros = Math.floor(c / 100);
+        const decimals = c % 100;
+        return `${euros},${decimals.toString().padStart(2, '0')}`;
+    };
+
+    const handleChangeText = (text: string) => {
+        const digits = text.replace(/\D/g, '');
+        const nextCents = digits === '' ? 0 : parseInt(digits, 10);
+
+        if (maxCents !== undefined && nextCents > maxCents) {
+            return;
+        }
+
+        setCents(nextCents);
+        onChange(nextCents / 100);
+    };
+
+    return (
+        <View style={[styles.textInputContainer, customStyle]} >
+            <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={format(cents)}
+                placeholder={placeholder}
+                onChangeText={handleChangeText}
+            />
+        </View>
+    );
+};
 
 //! TEXT AREA INPUT
 type DatePickerProps = {

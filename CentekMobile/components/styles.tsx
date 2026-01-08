@@ -20,6 +20,20 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: "100%",
   },
+  rowContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  loginContainer: {
+    flex: 1 / 3,
+    marginTop: "50%",
+    flexDirection: "column",
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: "100%",
+  },
 
   text: {
     color: '#000',
@@ -33,15 +47,7 @@ export const styles = StyleSheet.create({
 
   // TEXT INPUT
   // Container za screens
-  loginContainer: {
-    flex: 1,
-    marginTop: "50%",
-    flexDirection: "column",
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: "100%",
-    height: "40%"
-  },
+
   textInputContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -57,6 +63,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#fff",
   },
+
 
   // BUTTON
   buttonContainer: {
