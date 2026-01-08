@@ -81,91 +81,89 @@ export default function StatsView() {
   );
 
   return (
-    <LoaderScreen loading={loading} title="Stats">
-      <LinearGradient
-        {...gradientStyle}
-        style={[styles.background, { flex: 1 }]}
-      >
-        <Stack.Screen options={{ title: 'Stats' }} />
+    <LinearGradient
+      {...gradientStyle}
+      style={[styles.background]}
+    >
+      <Stack.Screen options={{ title: 'Stats' , headerShown: (isLandscape) ? false : true}} />
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isLandscape ? false : modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={[styles.container, { padding: 16 }]}>
-            <View style={styles.modalView}>
-              <ScrollView style={styles.modalScroll}>
-                <MultiSelectComponent
-                  data={accountDropdown}
-                  selecting="accounts"
-                  value={accountIds}
-                  onChange={setAccountIds}
-                />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isLandscape ? false : modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={[styles.container, { padding: 16 }]}>
+          <View style={styles.modalView}>
+            <ScrollView style={styles.modalScroll}>
+              <MultiSelectComponent
+                data={accountDropdown}
+                selecting="accounts"
+                value={accountIds}
+                onChange={setAccountIds}
+              />
 
-                <MultiSelectComponent
-                  data={mainCategoriesDropdown}
-                  selecting="main categories"
-                  value={mainCategoryIds}
-                  onChange={setMainCategoryIds}
-                />
+              <MultiSelectComponent
+                data={mainCategoriesDropdown}
+                selecting="main categories"
+                value={mainCategoryIds}
+                onChange={setMainCategoryIds}
+              />
 
-                <MultiSelectComponent
-                  data={subCategoriesDropdown}
-                  selecting="sub categories"
-                  value={subCategoryIds}
-                  onChange={setSubCategoryIds}
-                />
+              <MultiSelectComponent
+                data={subCategoriesDropdown}
+                selecting="sub categories"
+                value={subCategoryIds}
+                onChange={setSubCategoryIds}
+              />
 
-                <DropdownComponent
-                  data={[
-                    { label: 'All', value: undefined },
-                    { label: 'Income', value: true },
-                    { label: 'Expense', value: false },
-                  ]}
-                  value={type}
-                  dropdownLabel="type"
-                  onChange={setType}
-                />
-                <View style={styles.dateTimePickerContainer}>
-                  <View style={[styles.container, { padding: 0 }]}>
-                    <Text>FROM</Text>
-                    <View style={{ alignItems: "center" }}>
-                      <DatePickerComponent value={fromDate} onChange={setFromDate} />
-                    </View>
-                  </View>
-                  <View style={[styles.container, { paddingRight: 20 }]}>
-                    <Text>TO</Text>
-                    <View style={{ alignItems: "center" }}>
-                      <DatePickerComponent value={toDate} onChange={setToDate} />
-                    </View>
+              <DropdownComponent
+                data={[
+                  { label: 'All', value: undefined },
+                  { label: 'Income', value: true },
+                  { label: 'Expense', value: false },
+                ]}
+                value={type}
+                dropdownLabel="type"
+                onChange={setType}
+              />
+              <View style={styles.dateTimePickerContainer}>
+                <View style={[styles.container, { padding: 0 }]}>
+                  <Text>FROM</Text>
+                  <View style={{ alignItems: "center" }}>
+                    <DatePickerComponent value={fromDate} onChange={setFromDate} />
                   </View>
                 </View>
-              </ScrollView>
-              <ButtonComponent label={"Close Filters"} onPress={() => setModalVisible(false)} ></ButtonComponent>
-            </View>
+                <View style={[styles.container, { paddingRight: 20 }]}>
+                  <Text>TO</Text>
+                  <View style={{ alignItems: "center" }}>
+                    <DatePickerComponent value={toDate} onChange={setToDate} />
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
+            <ButtonComponent label={"Close Filters"} onPress={() => setModalVisible(false)} ></ButtonComponent>
           </View>
-        </Modal>
-        {!isLandscape && (
-          <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} />
-        )}
-        <View style={[styles.container, { paddingBottom: 20 }, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
-          <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
-            TOTAL: {stats[0].total.toFixed(2)} €
-          </Text>
-          <ScrollView horizontal>
-            <FlatList
-              data={stats[0].payments}
-              keyExtractor={(item) => item.id.toString()}
-              ListHeaderComponent={TableHeader}
-              renderItem={({ item }) => <PaymentRow p={item} />}
-              style={{ marginTop: 8, paddingBottom: 20 }}
-            />
-          </ScrollView>
         </View>
-      </LinearGradient>
-    </LoaderScreen >
+      </Modal>
+      {!isLandscape && (
+        <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} />
+      )}
+      <View style={[styles.container, { paddingBottom: 20 }, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
+        <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
+          TOTAL: {stats[0].total.toFixed(2)} €
+        </Text>
+        <ScrollView horizontal>
+          <FlatList
+            data={stats[0].payments}
+            keyExtractor={(item) => item.id.toString()}
+            ListHeaderComponent={TableHeader}
+            renderItem={({ item }) => <PaymentRow p={item} />}
+            style={{ marginTop: 8, paddingBottom: 20 }}
+          />
+        </ScrollView>
+      </View>
+    </LinearGradient>
   );
 }
