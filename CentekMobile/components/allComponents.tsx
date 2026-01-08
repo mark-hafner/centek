@@ -2,7 +2,7 @@ import { gradientStyle, styles } from '@/components/styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useState } from 'react';
-import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, StyleProp, Text, TextInput, View, ViewStyle } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -11,9 +11,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 type ButtonProps = {
     label?: string;
     onPress?: () => void;
+    customStyle?: StyleProp<ViewStyle>;
 };
 
-export function ButtonComponent({ label, onPress }: ButtonProps) {
+export function ButtonComponent({ label, onPress, customStyle }: ButtonProps) {
 
     return (
         <View style={styles.buttonContainer}>
@@ -22,26 +23,23 @@ export function ButtonComponent({ label, onPress }: ButtonProps) {
             </Pressable>
         </View>
     );
-}
+};
 
-export default function ToggleButtonComponent({ onPress }: ButtonProps) {
+export default function ToggleButtonComponent({ onPress, customStyle }: ButtonProps) {
     const [active, setActive] = useState(true);
 
     return (
-        <Pressable
-            onPress={() => { setActive(!active); if (onPress !== undefined) onPress() }}
-            style={{
-                padding: 12,
-                borderRadius: 8,
-                backgroundColor: active ? '#4CAF50' : '#ccc',
-            }}
-        >
-            <Text style={{ color: 'white', paddingHorizontal: 6 }}>
-                {active ? '+' : '-'}
-            </Text>
-        </Pressable>
-    );
-}
+        <View style={[styles.buttonContainer, { width: "15%" }, customStyle]}>
+            <Pressable
+                onPress={() => { setActive(!active); if (onPress !== undefined) onPress() }}
+                style={[styles.button, { backgroundColor: active ? '#0F0' : '#F00', }]}
+            >
+                <Text style={styles.buttonLabel}>
+                    {active ? '+' : '-'}
+                </Text>
+            </Pressable>
+        </View>);
+};
 
 
 
@@ -56,12 +54,12 @@ type MultiSelectProps = {
     selecting: string;
     value?: any[];
     onChange: (values: any[] | any) => void;
+    customStyle?: StyleProp<ViewStyle>;
 };
 
-export const MultiSelectComponent = ({ data, selecting, value, onChange }: MultiSelectProps) => {
-
+export const MultiSelectComponent = ({ data, selecting, value, onChange, customStyle }: MultiSelectProps) => {
     return (
-        <View style={styles.dropdownContainer}>
+        <View style={[styles.dropdownContainer, customStyle]}>
             <MultiSelect
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
@@ -89,16 +87,17 @@ type DropdownProps = {
     dropdownLabel: string;
     value?: any;
     onChange: (values: any) => void;
+    customStyle?: StyleProp<ViewStyle>;
 };
 
-export const DropdownComponent = ({ data, dropdownLabel, value, onChange }: DropdownProps) => {
+export const DropdownComponent = ({ data, dropdownLabel, value, onChange, customStyle }: DropdownProps) => {
 
     return (
-        <View style={styles.dropdownContainer}>
+        <View style={[styles.dropdownContainer, customStyle]}>
             <Dropdown
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={[styles.selectedTextStyle, { paddingLeft: 20 }]}
+                selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
                 data={data}
                 search
@@ -117,7 +116,7 @@ export const DropdownComponent = ({ data, dropdownLabel, value, onChange }: Drop
 };
 
 
-export const DropdownAddCustomComponent = ({ data, dropdownLabel, value, onChange }: DropdownProps) => {
+export const DropdownAddCustomComponent = ({ customStyle, data, dropdownLabel, value, onChange }: DropdownProps) => {
     const [searchText, setSearchText] = useState('');
     const [customValue, setCustomValue] = useState('');
 
@@ -125,7 +124,7 @@ export const DropdownAddCustomComponent = ({ data, dropdownLabel, value, onChang
         d.label.toLowerCase() === searchText.toLowerCase()
     );
     return (
-        <View style={styles.dropdownContainer}>
+        <View style={[styles.dropdownContainer, customStyle]}>
             <Dropdown
                 style={styles.dropdown}
                 data={data}
@@ -158,20 +157,23 @@ type TextInputProp = {
     hidden?: boolean;
     value?: string;
     onChange: (text: string) => void;
+    customStyle?: StyleProp<ViewStyle>;
 };
 
-export const TextInputComponent = ({ placeholder = '', keyboardType = 'default', hidden = false, value, onChange }: TextInputProp) => {
+export const TextInputComponent = ({ placeholder = '', keyboardType = 'default', hidden = false, value, onChange, customStyle }: TextInputProp) => {
     return (
-        <TextInput
-            style={styles.input}
-            onChangeText={e => { onChange(e) }}
-            value={value}
-            autoCapitalize="none"
-            placeholderTextColor={"#000"}
-            secureTextEntry={hidden}
-            placeholder={placeholder}
-            keyboardType={keyboardType}
-        />)
+        <View style={[styles.textInputContainer, customStyle]} >
+            <TextInput
+                style={styles.input}
+                onChangeText={e => { onChange(e) }}
+                value={value}
+                autoCapitalize="none"
+                placeholderTextColor={"#000"}
+                secureTextEntry={hidden}
+                placeholder={placeholder}
+                keyboardType={keyboardType}
+            />
+        </View >)
 }
 
 //! TEXT AREA INPUT

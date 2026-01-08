@@ -35,19 +35,24 @@ export const styles = StyleSheet.create({
   // Container za screens
   loginContainer: {
     flex: 1,
-    paddingTop: "80%",
+    marginTop: "50%",
+    flexDirection: "column",
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    width: "100%"
+    width: "100%",
+    height: "40%"
+  },
+  textInputContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: "75%",
   },
   input: {
     height: 50,
-    width: "75%",
-    margin: 10,
+    width: "100%",
     borderColor: '#000',
     borderWidth: 2,
-    marginBottom: 12,
     paddingHorizontal: 20,
     borderRadius: 12,
     backgroundColor: "#fff",
@@ -57,15 +62,13 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     width: "60%",
     height: 50,
-    marginHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 3,
     alignSelf: 'center',
   },
   button: {
     backgroundColor: "#00aff5ff",
-    borderRadius: 16,
+    borderRadius: 12,
     width: '100%',
     height: '100%',
     alignItems: 'center',
@@ -74,6 +77,7 @@ export const styles = StyleSheet.create({
   buttonLabel: {
     color: '#fff',
     fontSize: 16,
+    textAlign: "center"
   },
 
   // DROPDOWN
@@ -82,20 +86,20 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    paddingVertical: 6,
     width: "100%",
   },
   dropdown: {
     height: 50,
-    width: "70%",
+    width: "75%",
     alignSelf: 'center',
     backgroundColor: '#fff',
-    borderWidth: 1,
-    borderRadius: 10,
+    borderWidth: 2,
+    borderRadius: 12,
+    paddingHorizontal: 20,
   },
   placeholderStyle: {
     fontSize: 16,
-    paddingLeft: 20
   },
   selectedTextStyle: {
     fontSize: 16,
