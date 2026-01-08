@@ -5,7 +5,7 @@ import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { FlatList, Modal, Platform, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 
 export default function OverviewView() {
@@ -35,7 +35,7 @@ export default function OverviewView() {
       );
     
     
-      if (loading || !stats.length) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
+      if (loading || !stats.length) return <LoaderScreen loading={loading} title="Overview" children={undefined}></LoaderScreen>;
     
       const accountDropdown = stats[0].accounts.map(a => ({
         label: a.name,
