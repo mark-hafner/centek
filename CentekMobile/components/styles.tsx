@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#00aff5ff",
-    borderRadius: 16,
+    borderRadius: 12,
     width: '100%',
     height: '100%',
     alignItems: 'center',
@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
   buttonLabel: {
     color: '#fff',
     fontSize: 16,
-    paddingHorizontal: "10%"
+    textAlign: "center"
   },
 
   // DROPDOWN

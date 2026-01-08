@@ -32,13 +32,9 @@ export default function ToggleButtonComponent({ onPress, customStyle }: ButtonPr
         <View style={[styles.buttonContainer, { width: "15%" }, customStyle]}>
             <Pressable
                 onPress={() => { setActive(!active); if (onPress !== undefined) onPress() }}
-                style={{
-                    padding: 12,
-                    borderRadius: 8,
-                    backgroundColor: active ? '#4CAF50' : '#ccc',
-                }}
+                style={[styles.button, { backgroundColor: active ? '#0F0' : '#F00', }]}
             >
-                <Text style={{ color: 'white', paddingHorizontal: 6 }}>
+                <Text style={styles.buttonLabel}>
                     {active ? '+' : '-'}
                 </Text>
             </Pressable>
