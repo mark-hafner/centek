@@ -18,7 +18,7 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
         };
         if (body && method !== "GET") {
             options.body = JSON.stringify(body);
-        }
+        };
 
         const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
         // const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);

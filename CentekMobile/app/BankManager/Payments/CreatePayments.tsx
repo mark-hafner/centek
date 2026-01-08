@@ -1,14 +1,12 @@
 import ToggleButtonComponent, { ButtonComponent, DropdownAddCustomComponent, LoaderScreen, NumberInputComponent, TextInputComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
+import { paymentPostRequest } from '@/hooks/apiTypes';
 import { useGetAccounts } from '@/hooks/getHooks';
 import { usePostPayment } from '@/hooks/postHooks';
-import { Payment } from '@/hooks/types';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
-
-
 
 
 export default function CreatePayment() {
@@ -16,7 +14,7 @@ export default function CreatePayment() {
 
     const [pName, setPName] = useState<string>('');
     const [pAmount, setPAmount] = useState<number>(0);
-    const [pType, setPType] = useState<boolean>(true);
+    const [pType, setPType] = useState<boolean>(false);
     const [pAccountId, setPAccount] = useState<number>();
 
     const { accounts, loading, error } = useGetAccounts();
@@ -27,15 +25,18 @@ export default function CreatePayment() {
     const handleCreate = () => {
         if (!pAccountId) return alert("Select an account");
 
-        const payment: Payment = {
-            name: pName,
-            note: '',
-            type: pType,
-            amount: pAmount,
-            account: accounts.find(a => a.id === pAccountId),
+        const newPayment: paymentPostRequest = {
+            Name: pName,
+            // note: pNote,
+            Type: pType,
+            Amount: pAmount,
+            Date: new Date().toLocaleDateString('en-CA'),
+            AccountId: pAccountId,
+            MainCategoryId: -1,
+            SubCategoryId: -1
         };
 
-        postPayment(payment);
+        postPayment(newPayment);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     };
 
