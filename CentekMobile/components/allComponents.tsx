@@ -234,18 +234,16 @@ type LoaderScreenProps = {
 
 export function LoaderScreen({ loading, title = '', children }: LoaderScreenProps) {
     return (
-        <SafeAreaProvider>
-            <LinearGradient {...gradientStyle} style={styles.background}>
-                {loading ? (
-                    <View style={styles.loaderContainer}>
-                        <ActivityIndicator size="large" color="#fff" />
-                        <Text style={styles.loaderText}>Loading...</Text>
-                    </View>
-                ) : (
-                    children
-                )}
-            </LinearGradient>
-        </SafeAreaProvider>
+        <LinearGradient {...gradientStyle} style={styles.background}>
+            {loading ? (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="large" color="#fff" />
+                    <Text style={styles.loaderText}>Loading...</Text>
+                </View>
+            ) : (
+                children
+            )}
+        </LinearGradient>
     );
 }
 

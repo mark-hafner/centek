@@ -5,7 +5,7 @@ import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { FlatList, Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { FlatList, Modal, Platform, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 export default function StatsView() {
   ScreenOrientation();
@@ -18,7 +18,10 @@ export default function StatsView() {
   const [subCategoryIds, setSubCategoryIds] = useState<number[]>([]);
   const [type, setType] = useState<boolean | undefined>(undefined);
   const [modalVisible, setModalVisible] = useState(false);
-  const [fromDate, setFromDate] = useState(new Date());
+  const [fromDate, setFromDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
   const [toDate, setToDate] = useState(new Date());
 
   // get stats data
@@ -81,14 +84,14 @@ export default function StatsView() {
     <LoaderScreen loading={loading} title="Stats">
       <LinearGradient
         {...gradientStyle}
-        style={styles.background}
+        style={[styles.background, { flex: 1 }]}
       >
         <Stack.Screen options={{ title: 'Stats' }} />
 
         <Modal
           animationType="slide"
           transparent={true}
-          visible={modalVisible}
+          visible={isLandscape ? false : modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}>
@@ -145,19 +148,22 @@ export default function StatsView() {
             </View>
           </View>
         </Modal>
-        <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} ></ButtonComponent>
-        <View style={[styles.container, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
+        {!isLandscape && (
+          <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} />
+        )}
+        <View style={[styles.container, { paddingBottom: 20 }, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
           <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
             TOTAL: {stats[0].total.toFixed(2)} €
           </Text>
-
-          <FlatList
-            data={stats[0].payments}
-            keyExtractor={(item) => item.id.toString()}
-            ListHeaderComponent={TableHeader}
-            renderItem={({ item }) => <PaymentRow p={item} />}
-            style={{ marginTop: 8 }}
-          />
+          <ScrollView horizontal>
+            <FlatList
+              data={stats[0].payments}
+              keyExtractor={(item) => item.id.toString()}
+              ListHeaderComponent={TableHeader}
+              renderItem={({ item }) => <PaymentRow p={item} />}
+              style={{ marginTop: 8, paddingBottom: 20 }}
+            />
+          </ScrollView>
         </View>
       </LinearGradient>
     </LoaderScreen >

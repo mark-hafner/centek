@@ -74,7 +74,6 @@ export const styles = StyleSheet.create({
   buttonLabel: {
     color: '#fff',
     fontSize: 16,
-    paddingHorizontal: "10%"
   },
 
   // DROPDOWN
@@ -188,5 +187,6 @@ export const styles = StyleSheet.create({
   cell: {
     flex: 1,
     fontSize: 12,
+    width: 100,
   },
 });
