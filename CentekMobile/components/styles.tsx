@@ -13,6 +13,30 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
 
+  screen: {
+    flex: 1,
+    width: '100%',
+  },
+
+  topHalf: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+
+  bottomHalf: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+
+  footer: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  
   // Container za screens
   container: {
     flex: 1,
@@ -21,6 +45,7 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   rowContainer: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -92,13 +117,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: "center",
     paddingVertical: 6,
-    width: "100%",
+    width: "75%",
   },
   dropdown: {
     height: 50,
-    width: "75%",
-    alignSelf: 'center',
+    width: "100%",
     backgroundColor: '#fff',
     borderWidth: 2,
     borderRadius: 12,
