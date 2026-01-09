@@ -1,6 +1,6 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useGetStats } from '@/hooks/getHooks';
+import { useGetPayments, useGetStats, usePaymentDropdowns } from '@/hooks/getHooks';
 import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
@@ -25,31 +25,28 @@ export default function StatsView() {
   const [toDate, setToDate] = useState(new Date());
 
   // get stats data
-  const { stats, loading } = useGetStats(
-    accountIds,
-    mainCategoryIds, subCategoryIds,
-    type,
-    fromDate.toLocaleDateString('en-CA'),
-    toDate.toLocaleDateString('en-CA')
+  const filters = {
+    accountIds: accountIds,
+    mainCategoryIds: mainCategoryIds,
+    subCategoryIds: subCategoryIds,
+    type: type,
+    fromDate: fromDate,
+    toDate: toDate
+  };
+
+  const { payments: stats, loading } = useGetPayments(
+    filters
   );
 
 
   if (loading || stats === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
 
-  const accountDropdown = stats.accounts.map(a => ({
-    label: a.name,
-    value: a.id,
-  }));
 
-  const mainCategoriesDropdown = stats.mainCategories.map(c => ({
-    label: c.name,
-    value: c.id,
-  }));
-
-  const subCategoriesDropdown = stats.subCategories.map(s => ({
-    label: s.name,
-    value: s.id,
-  }));
+  const {
+    accountDropdown,
+    mainCategoriesDropdown,
+    subCategoriesDropdown,
+  } = usePaymentDropdowns(stats);
 
   const TableHeader = () => (
     <View style={styles.rowHeader}>
@@ -151,12 +148,12 @@ export default function StatsView() {
         <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} />
       )}
       <View style={[styles.container, { paddingBottom: 20 }, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
-        <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
+        {/* <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
           TOTAL: {stats.total.toFixed(2)} €
-        </Text>
+        </Text> */}
         <ScrollView horizontal>
           <FlatList
-            data={stats.payments}
+            data={stats}
             keyExtractor={(item) => item.id.toString()}
             ListHeaderComponent={TableHeader}
             renderItem={({ item }) => <PaymentRow p={item} />}

@@ -1,8 +1,8 @@
-import { FetchQueryBuilder } from "@/services/utils";
+import { extractEntities, FetchQueryBuilder, filterPayments, PaymentFilters } from "@/services/utils";
 import { Account, MainCategory, Overview, Payment, Stats, SubCategory } from "./types";
 import { useApiGet } from './useApi';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Alert } from "react-native";
 // FUNCTIONS
 export const useGetOverview = () => {
@@ -121,41 +121,77 @@ export const useGetSubCategories = () => {
     return { subCategories, loading, error };
 };
 
-export const useGetPayments = () => {
-    const { data: apiData, loading, error } = useApiGet<Payment>('payments');
-    const [payments, setPayments] = useState<Payment[]>([]);
+export const useGetPayments = (filters?: PaymentFilters) => {
+  const { data: apiData, loading, error } = useApiGet<Payment>("payments");
+  const [payments, setPayments] = useState<Payment[]>([]);
 
-    useEffect(() => {
-        (async () => {
-            if (!loading && apiData && !error) {
-                try {
-                    await AsyncStorage.setItem('Payments', JSON.stringify(apiData));
-                    setPayments(apiData);
-                } catch (e) {
-                    console.error('Failed to store payments', e);
-                }
-            }
-        })();
-    }, [apiData, loading, error]);
+  // Shrani RAW payments v storage
+  useEffect(() => {
+    (async () => {
+      if (!loading && apiData && !error) {
+        try {
+          await AsyncStorage.setItem('Payments', JSON.stringify(apiData));
+          setPayments(apiData);
+        } catch (e) {
+          console.error('Failed to store payments', e);
+        }
+      }
+    })();
+  }, [apiData, loading, error]);
 
-    useEffect(() => {
-        (async () => {
-            if (error === 'No Internet Connection') {
-                try {
-                    const stored = await AsyncStorage.getItem('Payments');
-                    if (stored) {
-                        setPayments(JSON.parse(stored));
-                    } else {
-                        setPayments([]);
-                    }
-                } catch (e) {
-                    console.error('Failed to load payments from storage', e);
-                }
-            }
-        })();
-    }, [error]);
+  // Če ni neta, beri iz storage
+  useEffect(() => {
+    (async () => {
+      if (error === 'No Internet Connection') {
+        try {
+          const stored = await AsyncStorage.getItem('Payments');
+          if (stored) {
+            const parsed = JSON.parse(stored).map((p: any) => ({
+              ...p,
+              date: new Date(p.date) // ⬅️ pretvori nazaj v Date
+            }));
+            setPayments(parsed);
+          } else {
+            setPayments([]);
+          }
+        } catch (e) {
+          console.error('Failed to load payments from storage', e);
+        }
+      }
+    })();
+  }, [error]);
 
-    return { payments, loading, error };
+  // Filtrirani payments (memoizirano, da se ne računa vsaki render)
+  const filteredPayments = useMemo(() => {
+    if (!filters) return payments;
+    return filterPayments(payments, filters);
+  }, [payments, filters]);
+
+  return { payments: filteredPayments, loading, error };
+};
+
+export const usePaymentDropdowns = (payments: Payment[]) => {
+  return useMemo(() => {
+    const { accounts, mainCategories, subCategories } =
+      extractEntities(payments);
+
+    return {
+      accountDropdown: accounts.map(a => ({
+        label: a.name,
+        value: a.id,
+      })),
+
+      mainCategoriesDropdown: mainCategories.map(c => ({
+        label: c.name,
+        value: c.id,
+      })),
+
+      subCategoriesDropdown: subCategories.map(s => ({
+        label: s.name,
+        value: s.id,
+      })),
+    };
+  }, [payments]);
 };
 
 export const useGetStats = (

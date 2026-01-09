@@ -108,3 +108,45 @@ export function sortPaymentsByDate(payments: Payment[]) {
     (a, b) => b.date.getTime() - a.date.getTime()
   );
 }
+
+export interface PaymentFilters {
+  accountIds?: number[];
+  mainCategoryIds?: number[];
+  subCategoryIds?: number[];
+  type?: boolean; // true = income, false = expenseb
+  fromDate?: Date;
+  toDate?: Date;
+}
+
+export function filterPayments(
+  payments: Payment[],
+  filters: PaymentFilters
+): Payment[] {
+  return payments.filter(p => {
+    if (filters.accountIds && !filters.accountIds.includes(p.account.id)) return false;
+    if (filters.mainCategoryIds && !filters.mainCategoryIds.includes(p.mainCategory.id)) return false;
+    if (filters.subCategoryIds && !filters.subCategoryIds.includes(p.subCategory.id)) return false;
+    if (filters.type !== undefined && p.type !== filters.type) return false;
+    if (filters.fromDate && p.date < filters.fromDate) return false;
+    if (filters.toDate && p.date > filters.toDate) return false;
+    return true;
+  });
+}
+
+function uniqueById<T extends { id: number }>(items: T[]): T[] {
+  const map = new Map<number, T>();
+  items.forEach(item => map.set(item.id, item));
+  return Array.from(map.values());
+}
+
+export function extractEntities(payments: Payment[]) {
+  const accounts = uniqueById(payments.map(p => p.account));
+  const mainCategories = uniqueById(payments.map(p => p.mainCategory));
+  const subCategories = uniqueById(payments.map(p => p.subCategory));
+
+  return {
+    accounts,
+    mainCategories,
+    subCategories,
+  };
+}
