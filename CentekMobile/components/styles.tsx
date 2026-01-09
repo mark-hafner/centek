@@ -27,12 +27,11 @@ export const styles = StyleSheet.create({
   },
 
   loginContainer: {
-    flex: 1 / 3,
-    marginTop: "50%",
-    flexDirection: "column",
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: "100%",
+    width: '100%',
+    paddingHorizontal: 24,
   },
 
   text: {

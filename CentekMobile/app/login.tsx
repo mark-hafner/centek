@@ -28,18 +28,21 @@ const LoginPage = () => {
                 {...gradientStyle}
                 style={styles.background}
             >
+                <View style={{ flex: 1 }} />
                 <View style={styles.loginContainer}>
-                    <TextInputComponent placeholder={"Email"} keyboardType={"email-address"} value={email} onChange={setEmail} />
-                    <TextInputComponent placeholder={"Password"} hidden={true} value={password} onChange={setPassword} />
-                    <ButtonComponent label="Login" onPress={handleLogin} />
-                    <ButtonComponent label="Create account" onPress={() => {
+                    <TextInputComponent customStyle={{ marginBottom: 16 }} placeholder={"Email"} keyboardType={"email-address"} value={email} onChange={setEmail} />
+                    <TextInputComponent customStyle={{ marginBottom: 16 }} placeholder={"Password"} hidden={true} value={password} onChange={setPassword} />
+                    <ButtonComponent customStyle={{ marginBottom: 16 }} label="Login" onPress={handleLogin} />
+                    <ButtonComponent customStyle={{ marginBottom: 16 }} label="Create account" onPress={() => {
                         WebBrowser.openBrowserAsync("https://subunequal-marcy-unsatirized.ngrok-free.dev/Identity/Account/Register", {
                             enableBarCollapsing: false,
                             readerMode: false,
                             presentationStyle: WebBrowser.WebBrowserPresentationStyle.OVER_FULL_SCREEN
-                        });}
+                        });
+                    }
                     } />
                 </View>
+                <View style={{ flex: 1 }} />
             </LinearGradient >
         </TouchableWithoutFeedback>
     );

@@ -196,6 +196,7 @@ namespace Centek.Controllers_Api
                             p.Amount,
                             p.Type,
                             p.Date,
+                            p.Note,
 
                             Account = p.Account == null
                                 ? null

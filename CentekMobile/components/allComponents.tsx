@@ -271,8 +271,7 @@ export const DatePickerComponent = ({ value, onChange }: DatePickerProps) => {
     // Android – gumb + dialog
     return (
         <View>
-            <ButtonComponent
-                onPress={() => setShow(true)} label={"Calender"} />
+            <ButtonComponent customStyle={{ width: 100 }} onPress={() => setShow(true)} label={"Calender"} />
 
 
             {show && (
