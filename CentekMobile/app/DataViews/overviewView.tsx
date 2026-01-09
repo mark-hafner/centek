@@ -35,19 +35,19 @@ export default function OverviewView() {
       );
     
     
-      if (loading || !stats.length) return <LoaderScreen loading={loading} title="Overview" children={undefined}></LoaderScreen>;
+      if (loading || stats === null) return <LoaderScreen loading={loading} title="Overview" children={undefined}></LoaderScreen>;
     
-      const accountDropdown = stats[0].accounts.map(a => ({
+      const accountDropdown = stats.accounts.map(a => ({
         label: a.name,
         value: a.id,
       }));
     
-      const mainCategoriesDropdown = stats[0].mainCategories.map(c => ({
+      const mainCategoriesDropdown = stats.mainCategories.map(c => ({
         label: c.name,
         value: c.id,
       }));
     
-      const subCategoriesDropdown = stats[0].subCategories.map(s => ({
+      const subCategoriesDropdown = stats.subCategories.map(s => ({
         label: s.name,
         value: s.id,
       }));

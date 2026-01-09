@@ -34,19 +34,19 @@ export default function StatsView() {
   );
 
 
-  if (loading || !stats.length) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
+  if (loading || stats === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
 
-  const accountDropdown = stats[0].accounts.map(a => ({
+  const accountDropdown = stats.accounts.map(a => ({
     label: a.name,
     value: a.id,
   }));
 
-  const mainCategoriesDropdown = stats[0].mainCategories.map(c => ({
+  const mainCategoriesDropdown = stats.mainCategories.map(c => ({
     label: c.name,
     value: c.id,
   }));
 
-  const subCategoriesDropdown = stats[0].subCategories.map(s => ({
+  const subCategoriesDropdown = stats.subCategories.map(s => ({
     label: s.name,
     value: s.id,
   }));
@@ -152,11 +152,11 @@ export default function StatsView() {
       )}
       <View style={[styles.container, { paddingBottom: 20 }, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
         <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
-          TOTAL: {stats[0].total.toFixed(2)} €
+          TOTAL: {stats.total.toFixed(2)} €
         </Text>
         <ScrollView horizontal>
           <FlatList
-            data={stats[0].payments}
+            data={stats.payments}
             keyExtractor={(item) => item.id.toString()}
             ListHeaderComponent={TableHeader}
             renderItem={({ item }) => <PaymentRow p={item} />}

@@ -159,21 +159,46 @@ export const useGetPayments = () => {
 };
 
 export const useGetStats = (
-    accountIds?: any[],
-    mainCategoryIds?: any[],
-    subCategoryIds?: any[],
+    accountIds?: number[],
+    mainCategoryIds?: number[],
+    subCategoryIds?: number[],
     type?: boolean,
-    fromDate?: String,
-    toDate?: String,
+    fromDate?: string,
+    toDate?: string,
 ) => {
     const query = FetchQueryBuilder({
-        accountIds: accountIds,
-        mainCategoryIds: mainCategoryIds,
-        subCategoryIds: subCategoryIds,
-        type: type,
-        fromDate: fromDate,
-        toDate: toDate,
+        accountIds,
+        mainCategoryIds,
+        subCategoryIds,
+        type,
+        fromDate,
+        toDate,
     });
+
     const { data, loading, error } = useApiGet<Stats>(`stats?${query}`);
-    return { stats: data, loading, error };
-}
+    const apiData = data[0];
+
+    const [stats, setStats] = useState<Stats | null>(null);
+
+    // Online
+    useEffect(() => {
+        if (apiData && !loading && !error) {
+            setStats(apiData);
+            AsyncStorage.setItem("Stats", JSON.stringify(apiData));
+        }
+    }, [apiData, loading, error]);
+
+    // Offline
+    useEffect(() => {
+        if (error === "No Internet Connection") {
+            (async () => {
+                const stored = await AsyncStorage.getItem("Stats");
+                if (stored) {
+                    setStats(JSON.parse(stored) as Stats);
+                }
+            })();
+        }
+    }, [error]);
+
+    return { stats, loading, error };
+};

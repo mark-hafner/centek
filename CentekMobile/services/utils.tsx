@@ -3,6 +3,7 @@ import * as SO from 'expo-screen-orientation';
 import { useEffect, useState } from "react";
 import { getUserId } from "./userData";
 import { Alert } from "react-native";
+import { Payment } from "@/hooks/types";
 
 
 //! SEND API REQUEST
@@ -81,3 +82,29 @@ export function useLoggedIn() {
     return loggedIn;
 }
 
+
+//! PAYMENTS FOR STATS...
+export async function getPaymentsFromStorage(): Promise<Payment[]> {
+  try {
+    const stored = await AsyncStorage.getItem("Payments");
+
+    if (!stored) return [];
+
+    const parsed = JSON.parse(stored) as any[];
+
+    return parsed.map(p => ({
+      ...p,
+      date: new Date(p.date),
+    })) as Payment[];
+
+  } catch (e) {
+    console.error("Failed to read payments from storage", e);
+    return [];
+  }
+}
+
+export function sortPaymentsByDate(payments: Payment[]) {
+  return payments.sort(
+    (a, b) => b.date.getTime() - a.date.getTime()
+  );
+}
