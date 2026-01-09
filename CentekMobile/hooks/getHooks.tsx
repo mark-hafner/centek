@@ -1,48 +1,43 @@
 import { FetchQueryBuilder } from "@/services/utils";
 import { Account, MainCategory, Overview, Payment, Stats, SubCategory } from "./types";
 import { useApiGet } from './useApi';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { useReadFromDevice, useStoreToDevice } from "@/services/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 // FUNCTIONS
+
 export const useGetOverview = () => {
-    const { data, loading, error } = useApiGet<Overview>('overview');
-    return { accounts: data, loading, error };
+    const { data: apiData, loading, error } = useApiGet<Overview>('overview');
+    const [overview, setOverview] = useState<Overview[]>([]);
+    const isOffline = error === "No Internet Connection";
+
+    // online update
+    useEffect(() => {
+        if (!loading && apiData && !error) {
+            setOverview(apiData);
+        }
+    }, [apiData, loading, error]);
+
+    useStoreToDevice('Overview', apiData, loading, error);
+    useReadFromDevice('Overview', isOffline, setOverview);
+
+    return { overview, loading, error };
 };
 
 export const useGetAccounts = () => {
     const { data: apiData, loading, error } = useApiGet<Account>('accounts');
     const [accounts, setAccounts] = useState<Account[]>([]);
+    const isOffline = error === "No Internet Connection";
 
     useEffect(() => {
-        (async () => {
-            if (!loading && apiData && !error) {
-                try {
-                    await AsyncStorage.setItem('Accounts', JSON.stringify(apiData));
-                    setAccounts(apiData);
-                } catch (e) {
-                    console.error('Failed to store accounts', e);
-                }
-            }
-        })();
+        if (!loading && apiData && !error) {
+            setAccounts(apiData);
+        }
     }, [apiData, loading, error]);
 
-    useEffect(() => {
-        (async () => {
-            if (error === 'No Internet Connection') {
-                try {
-                    const stored = await AsyncStorage.getItem('Accounts');
-                    if (stored) {
-                        setAccounts(JSON.parse(stored));
-                    } else {
-                        setAccounts([]);
-                    }
-                } catch (e) {
-                    console.error('Failed to load accounts from storage', e);
-                }
-            }
-        })();
-    }, [error]);
+    useStoreToDevice('Accounts', apiData, loading, error);
+    useReadFromDevice('Accounts', isOffline, setAccounts);
 
     return { accounts, loading, error };
 };
@@ -50,36 +45,16 @@ export const useGetAccounts = () => {
 export const useGetMainCategories = () => {
     const { data: apiData, loading, error } = useApiGet<MainCategory>('mainCategories');
     const [mainCategories, setMainCategories] = useState<MainCategory[]>([]);
+    const isOffline = error === "No Internet Connection";
 
     useEffect(() => {
-        (async () => {
-            if (!loading && apiData && !error) {
-                try {
-                    await AsyncStorage.setItem('Main Categories', JSON.stringify(apiData));
-                    setMainCategories(apiData);
-                } catch (e) {
-                    console.error('Failed to store main categories', e);
-                }
-            }
-        })();
+        if (!loading && apiData && !error) {
+            setMainCategories(apiData);
+        }
     }, [apiData, loading, error]);
 
-    useEffect(() => {
-        (async () => {
-            if (error === 'No Internet Connection') {
-                try {
-                    const stored = await AsyncStorage.getItem('Main Categories');
-                    if (stored) {
-                        setMainCategories(JSON.parse(stored));
-                    } else {
-                        setMainCategories([]);
-                    }
-                } catch (e) {
-                    console.error('Failed to load main categories from storage', e);
-                }
-            }
-        })();
-    }, [error]);
+    useStoreToDevice('MainCategories', apiData, loading, error);
+    useReadFromDevice('MainCategories', isOffline, setMainCategories);
 
     return { mainCategories, loading, error };
 };
@@ -87,36 +62,16 @@ export const useGetMainCategories = () => {
 export const useGetSubCategories = () => {
     const { data: apiData, loading, error } = useApiGet<SubCategory>('subCategories');
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+    const isOffline = error === "No Internet Connection";
 
     useEffect(() => {
-        (async () => {
-            if (!loading && apiData && !error) {
-                try {
-                    await AsyncStorage.setItem('Sub Categories', JSON.stringify(apiData));
-                    setSubCategories(apiData);
-                } catch (e) {
-                    console.error('Failed to store sub categories', e);
-                }
-            }
-        })();
+        if (!loading && apiData && !error) {
+            setSubCategories(apiData);
+        }
     }, [apiData, loading, error]);
 
-    useEffect(() => {
-        (async () => {
-            if (error === 'No Internet Connection') {
-                try {
-                    const stored = await AsyncStorage.getItem('Sub Categories');
-                    if (stored) {
-                        setSubCategories(JSON.parse(stored));
-                    } else {
-                        setSubCategories([]);
-                    }
-                } catch (e) {
-                    console.error('Failed to load sub categories from storage', e);
-                }
-            }
-        })();
-    }, [error]);
+    useStoreToDevice('SubCategories', apiData, loading, error);
+    useReadFromDevice('SubCategories', isOffline, setSubCategories);
 
     return { subCategories, loading, error };
 };
@@ -124,36 +79,16 @@ export const useGetSubCategories = () => {
 export const useGetPayments = () => {
     const { data: apiData, loading, error } = useApiGet<Payment>('payments');
     const [payments, setPayments] = useState<Payment[]>([]);
+    const isOffline = error === "No Internet Connection";
 
     useEffect(() => {
-        (async () => {
-            if (!loading && apiData && !error) {
-                try {
-                    await AsyncStorage.setItem('Payments', JSON.stringify(apiData));
-                    setPayments(apiData);
-                } catch (e) {
-                    console.error('Failed to store payments', e);
-                }
-            }
-        })();
+        if (!loading && apiData && !error) {
+            setPayments(apiData);
+        }
     }, [apiData, loading, error]);
 
-    useEffect(() => {
-        (async () => {
-            if (error === 'No Internet Connection') {
-                try {
-                    const stored = await AsyncStorage.getItem('Payments');
-                    if (stored) {
-                        setPayments(JSON.parse(stored));
-                    } else {
-                        setPayments([]);
-                    }
-                } catch (e) {
-                    console.error('Failed to load payments from storage', e);
-                }
-            }
-        })();
-    }, [error]);
+    useStoreToDevice('Payments', apiData, loading, error);
+    useReadFromDevice('Payments', isOffline, setPayments);
 
     return { payments, loading, error };
 };
@@ -166,39 +101,44 @@ export const useGetStats = (
     fromDate?: string,
     toDate?: string,
 ) => {
-    const query = FetchQueryBuilder({
-        accountIds,
-        mainCategoryIds,
-        subCategoryIds,
-        type,
-        fromDate,
-        toDate,
-    });
-
-    const { data, loading, error } = useApiGet<Stats>(`stats?${query}`);
-    const apiData = data[0];
+    const query = FetchQueryBuilder({ accountIds, mainCategoryIds, subCategoryIds, type, fromDate, toDate });
+    const { data: apiDataArr, loading, error } = useApiGet<Stats>(`stats?${query}`);
+    const apiData = apiDataArr?.[0] ?? null;
 
     const [stats, setStats] = useState<Stats | null>(null);
+    const isOffline = error === "No Internet Connection";
 
-    // Online
     useEffect(() => {
-        if (apiData && !loading && !error) {
+        if (!loading && apiData && !error) {
             setStats(apiData);
-            AsyncStorage.setItem("Stats", JSON.stringify(apiData));
         }
     }, [apiData, loading, error]);
 
-    // Offline
     useEffect(() => {
-        if (error === "No Internet Connection") {
+        if (!loading && apiData && !error) {
             (async () => {
-                const stored = await AsyncStorage.getItem("Stats");
-                if (stored) {
-                    setStats(JSON.parse(stored) as Stats);
+                try {
+                    await AsyncStorage.setItem('Stats', JSON.stringify(apiData));
+                } catch (e) {
+                    console.error(`Failed to store Stats`, e);
                 }
             })();
         }
-    }, [error]);
+    }, [apiData, loading, error]);
+
+    useEffect(() => {
+        if (!isOffline) return;
+
+        (async () => {
+            try {
+                const stored = await AsyncStorage.getItem('stats');
+                setStats(stored ? (JSON.parse(stored)) : null);
+            } catch (e) {
+                console.error(`Failed to load Stats`, e);
+                setStats(null);
+            }
+        })();
+    }, [isOffline]);
 
     return { stats, loading, error };
 };

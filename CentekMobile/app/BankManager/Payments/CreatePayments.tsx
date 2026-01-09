@@ -53,15 +53,15 @@ export default function CreatePayment() {
             MainCategoryId: pMainCategoryId,
             SubCategoryId: pSubCategoryId
         };
-        console.log(newPayment);
-        // const { success } = await postPayment(newPayment);
-        // if (!success) {
-        //     Alert.alert("Error", "Can't create payment rn");
-        // } else {
-        //     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        //     Alert.alert('Success', 'Created Payment');
-        //     router.back();
-        // }
+        // console.log(newPayment);
+        const { success } = await postPayment(newPayment);
+        if (!success) {
+            Alert.alert("Error", "Can't create payment rn");
+        } else {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            Alert.alert('Success', 'Created Payment');
+            router.back();
+        }
     };
 
 

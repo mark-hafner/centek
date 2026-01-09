@@ -1,34 +1,41 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
+export function useStoreToDevice<T>(
+  key: string,
+  data: T[],
+  loading: boolean,
+  error: string | null
+) {
+  useEffect(() => {
+    if (loading || error || !data) return;
 
-export async function storeToDevice<T>(item: string, apiData: T[], loading: boolean, error: string | null) {
-    if (!loading && apiData && !error) {
-        try {
-            await AsyncStorage.setItem(item, JSON.stringify(apiData));
-        } catch (e) {
-            console.error('Failed to store accounts', e);
-        }
-    }
+    (async () => {
+      try {
+        await AsyncStorage.setItem(key, JSON.stringify(data));
+      } catch (e) {
+        console.error(`AsyncStorage save failed: ${key}`, e);
+      }
+    })();
+  }, [key, data, loading, error]);
 }
 
-
-export async function readFromDevice<T>(
-  item: string,
-  error: string | null,
-  setFunction: Dispatch<SetStateAction<T[]>>
+export function useReadFromDevice<T>(
+  key: string,
+  isOffline: boolean,
+  setState: Dispatch<SetStateAction<T[]>>
 ) {
-  if (error === 'No Internet Connection') {
-    try {
-      const stored = await AsyncStorage.getItem(item);
+  useEffect(() => {
+    if (!isOffline) return;
 
-      if (stored) {
-        setFunction(JSON.parse(stored) as T[]);
-      } else {
-        setFunction([]);
+    (async () => {
+      try {
+        const stored = await AsyncStorage.getItem(key);
+        setState(stored ? JSON.parse(stored) : []);
+      } catch (e) {
+        console.error(`AsyncStorage read failed: ${key}`, e);
+        setState([]);
       }
-    } catch (e) {
-      console.error('Failed to load ' + item + ' from storage', e);
-    }
-  }
+    })();
+  }, [key, isOffline, setState]);
 }
