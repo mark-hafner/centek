@@ -1,6 +1,9 @@
 import { FetchQueryBuilder } from "@/services/utils";
 import { Account, MainCategory, Overview, Stats, SubCategory } from "./types";
 import { useApiGet } from './useApi';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+import { Alert } from "react-native";
 // FUNCTIONS
 export const useGetOverview = () => {
     const { data, loading, error } = useApiGet<Overview>('overview');
@@ -8,8 +11,47 @@ export const useGetOverview = () => {
 };
 
 export const useGetAccounts = () => {
-    const { data, loading, error } = useApiGet<Account>('accounts');
-    return { accounts: data, loading, error };
+    const { data: apiData, loading, error } = useApiGet<Account>('accounts');
+    const [accounts, setAccounts] = useState<Account[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            if (!loading && apiData && !error) {
+                try {
+                    await AsyncStorage.setItem('Accounts', JSON.stringify(apiData));
+                    setAccounts(apiData);
+                } catch (e) {
+                    console.error('Failed to store accounts', e);
+                }
+            }
+        })();
+    }, [apiData, loading, error]);
+
+    useEffect(() => {
+        (async () => {
+            if (error === 'No Internet Connection') {
+                try {
+                    const stored = await AsyncStorage.getItem('Accounts');
+                    if (stored) {
+                        setAccounts(JSON.parse(stored));
+                    } else {
+                        setAccounts([]);
+                    }
+                } catch (e) {
+                    console.error('Failed to load accounts from storage', e);
+                }
+            }
+        })();
+    }, [error]);
+
+    // UI reakcija na error
+    useEffect(() => {
+        if (error) {
+            Alert.alert('useGetAccounts', error);
+        }
+    }, [error]);
+
+    return { accounts, loading, error };
 };
 
 export const useGetMainCategories = () => {

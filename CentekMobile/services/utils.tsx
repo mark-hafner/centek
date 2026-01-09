@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SO from 'expo-screen-orientation';
 import { useEffect, useState } from "react";
 import { getUserId } from "./userData";
+import { Alert } from "react-native";
 
 
 //! SEND API REQUEST
@@ -28,7 +29,7 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
         const data = await response.json();
         return data;
     } catch (error) {
-        alert("No internet connection");
+        // Alert.alert("apiRequest", "No internet connection, returning false");
         return false;
     }
 };

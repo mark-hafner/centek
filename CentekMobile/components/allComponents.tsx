@@ -9,6 +9,7 @@ import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 //! BUTTON
 type ButtonProps = {
     label?: string;
+    value?: any;
     onPress?: () => void;
     customStyle?: StyleProp<ViewStyle>;
 };
@@ -24,8 +25,8 @@ export function ButtonComponent({ label, onPress, customStyle }: ButtonProps) {
     );
 };
 
-export default function ToggleButtonComponent({ onPress, customStyle }: ButtonProps) {
-    const [active, setActive] = useState(true);
+export default function ToggleButtonComponent({ value, onPress, customStyle }: ButtonProps) {
+    const [active, setActive] = useState(value);
 
     return (
         <View style={[styles.buttonContainer, { width: "15%" }, customStyle]}>
@@ -177,7 +178,7 @@ export const TextInputComponent = ({ placeholder = '', keyboardType = 'default',
 
 interface NumberInputProps extends Omit<TextInputProp, 'onChange' | 'value'> {
     value?: number;
-    onChange: (data: number | undefined) => void
+    onChange: (data: number) => void
 };
 
 export function NumberInputComponent({

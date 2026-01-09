@@ -5,10 +5,9 @@ import { useApiPost } from "./useApi";
 
 export const usePostPayment = () => {
     const { data, loading, error, post } = useApiPost<paymentPostRequest>("payments/createPayment");
-
     const postPayment = async (payment: any) => {
-        console.log("posting payment...");
-        await post(payment);
+        const success = await post(payment);
+        return {success: success === undefined};
     };
 
     return { payment: data, loading, error, postPayment };
