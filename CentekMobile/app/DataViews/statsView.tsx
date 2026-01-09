@@ -12,12 +12,12 @@ export default function StatsView() {
 
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
+  const [modalVisible, setModalVisible] = useState(false);
 
   const [accountIds, setAccountIds] = useState<number[]>([]);
   const [mainCategoryIds, setMainCategoryIds] = useState<number[]>([]);
   const [subCategoryIds, setSubCategoryIds] = useState<number[]>([]);
   const [type, setType] = useState<boolean | undefined>(undefined);
-  const [modalVisible, setModalVisible] = useState(false);
   const [fromDate, setFromDate] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);

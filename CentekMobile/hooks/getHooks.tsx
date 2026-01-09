@@ -1,5 +1,5 @@
 import { FetchQueryBuilder } from "@/services/utils";
-import { Account, MainCategory, Overview, Stats, SubCategory } from "./types";
+import { Account, MainCategory, Overview, Payment, Stats, SubCategory } from "./types";
 import { useApiGet } from './useApi';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -44,23 +44,118 @@ export const useGetAccounts = () => {
         })();
     }, [error]);
 
-    useEffect(() => {
-        if (error) {
-            Alert.alert('useGetAccounts', error);
-        }
-    }, [error]);
-
     return { accounts, loading, error };
 };
 
 export const useGetMainCategories = () => {
-    const { data, loading, error } = useApiGet<MainCategory>('mainCategories');
-    return { mainCategories: data, loading, error };
+    const { data: apiData, loading, error } = useApiGet<MainCategory>('mainCategories');
+    const [mainCategories, setMainCategories] = useState<MainCategory[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            if (!loading && apiData && !error) {
+                try {
+                    await AsyncStorage.setItem('Main Categories', JSON.stringify(apiData));
+                    setMainCategories(apiData);
+                } catch (e) {
+                    console.error('Failed to store main categories', e);
+                }
+            }
+        })();
+    }, [apiData, loading, error]);
+
+    useEffect(() => {
+        (async () => {
+            if (error === 'No Internet Connection') {
+                try {
+                    const stored = await AsyncStorage.getItem('Main Categories');
+                    if (stored) {
+                        setMainCategories(JSON.parse(stored));
+                    } else {
+                        setMainCategories([]);
+                    }
+                } catch (e) {
+                    console.error('Failed to load main categories from storage', e);
+                }
+            }
+        })();
+    }, [error]);
+
+    return { mainCategories, loading, error };
 };
 
 export const useGetSubCategories = () => {
-    const { data, loading, error } = useApiGet<SubCategory>('subCategories');
-    return { subCategories: data, loading, error };
+    const { data: apiData, loading, error } = useApiGet<SubCategory>('subCategories');
+    const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            if (!loading && apiData && !error) {
+                try {
+                    await AsyncStorage.setItem('Sub Categories', JSON.stringify(apiData));
+                    setSubCategories(apiData);
+                } catch (e) {
+                    console.error('Failed to store sub categories', e);
+                }
+            }
+        })();
+    }, [apiData, loading, error]);
+
+    useEffect(() => {
+        (async () => {
+            if (error === 'No Internet Connection') {
+                try {
+                    const stored = await AsyncStorage.getItem('Sub Categories');
+                    if (stored) {
+                        setSubCategories(JSON.parse(stored));
+                    } else {
+                        setSubCategories([]);
+                    }
+                } catch (e) {
+                    console.error('Failed to load sub categories from storage', e);
+                }
+            }
+        })();
+    }, [error]);
+
+    return { subCategories, loading, error };
+};
+
+export const useGetPayments = () => {
+    const { data: apiData, loading, error } = useApiGet<Payment>('payments');
+    const [payments, setPayments] = useState<Payment[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            if (!loading && apiData && !error) {
+                try {
+                    await AsyncStorage.setItem('Payments', JSON.stringify(apiData));
+                    setPayments(apiData);
+                } catch (e) {
+                    console.error('Failed to store payments', e);
+                }
+            }
+        })();
+    }, [apiData, loading, error]);
+
+    useEffect(() => {
+        (async () => {
+            if (error === 'No Internet Connection') {
+                try {
+                    const stored = await AsyncStorage.getItem('Payments');
+                    if (stored) {
+                        setPayments(JSON.parse(stored));
+                    } else {
+                        setPayments([]);
+                    }
+                } catch (e) {
+                    console.error('Failed to load payments from storage', e);
+                }
+            }
+        })();
+    }, [error]);
+
+    return { payments, loading, error };
 };
 
 export const useGetStats = (
