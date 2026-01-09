@@ -44,7 +44,6 @@ export const useGetAccounts = () => {
         })();
     }, [error]);
 
-    // UI reakcija na error
     useEffect(() => {
         if (error) {
             Alert.alert('useGetAccounts', error);

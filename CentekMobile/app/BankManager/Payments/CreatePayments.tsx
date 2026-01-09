@@ -27,7 +27,7 @@ export default function CreatePayment() {
 
     const { payment, loading: postLoading, error: postError, postPayment } = usePostPayment();
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         if (!pAccountId) return alert("Select an account");
 
         const newPayment: paymentPostRequest = {
@@ -40,7 +40,7 @@ export default function CreatePayment() {
             MainCategoryId: -1,
             SubCategoryId: -1
         };
-        const success = postPayment(newPayment);
+        const { success } = await postPayment(newPayment);
         if (!success) {
             Alert.alert("Error", "Can't create payment rn");
         } else {
