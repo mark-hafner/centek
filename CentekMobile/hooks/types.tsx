@@ -7,7 +7,7 @@ export interface Overview extends MainDataInterface { }
 export interface Account extends MainDataInterface { }
 export interface MainCategory extends MainDataInterface { }
 export interface SubCategory extends MainCategory {
-    mainCategoryId: string
+    mainCategoryId: number
 }
 export interface Payment extends MainDataInterface {
     note: string

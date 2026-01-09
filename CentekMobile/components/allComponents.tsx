@@ -25,7 +25,7 @@ export function ButtonComponent({ label, onPress, customStyle }: ButtonProps) {
     );
 };
 
-export default function ToggleButtonComponent({ value, onPress, customStyle }: ButtonProps) {
+export function ToggleButtonComponent({ value, onPress, customStyle }: ButtonProps) {
     const [active, setActive] = useState(value);
 
     return (

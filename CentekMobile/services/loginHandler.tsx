@@ -1,8 +1,9 @@
+import { Alert } from "react-native";
 import { apiRequest } from "./utils";
 
 export default async function loginToApp(email: string, password: string) {
     if (!email || !password) {
-        alert('Missing credentials');
+        Alert.alert("FAILED LOGIN", 'Missing Credentials');
         return null;
     }
 
@@ -10,7 +11,7 @@ export default async function loginToApp(email: string, password: string) {
         const data = await apiRequest('users/login', 'POST', { email, password });
         if (data === false) return null;
         if (data.length === 0) {
-            alert("User doesn't exist");
+            Alert.alert("FAILED LOGIN", "Incorrect Credentials");
             return null;
         }
 
