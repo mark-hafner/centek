@@ -4,7 +4,7 @@ import { useGetPayments, useGetStats, usePaymentDropdowns } from '@/hooks/getHoo
 import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FlatList, Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 export default function StatsView() {
@@ -33,7 +33,7 @@ export default function StatsView() {
     toDate: toDate
   };
 
-  const { payments: stats, loading } = useGetPayments(
+  const { payments: payments, loading } = useGetPayments(
     filters
   );
 
@@ -41,9 +41,15 @@ export default function StatsView() {
     accountDropdown,
     mainCategoriesDropdown,
     subCategoriesDropdown,
-  } = usePaymentDropdowns(stats);
+  } = usePaymentDropdowns();
 
-  if (loading || stats === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
+  const totalAmount = useMemo(() => {
+    return payments.reduce((sum, p) => {
+      return sum + (p.type ? p.amount : -p.amount);
+    }, 0);
+  }, [payments]);
+
+  if (loading || payments === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
 
   const TableHeader = () => (
     <View style={styles.rowHeader}>
@@ -145,12 +151,12 @@ export default function StatsView() {
         <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} />
       )}
       <View style={[styles.container, { paddingBottom: 20 }, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
-        {/* <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
-          TOTAL: {stats.total.toFixed(2)} €
-        </Text> */}
+        <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
+          TOTAL: {totalAmount.toFixed(2)} €
+        </Text>
         <ScrollView horizontal>
           <FlatList
-            data={stats}
+            data={payments}
             keyExtractor={(item) => item.id.toString()}
             ListHeaderComponent={TableHeader}
             renderItem={({ item }) => <PaymentRow p={item} />}

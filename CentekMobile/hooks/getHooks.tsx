@@ -123,44 +123,62 @@ export const useGetSubCategories = () => {
 
 export const useGetPayments = (filters?: PaymentFilters) => {
   const { data: apiData, loading, error } = useApiGet<Payment>("payments");
+  const { accounts } = useGetAccounts();
+  const { mainCategories } = useGetMainCategories();
+  const { subCategories } = useGetSubCategories();
   const [payments, setPayments] = useState<Payment[]>([]);
+
+  const attachEntities = (rawPayments: Payment[]): Payment[] => {
+    return rawPayments.map(p => ({
+      ...p,
+      date: new Date(p.date),
+      account: accounts.find(a => a.id === p.accountId) || null,
+      mainCategory: mainCategories.find(c => c.id === p.mainCategoryId) || null,
+      subCategory: subCategories.find(s => s.id === p.subCategoryId) || null,
+    }));
+  };
 
   // Online
   useEffect(() => {
     (async () => {
       if (!loading && apiData && !error) {
         try {
-          await AsyncStorage.setItem('Payments', JSON.stringify(apiData));
-          setPayments(apiData);
+          const attached = attachEntities(apiData);
+          setPayments(attached);
+          await AsyncStorage.setItem('Payments', JSON.stringify(attached));
         } catch (e) {
           console.error('Failed to store payments', e);
         }
       }
     })();
-  }, [apiData, loading, error]);
+  }, [apiData, loading, error, accounts, mainCategories, subCategories]);
 
   // Offline
   useEffect(() => {
-  (async () => {
-    if (error === 'No Internet Connection') {
-      try {
-        const stored = await AsyncStorage.getItem('Payments');
-        if (stored) {
-          const parsed: Payment[] = JSON.parse(stored).map((p: any) => ({
-            ...p,
-            date: new Date(p.date),
-          }));
-          setPayments(parsed);
-        } else {
-          setPayments([]);
+    (async () => {
+      if (error === 'No Internet Connection') {
+        try {
+          const stored = await AsyncStorage.getItem('Payments');
+          if (stored) {
+            const parsed: Payment[] = JSON.parse(stored).map((p: any) => ({
+              ...p,
+              date: new Date(p.date),
+              account: accounts.find(a => a.id === p.accountId) || null,
+              mainCategory: mainCategories.find(c => c.id === p.mainCategoryId) || null,
+              subCategory: subCategories.find(s => s.id === p.subCategoryId) || null,
+            }));
+            setPayments(parsed);
+          } else {
+            setPayments([]);
+          }
+        } catch (e) {
+          console.error('Failed to load payments from storage', e);
         }
-      } catch (e) {
-        console.error('Failed to load payments from storage', e);
       }
-    }
-  })();
-}, [error]);
+    })();
+  }, [error, accounts, mainCategories, subCategories]);
 
+  // Filtered payments
   const filteredPayments = useMemo(() => {
     if (!filters) return payments;
     return filterPayments(payments, filters);
@@ -169,10 +187,11 @@ export const useGetPayments = (filters?: PaymentFilters) => {
   return { payments: filteredPayments, loading, error };
 };
 
-export const usePaymentDropdowns = (payments: Payment[]) => {
+export const usePaymentDropdowns = () => {
   const { accounts: allAccounts = [] } = useGetAccounts();
   const { mainCategories: allMainCategories = [] } = useGetMainCategories();
   const { subCategories: allSubCategories = [] } = useGetSubCategories();
+  const { payments } = useGetPayments();
 
   return useMemo(() => {
     const { accounts, mainCategories, subCategories } = extractEntities(

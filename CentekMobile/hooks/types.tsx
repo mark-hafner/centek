@@ -14,8 +14,11 @@ export interface Payment extends MainDataInterface {
     type: Boolean
     amount: number
     date: Date
+    account: Account | null
     accountId: number
+    mainCategory: MainCategory | null
     mainCategoryId: number
+    subCategory: SubCategory | null
     subCategoryId: number
 }
 export interface Stats {
