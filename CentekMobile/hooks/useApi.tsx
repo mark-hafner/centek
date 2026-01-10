@@ -56,4 +56,34 @@ export function useApiPost<T>(endpoint: string) {
     };
 
     return { data, loading, error, post };
+};
+
+export function useApiDelete(endpoint: string) {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const remove = async (ids: number | number[]): Promise<boolean> => {
+        const idArray = Array.isArray(ids) ? ids : [ids];
+        if (!idArray.length) return true;
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const results = await Promise.allSettled(
+                idArray.map(id => apiRequest(`${endpoint}/${id}`, "DELETE"))
+            );
+
+            const success = results.every(r => r.status === "fulfilled");
+            if (!success) setError("Some deletes failed");
+            return success;
+        } catch (err: any) {
+            setError(err.message ?? "Delete failed");
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { loading, error, remove };
 }

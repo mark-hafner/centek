@@ -23,7 +23,7 @@ const CreateSubCategoryModal = ({ mainCategoriesDropdown, modalVisible, setModal
     const { subCategory: subCategory, loading: postLoading, error: postError, postSubCategory } = usePostSubCategory();
 
     const handleCreate = async () => {
-        if (!scName) { return Alert.alert("Creat MainCategory", "Please input SubCategory name") }
+        if (!scName) { return Alert.alert("Create MainCategory", "Please input SubCategory name") }
         if (scMainCategoryId === -1) { return Alert.alert("Creat MainCategory", "Please input MainCategory") }
 
 

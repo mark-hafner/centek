@@ -16,6 +16,7 @@ export default function Layout() {
         <Stack.Screen name="DataViews/overviewView" options={{ title: "Overview" }} />
 
         <Stack.Screen name="BankManager/Payments/CreatePayments" options={{ title: "Create Payment" }} />
+        <Stack.Screen name="BankManager/Payments/DeletePayments" options={{ title: "Delete Payment" }} />
 
       </Stack>
     </SafeAreaProvider>

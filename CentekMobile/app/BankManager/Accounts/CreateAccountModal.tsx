@@ -16,7 +16,7 @@ const CreateAccountModal = ({ modalVisible, setModalVisible, refetch }: ModalPro
     const { account, loading: postLoading, error: postError, postAccount } = usePostAccount();
 
     const handleCreate = async () => {
-        if (!aName) { return Alert.alert("Creat Account", "Please input account name") }
+        if (!aName) { return Alert.alert("Create Account", "Please input account name") }
         const newAccount: accountPostRequest = {
             Name: aName,
         };

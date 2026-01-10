@@ -51,6 +51,7 @@ namespace Centek.Controllers_Api
                 .ToListAsync();
 
             DateTime fromDate = recPayments.Count != 0 ? recPayments.Min(x => x.StartDate!.Value) : DateTime.Today;
+            var maxRecPaymentId = userPayments.Max(x => x.ID);
 
             DateTime today = DateTime.Today;
             DateTime toDate = new(
@@ -58,6 +59,7 @@ namespace Centek.Controllers_Api
                 today.Month,
                 DateTime.DaysInMonth(today.Year, today.Month)
             );
+            var recPaymentId = 0;
 
             foreach (var recurringPayment in recPayments)
             {
@@ -66,6 +68,7 @@ namespace Centek.Controllers_Api
                 DateTime startDate = recurringPayment.StartDate.Value;
                 DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
                 DateTime date = startDate;
+                var newId = recurringPayment.ID - recPaymentId;
 
                 while (date <= toDate && date < endDate)
                 {
@@ -74,6 +77,7 @@ namespace Centek.Controllers_Api
                         allPayments.Add(
                             new Payment
                             {
+                                ID = newId,
                                 Name = recurringPayment.Name,
                                 Note = recurringPayment.Note,
                                 Type = recurringPayment.Type,
@@ -175,7 +179,7 @@ namespace Centek.Controllers_Api
         }
 
         // DELETE: api/PaymentsApi/5
-        [HttpDelete("{id}")]
+        [HttpDelete("deletePayment/{id}")]
         public async Task<IActionResult> DeletePayment(int id)
         {
             var payment = await _context.Payments.FindAsync(id);
@@ -186,7 +190,6 @@ namespace Centek.Controllers_Api
 
             _context.Payments.Remove(payment);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 

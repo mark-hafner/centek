@@ -16,7 +16,7 @@ const CreateMainCategoryModal = ({ modalVisible, setModalVisible, refetch }: Mod
     const { mainCategory: mainCategory, loading: postLoading, error: postError, postMainCategory } = usePostMainCategory();
 
     const handleCreate = async () => {
-        if (!mcName) { return Alert.alert("Creat MainCategory", "Please input MainCategory name") }
+        if (!mcName) { return Alert.alert("Create MainCategory", "Please input MainCategory name") }
         const newMainCategory: mainCategoryPostRequest = {
             Name: mcName,
         };

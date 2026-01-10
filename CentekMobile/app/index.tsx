@@ -42,11 +42,12 @@ export default function Index() {
           <ButtonComponent label="DEBUG: Clear Async Storage" onPress={async () => { await AsyncStorage.clear(); router.replace("/login") }} />
           <Text style={styles.text}>VIEW YOUR DATA</Text>
           <ButtonComponent label="Show Accounts" onPress={() => router.push("/DataViews/accountsView")} />
-          <ButtonComponent label="Show Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
           <ButtonComponent label="Show Main Categories" onPress={() => router.push("/DataViews/mainCategoriesView")} />
+          <ButtonComponent label="Show Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
           <ButtonComponent label="Show Stats" onPress={() => router.push("/DataViews/statsView")} />
           <ButtonComponent label="Show Graphs" onPress={() => router.push("/DataViews/overviewView")} />
           <ButtonComponent label="Create payment" onPress={() => router.push("/BankManager/Payments/CreatePayments")} />
+          <ButtonComponent label="Delete payment" onPress={() => router.push("/BankManager/Payments/DeletePayments")} />
 
           {userId && (
             <Text style={styles.text}>
