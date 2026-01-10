@@ -59,7 +59,7 @@ export default function CreatePayment() {
         };
 
         const { success, result } = await postPayment(newPayment);
-        if (success && result.length > 0) {
+        if (success && result) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created Payment');
             router.back();
@@ -90,7 +90,7 @@ export default function CreatePayment() {
                             <NumberInputComponent customStyle={{ paddingLeft: 6 }} placeholder={"Payment amount"} value={pAmount} keyboardType="numeric" onChange={(e) => setPAmount(e)} />
                         </View>
                         <View style={[styles.rowContainer, { width: "75%" }]}>
-                            <DropdownComponent customStyle={{ paddingRight: 6 }} data={accountsDropdown} dropdownLabel="Accounts" onChange={setPAccountId} />
+                            <DropdownComponent customStyle={{ paddingRight: 6 }} data={accountsDropdown} dropdownLabel="Accounts" value={pAccountId} onChange={setPAccountId} />
                             <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateAccountModalVisible(!createAccountModalVisible)} />
                         </View>
                         <ButtonComponent label={(extraOptions ? 'Close ' : 'Open ') + 'Extra Options'} onPress={() => setExtraOptions(!extraOptions)} />

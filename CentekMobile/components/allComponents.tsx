@@ -2,7 +2,7 @@ import { gradientStyle, styles } from '@/components/styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardTypeOptions, Platform, Pressable, StyleProp, Text, TextInput, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardTypeOptions, Platform, Pressable, StyleProp, Text, TextInput, View, ViewStyle } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 
@@ -41,7 +41,23 @@ export const ToggleButtonComponent = ({ value, onPress, customStyle }: ButtonPro
         </View>);
 };
 
+type AlertProps = {
+    title: string;
+    message: string
+    confirmLabel: string;
+    onConfirm: () => void | Promise<void>;
 
+}
+
+export const TwoButtonAlert = ({ title, message, confirmLabel, onConfirm }: AlertProps) =>
+    Alert.alert(title, message, [
+        {
+            text: 'Cancel',
+            onPress: () => { },
+            style: 'cancel',
+        },
+        { text: confirmLabel, onPress: onConfirm },
+    ]);
 
 //! MULTIPLE SELECT DROPDOWN
 type MultiSelectItem = {

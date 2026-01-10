@@ -73,9 +73,9 @@ export function useApiDelete(endpoint: string) {
             const results = await Promise.all(
                 idArray.map(id => apiRequest(`${endpoint}/${id}`, "DELETE"))
             );
-
             const failedIds = idArray.filter((_, index) => results[index] === false);
             const success = failedIds.length === 0;
+
             if (!success) setError("Some deletes failed");
             return success;
         } catch (err: any) {

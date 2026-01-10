@@ -1,4 +1,4 @@
-import { ButtonComponent, LoaderScreen, MultiSelectComponent } from "@/components/allComponents";
+import { ButtonComponent, LoaderScreen, MultiSelectComponent, TwoButtonAlert } from "@/components/allComponents";
 import { gradientStyle, styles } from "@/components/styles";
 import { useDeletePayment } from "@/hooks/deleteHooks";
 import { useGetPayments } from "@/hooks/getHooks";
@@ -15,6 +15,25 @@ export default function DeletePayment() {
     const seen = new Set<string>();
     payments = payments.filter(p => !p.isRecurring || !seen.has(p.name) && seen.add(p.name));
 
+
+    //! const najmanjsiRecurring = new Map<string, number>();
+    //! payments = payments.filter(p => {
+    //!     if (p.isRecurring) {
+    //!         const stariId = najmanjsiRecurring.get(p.name);
+    //!         if (stariId === undefined) {
+    //!             najmanjsiRecurring.set(p.name, p.id);
+    //!             return true; // prvi encounter, zadržimo
+    //!         } else if (p.id < stariId) {
+    //!             najmanjsiRecurring.set(p.name, p.id);
+    //!             return true; // našli smo manjši ID, zamenjamo
+    //!         } else {
+    //!             return false; // večji ID, drop
+    //!         }
+    //!     }
+    //!     return true; // normalni ostanejo
+    //! });
+
+
     const paymentsDropdown = payments.map(p => ({
         label: p.name,
         value: p.id,
@@ -26,17 +45,30 @@ export default function DeletePayment() {
         if (!paymentsToDelete || !paymentsToDelete.length) {
             return Alert.alert("Delete Payments", "Please select payments to delete");
         }
+        TwoButtonAlert({
+            title: "Delete Payments",
+            message: "Are you sure you want to delete payments",
+            confirmLabel: "DELETE",
+            onConfirm: async () => {
+                try {
+                    const { success } = await removePayment(paymentsToDelete);
 
-        const { success, result } = await removePayment(paymentsToDelete);
+                    if (success) {
+                        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                        Alert.alert("Success", "Deleted Payments");
+                        setPaymentToDelete([]);
+                        if (refetch) refetch();
+                    } else {
+                        Alert.alert("Error", "Can't delete payments right now");
+                    }
+                } catch (err) {
+                    Alert.alert("Error", "Something went wrong");
+                }
+            },
+        });
 
-        if (success && result) {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            Alert.alert('Success', 'Deleted Payments');
-            setPaymentToDelete([]);
-            if (refetch) refetch();
-        } else {
-            Alert.alert("Error", "Can't delete payments right now");
-        }
+
+
     };
 
 
