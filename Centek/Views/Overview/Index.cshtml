@@ -118,17 +118,23 @@
         </div>
     </div>
 </form>
-
-<div class="overview-chart-container">
-    <div class="overview-single-chart">
-        <p>ACCOUNTS</p>
-        <canvas id="accountChart"></canvas>
+<div class="overview-charts-main">
+    <div class="overview-chart-bar-container">
+        <div class="overview-single-chart">
+            <p>ACCOUNTS</p>
+            <canvas id="accountChart" width="500" height="150"></canvas>
+        </div>
     </div>
-    @* <canvas id="paymentChart"></canvas>   *@
+    <div class="overview-chart-pie-container">
+        <div class="overview-single-chart">
+            <p>MAIN CATEGORIES INCOME</p>
+            <canvas id="mainCatChartPos"></canvas>
+        </div>
 
-    <div class="overview-single-chart">
-        <p>MAIN CATEGORIES</p>
-        <canvas id="mainCatChart"></canvas>
+        <div class="overview-single-chart">
+            <p>MAIN CATEGORIES EXPENSE</p>
+            <canvas id="mainCatChartNeg"></canvas>
+        </div>
     </div>
 </div>
 
@@ -141,7 +147,6 @@
 
         var barColors = [];
         for (var i = 0; i < accountData.length; i++) {
-            console.log(accountData[i]);
             barColors.push((accountData[i] > 0) ? "#00ff00" : "#ff0000");
         };
 
@@ -158,42 +163,49 @@
                 }]
             },
             options: {
-                responsive: true,
+                responsive: false,
+                maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#222',
-                        padding: 10
-                    }
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#222', padding: 10 }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: '#eee'
+                            color: '#eee',
+                            drawTicks: true,
+                            drawBorder: true,
+                            borderColor: '#000',
+                            borderWidth: 2
                         },
-                        ticks: {
-                            precision: 2
-                        }
+                        ticks: { precision: 2 }
                     },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
+                    x: { grid: { display: false } }
                 }
             }
         });
 
+
         // Main Categories Chart
-        const ctxMainCat = document.getElementById('mainCatChart');
-        const mainCatLabels = @Html.Raw(Json.Serialize(ViewBag.MainCatLabels));
-        const mainCatData = @Html.Raw(Json.Serialize(ViewBag.MainCatValues));
-        new Chart(ctxMainCat, {
+        // INCOME
+        const ctxMainCatPos = document.getElementById('mainCatChartPos');
+        const posMainCatLabels = @Html.Raw(Json.Serialize(ViewBag.positiveMainCatLabels));
+        const posMainCatData = @Html.Raw(Json.Serialize(ViewBag.positiveMainCatValues));
+
+        new Chart(ctxMainCatPos, {
             type: 'pie',
-            data: { labels: mainCatLabels, datasets: [{ data: mainCatData }] }
+            data: { labels: posMainCatLabels, datasets: [{ data: posMainCatData }] }
+        });
+
+        // EXPENSE
+        const ctxMainCatNeg = document.getElementById('mainCatChartNeg');
+        const negMainCatLabels = @Html.Raw(Json.Serialize(ViewBag.negativeMainCatLabels));
+        const negMainCatData = @Html.Raw(Json.Serialize(ViewBag.negativeMainCatValues));
+
+        new Chart(ctxMainCatNeg, {
+            type: 'pie',
+            data: { labels: negMainCatLabels, datasets: [{ data: negMainCatData }] }
         });
 
     </script>

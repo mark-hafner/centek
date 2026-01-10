@@ -50,8 +50,8 @@ namespace Centek.Controllers
                 .AsQueryable();
 
             // All recurring payments from user
-            var recPaymentsQuery = _context.RecurringPayment
-                .Include(p => p.Account)
+            var recPaymentsQuery = _context
+                .RecurringPayment.Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
                 .Where(p => p.Account.UserId == user.Id)
@@ -66,14 +66,20 @@ namespace Centek.Controllers
 
             if (mainCategoryIds.Any())
             {
-                paymentsQuery = paymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
-                recPaymentsQuery = recPaymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
+                paymentsQuery = paymentsQuery.Where(p =>
+                    mainCategoryIds.Contains(p.MainCategoryId)
+                );
+                recPaymentsQuery = recPaymentsQuery.Where(p =>
+                    mainCategoryIds.Contains(p.MainCategoryId)
+                );
             }
 
             if (subCategoryIds.Any())
             {
                 paymentsQuery = paymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
-                recPaymentsQuery = recPaymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
+                recPaymentsQuery = recPaymentsQuery.Where(p =>
+                    subCategoryIds.Contains(p.SubCategoryId)
+                );
             }
 
             if (type.HasValue)
@@ -85,7 +91,9 @@ namespace Centek.Controllers
             if (fromDate.HasValue)
             {
                 paymentsQuery = paymentsQuery.Where(p => p.Date >= fromDate);
-                recPaymentsQuery = recPaymentsQuery.Where(p => !p.EndDate.HasValue || p.EndDate >= fromDate);
+                recPaymentsQuery = recPaymentsQuery.Where(p =>
+                    !p.EndDate.HasValue || p.EndDate >= fromDate
+                );
             }
 
             if (toDate.HasValue)
@@ -108,23 +116,26 @@ namespace Centek.Controllers
                 DateTime date = startDate;
                 while (date <= toDate)
                 {
-                    if (date >= endDate) break;
+                    if (date >= endDate)
+                        break;
                     if (date >= fromDate)
                     {
-                        calculatedPayments.Add(new Payment
-                        {
-                            Name = recurringPayment.Name,
-                            Note = recurringPayment.Note,
-                            Type = recurringPayment.Type,
-                            Amount = recurringPayment.Amount,
-                            Date = date,
-                            AccountId = recurringPayment.AccountId,
-                            MainCategoryId = recurringPayment.MainCategoryId,
-                            SubCategoryId = recurringPayment.SubCategoryId,
-                            Account = recurringPayment.Account,
-                            MainCategory = recurringPayment.MainCategory,
-                            SubCategory = recurringPayment.SubCategory
-                        });
+                        calculatedPayments.Add(
+                            new Payment
+                            {
+                                Name = recurringPayment.Name,
+                                Note = recurringPayment.Note,
+                                Type = recurringPayment.Type,
+                                Amount = recurringPayment.Amount,
+                                Date = date,
+                                AccountId = recurringPayment.AccountId,
+                                MainCategoryId = recurringPayment.MainCategoryId,
+                                SubCategoryId = recurringPayment.SubCategoryId,
+                                Account = recurringPayment.Account,
+                                MainCategory = recurringPayment.MainCategory,
+                                SubCategory = recurringPayment.SubCategory,
+                            }
+                        );
                     }
 
                     // increase date correctly
@@ -152,9 +163,7 @@ namespace Centek.Controllers
                 payments.AddRange(calculatedPayments);
             }
 
-            payments = payments
-                .OrderByDescending(p => p.Date)
-                .ToList();
+            payments = payments.OrderByDescending(p => p.Date).ToList();
 
             //ACCOUNTS
             var accountGroups = payments
@@ -169,8 +178,10 @@ namespace Centek.Controllers
             ViewBag.AccountLabels = accountGroups.Select(x => x.Label).ToList();
             ViewBag.AccountValues = accountGroups.Select(x => x.Value).ToList();
 
+
             //MAIN CATEGORIES
-            var mainCatGroups = payments
+            var positiveMainCatGroups = payments
+                .Where(p => p.Type)
                 .GroupBy(p => p.MainCategory?.Name ?? "Uncategorized")
                 .Select(g => new
                 {
@@ -179,24 +190,36 @@ namespace Centek.Controllers
                 })
                 .ToList();
 
-            ViewBag.MainCatLabels = mainCatGroups.Select(x => x.Label).ToList();
-            ViewBag.MainCatValues = mainCatGroups.Select(x => x.Value).ToList();
+            ViewBag.positiveMainCatLabels = positiveMainCatGroups.Select(x => x.Label).ToList();
+            ViewBag.positiveMainCatValues = positiveMainCatGroups.Select(x => x.Value).ToList();
 
+            var negativeMainCatGroups = payments
+                .Where(p => !p.Type)
+                .GroupBy(p => p.MainCategory?.Name ?? "Uncategorized")
+                .Select(g => new
+                {
+                    Label = g.Key,
+                    Value = g.Sum(p => p.Type ? p.Amount : -p.Amount),
+                })
+                .ToList();
+
+            ViewBag.negativeMainCatLabels = negativeMainCatGroups.Select(x => x.Label).ToList();
+            ViewBag.negativeMainCatValues = negativeMainCatGroups.Select(x => x.Value).ToList();
 
 
             // Accounts
-            ViewBag.Accounts = await _context.Accounts
-                .Where(a => a.UserId == user.Id && a.Payments.Any())
+            ViewBag.Accounts = await _context
+                .Accounts.Where(a => a.UserId == user.Id && a.Payments.Any())
                 .ToListAsync();
 
             // MainCategories
-            ViewBag.MainCategories = await _context.MainCategories
-                .Where(c => c.UserId == user.Id && c.Payments.Any())
+            ViewBag.MainCategories = await _context
+                .MainCategories.Where(c => c.UserId == user.Id && c.Payments.Any())
                 .ToListAsync();
 
             // SubCategories
-            ViewBag.SubCategories = await _context.SubCategories
-                .Where(sc => sc.MainCategory.UserId == user.Id && sc.Payments.Any())
+            ViewBag.SubCategories = await _context
+                .SubCategories.Where(sc => sc.MainCategory.UserId == user.Id && sc.Payments.Any())
                 .Include(sc => sc.MainCategory)
                 .ToListAsync();
 
@@ -205,7 +228,6 @@ namespace Centek.Controllers
 
             // To
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
-
 
             ViewBag.SelectedAccountIds = accountIds;
             ViewBag.SelectedMainCategoryIds = mainCategoryIds;
@@ -217,5 +239,3 @@ namespace Centek.Controllers
         }
     }
 }
-
-
