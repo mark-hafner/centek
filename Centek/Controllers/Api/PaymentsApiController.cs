@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Centek.Data;
 using Centek.Filters;
 using Centek.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace Centek.Controllers_Api
 {
@@ -27,7 +30,78 @@ namespace Centek.Controllers_Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Payment>>> GetPayments()
         {
-            return await _context.Payments.ToListAsync();
+            var userId = HttpContext.Request.Headers["UserId"].ToString();
+            var userAccountIds = await _context
+                .Accounts.Where(a => a.UserId == userId)
+                .Select(u => u.ID)
+                .ToListAsync();
+
+            var allPayments = new List<Payment>();
+
+            // NORMAL PAYMENTS
+            var userPayments = await _context.Payments.Where(p => userAccountIds.Contains(p.AccountId.Value)).ToListAsync();
+            allPayments.AddRange(userPayments);
+            // RECURING PAYMENTS
+            var recPayments = await _context
+                .RecurringPayment.Where(r =>
+                    r.AccountId.HasValue
+                    && userAccountIds.Contains(r.AccountId.Value)
+                    && r.StartDate.HasValue
+                )
+                .ToListAsync();
+
+            DateTime fromDate = recPayments.Count != 0 ? recPayments.Min(x => x.StartDate!.Value) : DateTime.Today;
+
+            DateTime today = DateTime.Today;
+            DateTime toDate = new(
+                today.Year,
+                today.Month,
+                DateTime.DaysInMonth(today.Year, today.Month)
+            );
+
+            foreach (var recurringPayment in recPayments)
+            {
+                var frequency = recurringPayment.RecFrequency;
+                var interval = recurringPayment.RecInterval;
+                DateTime startDate = recurringPayment.StartDate.Value;
+                DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
+                DateTime date = startDate;
+
+                while (date <= toDate && date < endDate)
+                {
+                    if (date >= fromDate)
+                    {
+                        allPayments.Add(
+                            new Payment
+                            {
+                                Name = recurringPayment.Name,
+                                Note = recurringPayment.Note,
+                                Type = recurringPayment.Type,
+                                Amount = recurringPayment.Amount,
+                                Date = date,
+                                AccountId = recurringPayment.AccountId,
+                                MainCategoryId = recurringPayment.MainCategoryId,
+                                SubCategoryId = recurringPayment.SubCategoryId,
+                                Account = recurringPayment.Account,
+                                MainCategory = recurringPayment.MainCategory,
+                                SubCategory = recurringPayment.SubCategory,
+                            }
+                        );
+                    }
+
+                    date = frequency switch
+                    {
+                        RecurringPayment.Frequency.Daily => date.AddDays((double)interval),
+                        RecurringPayment.Frequency.Weekly => date.AddDays((double)interval * 7),
+                        RecurringPayment.Frequency.Monthly => date.AddMonths((int)interval),
+                        RecurringPayment.Frequency.Yearly => date.AddYears((int)interval),
+                        _ => throw new InvalidOperationException(),
+                    };
+                }
+            }
+
+            allPayments = allPayments.OrderByDescending(p => p.Date).ToList();
+            return Ok(allPayments);
         }
 
         // GET: api/PaymentsApi/5
