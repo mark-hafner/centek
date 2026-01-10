@@ -4,6 +4,7 @@ import { subCategoryPostRequest } from "@/hooks/apiTypes";
 import { usePostSubCategory } from "@/hooks/postHooks";
 import { ModalProps } from "@/hooks/types";
 import * as Haptics from 'expo-haptics';
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, View } from "react-native";
 
@@ -13,6 +14,8 @@ interface SubCategoryModalProps extends ModalProps {
 }
 
 const CreateSubCategoryModal = ({ mainCategoriesDropdown, modalVisible, setModalVisible }: SubCategoryModalProps) => {
+    const router = useRouter();
+
     const [scName, setSCName] = useState<string>('');
     const [scMainCategoryId, setSCMainCategoryId] = useState<number>(-1);
 
@@ -30,10 +33,11 @@ const CreateSubCategoryModal = ({ mainCategoriesDropdown, modalVisible, setModal
         };
 
         const { success, result } = await postSubCategory(newSubCategory);
-        if (success && result.length > 0) {
+        if (success && result) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created SubCategory');
             setModalVisible(false);
+            router.replace("/BankManager/Payments/CreatePayments");
         } else {
             Alert.alert("Error", "Can't create SubCategory right now");
         }

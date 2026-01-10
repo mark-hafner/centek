@@ -4,11 +4,13 @@ import { mainCategoryPostRequest } from "@/hooks/apiTypes";
 import { usePostMainCategory } from "@/hooks/postHooks";
 import { ModalProps } from "@/hooks/types";
 import * as Haptics from 'expo-haptics';
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, View } from "react-native";
 
 
 const CreateMainCategoryModal = ({ modalVisible, setModalVisible }: ModalProps) => {
+    const router = useRouter();
     const [mcName, setMCName] = useState<string>('');
 
     const { mainCategory: mainCategory, loading: postLoading, error: postError, postMainCategory } = usePostMainCategory();
@@ -18,12 +20,13 @@ const CreateMainCategoryModal = ({ modalVisible, setModalVisible }: ModalProps) 
         const newMainCategory: mainCategoryPostRequest = {
             Name: mcName,
         };
-        // console.log(newPayment);
+
         const { success, result } = await postMainCategory(newMainCategory);
-        if (success && result.length > 0) {
+        if (success && result) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created MainCategory');
             setModalVisible(false);
+            router.replace("/BankManager/Payments/CreatePayments");
         } else {
             Alert.alert("Error", "Can't create MainCategory right now");
 

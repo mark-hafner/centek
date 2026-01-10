@@ -20,14 +20,13 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
         if (body && method !== "GET") {
             options.body = JSON.stringify(body);
         };
-        console.log(options);
 
         const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
         // const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);
         // const response = await fetch(`http://http://206.189.2.204:8080/api/v1/${item}`, options);
 
 
-        if (response.status !== 200) return [];
+        if (response.status > 299) return [];
 
         const data = await response.json();
         return data;

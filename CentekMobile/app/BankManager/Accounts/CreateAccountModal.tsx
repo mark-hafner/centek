@@ -4,11 +4,13 @@ import { accountPostRequest } from "@/hooks/apiTypes";
 import { usePostAccount } from "@/hooks/postHooks";
 import { ModalProps } from "@/hooks/types";
 import * as Haptics from 'expo-haptics';
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, View } from "react-native";
 
 
 const CreateAccountModal = ({ modalVisible, setModalVisible }: ModalProps) => {
+    const router = useRouter();
     const [aName, setAName] = useState<string>('');
 
     const { account, loading: postLoading, error: postError, postAccount } = usePostAccount();
@@ -18,12 +20,13 @@ const CreateAccountModal = ({ modalVisible, setModalVisible }: ModalProps) => {
         const newAccount: accountPostRequest = {
             Name: aName,
         };
-        // console.log(newPayment);
+        
         const { success, result } = await postAccount(newAccount);
-        if (success && result.length > 0) {
+        if (success && result) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created Account');
             setModalVisible(false);
+            router.replace("/BankManager/Payments/CreatePayments");
         } else {
             Alert.alert("Error", "Can't create account right now");
 

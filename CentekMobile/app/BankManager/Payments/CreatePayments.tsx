@@ -57,7 +57,7 @@ export default function CreatePayment() {
             MainCategoryId: pMainCategoryId,
             SubCategoryId: pSubCategoryId
         };
-        // console.log(newPayment);
+
         const { success, result } = await postPayment(newPayment);
         if (success && result.length > 0) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
