@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Centek.Data;
+using Centek.Filters;
+using Centek.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Centek.Data;
-using Centek.Models;
-using Centek.Filters;
 
 namespace Centek.Controllers_Api
 {
@@ -27,7 +27,13 @@ namespace Centek.Controllers_Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MainCategory>>> GetMainCategories()
         {
-            return await _context.MainCategories.ToListAsync();
+            var userId = HttpContext.Request.Headers["UserId"].ToString();
+            // get users main categories
+            var userMainCategories = await _context
+                .MainCategories.Where(a => a.UserId == userId)
+                .ToListAsync();
+
+            return userMainCategories;
         }
 
         // GET: api/MainCategoriesApi/5
@@ -77,9 +83,17 @@ namespace Centek.Controllers_Api
 
         // POST: api/MainCategoriesApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<MainCategory>> PostMainCategory(MainCategory mainCategory)
+        [HttpPost("createMainCategory")]
+        public async Task<ActionResult<MainCategory>> PostMainCategory(
+            [FromBody] MainCategoryCreateRequest request
+        )
         {
+            var mainCategory = new MainCategory
+            {
+                Name = request.Name,
+                UserId = HttpContext.Request.Headers["UserId"].ToString(),
+
+            };
             _context.MainCategories.Add(mainCategory);
             await _context.SaveChangesAsync();
 

@@ -82,9 +82,6 @@ namespace Centek.Controllers_Api
             [FromBody] PaymentCreateRequest request
         )
         {
-            Console.WriteLine("GOT POST REQUEST");
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(request));
-
             var payment = new Payment
             {
                 Name = request.Name,

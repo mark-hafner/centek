@@ -76,9 +76,17 @@ namespace Centek.Controllers_Apigi
 
         // POST: api/AccuntsApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Account>> PostAccount(Account account)
+        [HttpPost("createAccount")]
+        public async Task<ActionResult<Account>> PostAccount(
+            [FromBody] AccountCreateRequest request
+        )
         {
+            var account = new Account
+            {
+                Name = request.Name,
+                UserId = HttpContext.Request.Headers["UserId"].ToString(),
+            };
+
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
 
