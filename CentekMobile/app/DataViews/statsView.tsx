@@ -1,10 +1,10 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useGetStats } from '@/hooks/getHooks';
+import { useGetPayments, useGetStats, usePaymentDropdowns } from '@/hooks/getHooks';
 import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FlatList, Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 export default function StatsView() {
@@ -24,32 +24,32 @@ export default function StatsView() {
   });
   const [toDate, setToDate] = useState(new Date());
 
-  // get stats data
-  const { stats, loading } = useGetStats(
-    accountIds,
-    mainCategoryIds, subCategoryIds,
-    type,
-    fromDate.toLocaleDateString('en-CA'),
-    toDate.toLocaleDateString('en-CA')
+  const filters = {
+    accountIds: accountIds,
+    mainCategoryIds: mainCategoryIds,
+    subCategoryIds: subCategoryIds,
+    type: type,
+    fromDate: fromDate,
+    toDate: toDate
+  };
+
+  const { payments: payments, loading } = useGetPayments(
+    filters
   );
 
+  const {
+    accountDropdown,
+    mainCategoriesDropdown,
+    subCategoriesDropdown,
+  } = usePaymentDropdowns();
 
-  if (loading || stats === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
+  const totalAmount = useMemo(() => {
+    return payments.reduce((sum, p) => {
+      return sum + (p.type ? p.amount : -p.amount);
+    }, 0);
+  }, [payments]);
 
-  const accountDropdown = stats.accounts.map(a => ({
-    label: a.name,
-    value: a.id,
-  }));
-
-  const mainCategoriesDropdown = stats.mainCategories.map(c => ({
-    label: c.name,
-    value: c.id,
-  }));
-
-  const subCategoriesDropdown = stats.subCategories.map(s => ({
-    label: s.name,
-    value: s.id,
-  }));
+  if (loading || payments === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
 
   const TableHeader = () => (
     <View style={styles.rowHeader}>
@@ -152,11 +152,11 @@ export default function StatsView() {
       )}
       <View style={[styles.container, { paddingBottom: 20 }, (isLandscape ? { paddingRight: 50, paddingLeft: 50 } : { paddingRight: 10, paddingLeft: 10 })]}>
         <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>
-          TOTAL: {stats.total.toFixed(2)} €
+          TOTAL: {totalAmount.toFixed(2)} €
         </Text>
         <ScrollView horizontal>
           <FlatList
-            data={stats.payments}
+            data={payments}
             keyExtractor={(item) => item.id.toString()}
             ListHeaderComponent={TableHeader}
             renderItem={({ item }) => <PaymentRow p={item} />}
