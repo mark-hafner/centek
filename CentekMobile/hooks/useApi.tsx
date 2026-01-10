@@ -1,6 +1,5 @@
 import { apiRequest } from '@/services/utils';
 import { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
 
 export function useApiGet<T>(endpoint: string) {
     const [data, setData] = useState<T[]>([]);

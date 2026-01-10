@@ -1,9 +1,8 @@
+import { Payment } from "@/hooks/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SO from 'expo-screen-orientation';
 import { useEffect, useState } from "react";
 import { getUserId } from "./userData";
-import { Alert } from "react-native";
-import { Payment } from "@/hooks/types";
 
 
 //! SEND API REQUEST
@@ -21,9 +20,12 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
         if (body && method !== "GET") {
             options.body = JSON.stringify(body);
         };
+        console.log(options);
 
         const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
         // const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);
+        // const response = await fetch(`http://http://206.189.2.204:8080/api/v1/${item}`, options);
+
 
         if (response.status !== 200) return [];
 
@@ -85,26 +87,26 @@ export function useLoggedIn() {
 
 //! PAYMENTS FOR STATS...
 export async function getPaymentsFromStorage(): Promise<Payment[]> {
-  try {
-    const stored = await AsyncStorage.getItem("Payments");
+    try {
+        const stored = await AsyncStorage.getItem("Payments");
 
-    if (!stored) return [];
+        if (!stored) return [];
 
-    const parsed = JSON.parse(stored) as any[];
+        const parsed = JSON.parse(stored) as any[];
 
-    return parsed.map(p => ({
-      ...p,
-      date: new Date(p.date),
-    })) as Payment[];
+        return parsed.map(p => ({
+            ...p,
+            date: new Date(p.date),
+        })) as Payment[];
 
-  } catch (e) {
-    console.error("Failed to read payments from storage", e);
-    return [];
-  }
+    } catch (e) {
+        console.error("Failed to read payments from storage", e);
+        return [];
+    }
 }
 
 export function sortPaymentsByDate(payments: Payment[]) {
-  return payments.sort(
-    (a, b) => b.date.getTime() - a.date.getTime()
-  );
+    return payments.sort(
+        (a, b) => b.date.getTime() - a.date.getTime()
+    );
 }

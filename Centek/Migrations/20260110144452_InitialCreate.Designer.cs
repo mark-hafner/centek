@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Centek.Migrations
 {
     [DbContext(typeof(CentekContext))]
-    [Migration("20251201084620_InitialCreate")]
+    [Migration("20260110144452_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

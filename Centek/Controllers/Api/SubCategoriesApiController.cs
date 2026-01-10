@@ -4,6 +4,7 @@ using Centek.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Centek.Controllers_Api
 {
@@ -87,9 +88,17 @@ namespace Centek.Controllers_Api
 
         // POST: api/SubCategoriesApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<SubCategory>> PostSubCategory(SubCategory subCategory)
+        [HttpPost("createSubCategory")]
+        public async Task<ActionResult<SubCategory>> PostSubCategory(
+            [FromBody] SubCategoryCreateRequest request
+        )
         {
+            var subCategory = new SubCategory
+            {
+                Name = request.Name,
+                MainCategoryId = request.MainCategoryId,
+            };
+
             _context.SubCategories.Add(subCategory);
             await _context.SaveChangesAsync();
 

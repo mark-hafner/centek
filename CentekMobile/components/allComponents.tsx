@@ -14,7 +14,7 @@ type ButtonProps = {
     customStyle?: StyleProp<ViewStyle>;
 };
 
-export function ButtonComponent({ label, onPress, customStyle }: ButtonProps) {
+export const ButtonComponent = ({ label, onPress, customStyle }: ButtonProps) => {
 
     return (
         <View style={[styles.buttonContainer, customStyle]}>
@@ -25,7 +25,7 @@ export function ButtonComponent({ label, onPress, customStyle }: ButtonProps) {
     );
 };
 
-export function ToggleButtonComponent({ value, onPress, customStyle }: ButtonProps) {
+export const ToggleButtonComponent = ({ value, onPress, customStyle }: ButtonProps) => {
     const [active, setActive] = useState(value);
 
     return (
@@ -181,12 +181,7 @@ interface NumberInputProps extends Omit<TextInputProp, 'onChange' | 'value'> {
     onChange: (data: number) => void
 };
 
-export function NumberInputComponent({
-    value,
-    onChange,
-    placeholder = '0,00',
-    customStyle,
-}: NumberInputProps) {
+export const NumberInputComponent = ({ value, onChange, placeholder = '0,00', customStyle }: NumberInputProps) => {
     const maxValue = 9_999_999_999_999;
 
     const [cents, setCents] = useState<number>(
@@ -294,7 +289,7 @@ type LoaderScreenProps = {
     children: ReactNode
 }
 
-export function LoaderScreen({ loading, title = '', children }: LoaderScreenProps) {
+export const LoaderScreen = ({ loading, title = '', children }: LoaderScreenProps) => {
     return (
         <LinearGradient {...gradientStyle} style={styles.background}>
             {loading ? (

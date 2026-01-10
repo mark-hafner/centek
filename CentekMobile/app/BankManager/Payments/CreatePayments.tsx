@@ -1,22 +1,26 @@
-import { ToggleButtonComponent, ButtonComponent, DropdownAddCustomComponent, DropdownComponent, LoaderScreen, NumberInputComponent, TextInputComponent } from '@/components/allComponents';
+import { ButtonComponent, DropdownComponent, LoaderScreen, NumberInputComponent, TextInputComponent, ToggleButtonComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { paymentPostRequest } from '@/hooks/apiTypes';
 import { useGetAccounts, useGetMainCategories, useGetSubCategories } from '@/hooks/getHooks';
 import { usePostPayment } from '@/hooks/postHooks';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from '@react-navigation/elements';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useRouter } from 'expo-router';
-import { PreviewRouteContext } from 'expo-router/build/link/preview/PreviewRouteContext';
-import React, { useEffect, useState } from 'react';
-import { Alert, Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Alert, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import CreateAccountModal from '../Accounts/CreateAccountModal';
+import CreateMainCategoryModal from '../Categories/CreateMainCategoryModal';
+import CreateSubCategoryModal from '../Categories/CreateSubCategoryModal';
 
 
 
 export default function CreatePayment() {
     const router = useRouter();
     const [extraOptions, setExtraOptions] = useState<boolean>(false);
+    const [createAccountModalVisible, setCreateAccountModalVisible] = useState(false);
+    const [createMainCategoryModalVisible, setCreateMainCategoryModalVisible] = useState(false);
+    const [createSubCategoryModalVisible, setCreateSubCategoryModalVisible] = useState(false);
+
 
     const [pName, setPName] = useState<string>('');
     const [pAmount, setPAmount] = useState<number>(0);
@@ -54,13 +58,13 @@ export default function CreatePayment() {
             SubCategoryId: pSubCategoryId
         };
         // console.log(newPayment);
-        const { success } = await postPayment(newPayment);
-        if (!success) {
-            Alert.alert("Error", "Can't create payment rn");
-        } else {
+        const { success, result } = await postPayment(newPayment);
+        if (success && result.length > 0) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created Payment');
             router.back();
+        } else {
+            Alert.alert("Error", "Can't create payment right now");
         }
     };
 
@@ -75,13 +79,20 @@ export default function CreatePayment() {
                 style={styles.background}
             >
                 <View style={styles.screen}>
+                    <CreateAccountModal modalVisible={createAccountModalVisible} setModalVisible={setCreateAccountModalVisible} />
+                    <CreateMainCategoryModal modalVisible={createMainCategoryModalVisible} setModalVisible={setCreateMainCategoryModalVisible} />
+                    <CreateSubCategoryModal mainCategoriesDropdown={MainCategoriesDropdown} modalVisible={createSubCategoryModalVisible} setModalVisible={setCreateSubCategoryModalVisible} />
+
                     <View style={[styles.topHalf, { flex: extraOptions ? 1 : 1 / 2 }]}>
                         <TextInputComponent placeholder={"Payment name"} value={pName} onChange={setPName} />
                         <View style={[styles.rowContainer, { width: "75%" }]}>
                             <ToggleButtonComponent value={pType} onPress={() => setPType(!pType)} />
                             <NumberInputComponent customStyle={{ paddingLeft: 6 }} placeholder={"Payment amount"} value={pAmount} keyboardType="numeric" onChange={(e) => setPAmount(e)} />
                         </View>
-                        <DropdownComponent data={accountsDropdown} dropdownLabel="Accounts" onChange={setPAccountId} />
+                        <View style={[styles.rowContainer, { width: "75%" }]}>
+                            <DropdownComponent customStyle={{ paddingRight: 6 }} data={accountsDropdown} dropdownLabel="Accounts" onChange={setPAccountId} />
+                            <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateAccountModalVisible(!createAccountModalVisible)} />
+                        </View>
                         <ButtonComponent label={(extraOptions ? 'Close ' : 'Open ') + 'Extra Options'} onPress={() => setExtraOptions(!extraOptions)} />
                     </View>
                     <View style={[styles.bottomHalf, { flex: extraOptions ? 1 : 0 }]}>
@@ -89,11 +100,11 @@ export default function CreatePayment() {
                             <>
                                 <View style={[styles.rowContainer, { width: "75%" }]}>
                                     <DropdownComponent customStyle={{ paddingRight: 6 }} data={MainCategoriesDropdown} dropdownLabel="Main Category" onChange={setPMainCategoryId} />
-                                    <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => Alert.alert("Create Payment", "CREATE NEW MAIN CATEGORY")} />
+                                    <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateMainCategoryModalVisible(!createMainCategoryModalVisible)} />
                                 </View>
                                 <View style={[styles.rowContainer, { width: "75%" }]}>
                                     <DropdownComponent customStyle={{ paddingRight: 6 }} data={SubCategoriesDropdown} dropdownLabel="Sub Category" onChange={setpSubCategoryId} />
-                                    <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => Alert.alert("Create Payment", "CREATE NEW SUB CATEGORY")} />
+                                    <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateSubCategoryModalVisible(!createSubCategoryModalVisible)} />
                                 </View>
                                 <TextInputComponent placeholder={"Payment note"} value={pName} onChange={setPName} />
                             </>

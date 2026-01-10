@@ -8,3 +8,18 @@ export type paymentPostRequest = {
     MainCategoryId?: number,
     SubCategoryId?: number
 };
+
+export type accountPostRequest = {
+    Name: string,
+    MainCategoryId?: number,
+    SubCategoryId?: number
+};
+
+export type mainCategoryPostRequest = {
+    Name: string,
+};
+
+export type subCategoryPostRequest = {
+    Name: string,
+    MainCategoryId?: number,
+};

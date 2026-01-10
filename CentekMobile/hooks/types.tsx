@@ -25,3 +25,9 @@ export interface Stats {
     mainCategories: MainCategory[]
     subCategories: SubCategory[]
 }
+
+// PROPS FOR COMPONENTS
+export type ModalProps = {
+    modalVisible: boolean;
+    setModalVisible: (open: boolean) => void;
+}
