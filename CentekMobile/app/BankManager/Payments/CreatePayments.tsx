@@ -99,11 +99,11 @@ export default function CreatePayment() {
                         {extraOptions && (
                             <>
                                 <View style={[styles.rowContainer, { width: "75%" }]}>
-                                    <DropdownComponent customStyle={{ paddingRight: 6 }} data={MainCategoriesDropdown} dropdownLabel="Main Category" onChange={setPMainCategoryId} />
+                                    <DropdownComponent customStyle={{ paddingRight: 6 }} data={MainCategoriesDropdown} dropdownLabel="Main Category" value={pMainCategoryId} onChange={setPMainCategoryId} />
                                     <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateMainCategoryModalVisible(!createMainCategoryModalVisible)} />
                                 </View>
                                 <View style={[styles.rowContainer, { width: "75%" }]}>
-                                    <DropdownComponent customStyle={{ paddingRight: 6 }} data={SubCategoriesDropdown} dropdownLabel="Sub Category" onChange={setpSubCategoryId} />
+                                    <DropdownComponent customStyle={{ paddingRight: 6 }} data={SubCategoriesDropdown} dropdownLabel="Sub Category" value={pSubCategoryId} onChange={setpSubCategoryId} />
                                     <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateSubCategoryModalVisible(!createSubCategoryModalVisible)} />
                                 </View>
                                 <TextInputComponent placeholder={"Payment note"} value={pName} onChange={setPName} />

@@ -12,9 +12,9 @@ export default function DeletePayment() {
     const [paymentsToDelete, setPaymentToDelete] = useState<number[]>([]);
 
     var { payments, loading, error, refetch } = useGetPayments();
-    payments = Array.from(
-        new Map(payments.map(item => [item.name, item])).values()
-    );
+    const seen = new Set<string>();
+    payments = payments.filter(p => !p.isRecurring || !seen.has(p.name) && seen.add(p.name));
+
     const paymentsDropdown = payments.map(p => ({
         label: p.name,
         value: p.id,

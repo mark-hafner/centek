@@ -20,6 +20,7 @@ export interface Payment extends MainDataInterface {
     mainCategoryId: number
     subCategory: SubCategory | null
     subCategoryId: number
+    isRecurring: boolean
 }
 export interface Stats {
     total: number

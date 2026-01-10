@@ -1,10 +1,9 @@
 import { useReadFromDevice, useStoreToDevice } from "@/services/storage";
 import { extractEntities, FetchQueryBuilder, filterPayments, PaymentFilters } from "@/services/utils";
-import { Account, MainCategory, Overview, Payment, Stats, SubCategory } from "./types";
-import { useApiGet } from './useApi';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useMemo, useState } from "react";
-import { Alert } from "react-native";
+import { Account, MainCategory, Overview, Payment, Stats, SubCategory } from "./types";
+import { useApiGet } from './useApi';
 // FUNCTIONS
 
 export const useGetOverview = () => {
@@ -101,91 +100,98 @@ export const useGetSubCategories = () => {
 };
 
 export const useGetPayments = (filters?: PaymentFilters) => {
-  const { data: apiData, loading, error } = useApiGet<Payment>("payments");
-  const { accounts } = useGetAccounts();
-  const { mainCategories } = useGetMainCategories();
-  const { subCategories } = useGetSubCategories();
-  const [payments, setPayments] = useState<Payment[]>([]);
+    const { data: apiData, loading, error, refetch: apiRefetch } = useApiGet<Payment>("payments");
+    const { accounts } = useGetAccounts();
+    const { mainCategories } = useGetMainCategories();
+    const { subCategories } = useGetSubCategories();
+    const [payments, setPayments] = useState<Payment[]>([]);
 
-  const attachEntities = (rawPayments: Payment[]): Payment[] => {
-    return rawPayments.map(p => ({
-      ...p,
-      date: new Date(p.date),
-      account: accounts.find(a => a.id === p.accountId) || null,
-      mainCategory: mainCategories.find(c => c.id === p.mainCategoryId) || null,
-      subCategory: subCategories.find(s => s.id === p.subCategoryId) || null,
-    }));
-  };
-
-  // Online
-  useEffect(() => {
-    (async () => {
-      if (!loading && apiData && !error) {
-        try {
-          const attached = attachEntities(apiData);
-          setPayments(attached);
-          await AsyncStorage.setItem('Payments', JSON.stringify(attached));
-        } catch (e) {
-          console.error('Failed to store payments', e);
+    const refetch = async () => {
+        if (apiRefetch) {
+            await apiRefetch();
         }
-      }
-    })();
-  }, [apiData, loading, error, accounts, mainCategories, subCategories]);
+    };
 
-  // Offline
-  useEffect(() => {
-    (async () => {
-      if (error === 'No Internet Connection') {
-        try {
-          const stored = await AsyncStorage.getItem('Payments');
-          if (stored) {
-            const parsed: Payment[] = JSON.parse(stored).map((p: any) => ({
-              ...p,
-              date: new Date(p.date),
-              account: accounts.find(a => a.id === p.accountId) || null,
-              mainCategory: mainCategories.find(c => c.id === p.mainCategoryId) || null,
-              subCategory: subCategories.find(s => s.id === p.subCategoryId) || null,
-            }));
-            setPayments(parsed);
-          } else {
-            setPayments([]);
-          }
-        } catch (e) {
-          console.error('Failed to load payments from storage', e);
-        }
-      }
-    })();
-  }, [error, accounts, mainCategories, subCategories]);
+    const attachEntities = (rawPayments: Payment[]): Payment[] => {
+        return rawPayments.map(p => ({
+            ...p,
+            date: new Date(p.date),
+            account: accounts.find(a => a.id === p.accountId) || null,
+            mainCategory: mainCategories.find(c => c.id === p.mainCategoryId) || null,
+            subCategory: subCategories.find(s => s.id === p.subCategoryId) || null,
+        }));
+    };
 
-  // Filtered payments
-  const filteredPayments = useMemo(() => {
-    if (!filters) return payments;
-    return filterPayments(payments, filters);
-  }, [payments, filters]);
 
-  return { payments: filteredPayments, loading, error };
+    // Online
+    useEffect(() => {
+        (async () => {
+            if (!loading && apiData && !error) {
+                try {
+                    const attached = attachEntities(apiData);
+                    setPayments(attached);
+                    await AsyncStorage.setItem('Payments', JSON.stringify(attached));
+                } catch (e) {
+                    console.error('Failed to store payments', e);
+                }
+            }
+        })();
+    }, [apiData, loading, error, accounts, mainCategories, subCategories]);
+
+    // Offline
+    useEffect(() => {
+        (async () => {
+            if (error === 'No Internet Connection') {
+                try {
+                    const stored = await AsyncStorage.getItem('Payments');
+                    if (stored) {
+                        const parsed: Payment[] = JSON.parse(stored).map((p: any) => ({
+                            ...p,
+                            date: new Date(p.date),
+                            account: accounts.find(a => a.id === p.accountId) || null,
+                            mainCategory: mainCategories.find(c => c.id === p.mainCategoryId) || null,
+                            subCategory: subCategories.find(s => s.id === p.subCategoryId) || null,
+                        }));
+                        setPayments(parsed);
+                    } else {
+                        setPayments([]);
+                    }
+                } catch (e) {
+                    console.error('Failed to load payments from storage', e);
+                }
+            }
+        })();
+    }, [error, accounts, mainCategories, subCategories]);
+
+    // Filtered payments
+    const filteredPayments = useMemo(() => {
+        if (!filters) return payments;
+        return filterPayments(payments, filters);
+    }, [payments, filters]);
+
+    return { payments: filteredPayments, loading, error, refetch };
 };
 
 export const usePaymentDropdowns = () => {
-  const { accounts: allAccounts = [] } = useGetAccounts();
-  const { mainCategories: allMainCategories = [] } = useGetMainCategories();
-  const { subCategories: allSubCategories = [] } = useGetSubCategories();
-  const { payments } = useGetPayments();
+    const { accounts: allAccounts = [] } = useGetAccounts();
+    const { mainCategories: allMainCategories = [] } = useGetMainCategories();
+    const { subCategories: allSubCategories = [] } = useGetSubCategories();
+    const { payments } = useGetPayments();
 
-  return useMemo(() => {
-    const { accounts, mainCategories, subCategories } = extractEntities(
-      payments,
-      allAccounts,
-      allMainCategories,
-      allSubCategories
-    );
+    return useMemo(() => {
+        const { accounts, mainCategories, subCategories } = extractEntities(
+            payments,
+            allAccounts,
+            allMainCategories,
+            allSubCategories
+        );
 
-    const accountDropdown = accounts.map(a => ({ label: a.name, value: a.id }));
-    const mainCategoriesDropdown = mainCategories.map(c => ({ label: c.name, value: c.id }));
-    const subCategoriesDropdown = subCategories.map(s => ({ label: s.name, value: s.id }));
+        const accountDropdown = accounts.map(a => ({ label: a.name, value: a.id }));
+        const mainCategoriesDropdown = mainCategories.map(c => ({ label: c.name, value: c.id }));
+        const subCategoriesDropdown = subCategories.map(s => ({ label: s.name, value: s.id }));
 
-    return { accountDropdown, mainCategoriesDropdown, subCategoriesDropdown };
-  }, [payments, allAccounts, allMainCategories, allSubCategories]);
+        return { accountDropdown, mainCategoriesDropdown, subCategoriesDropdown };
+    }, [payments, allAccounts, allMainCategories, allSubCategories]);
 };
 
 export const useGetStats = (

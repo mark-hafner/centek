@@ -70,11 +70,12 @@ export function useApiDelete(endpoint: string) {
         setError(null);
 
         try {
-            const results = await Promise.allSettled(
+            const results = await Promise.all(
                 idArray.map(id => apiRequest(`${endpoint}/${id}`, "DELETE"))
             );
 
-            const success = results.every(r => r.status === "fulfilled");
+            const failedIds = idArray.filter((_, index) => results[index] === false);
+            const success = failedIds.length === 0;
             if (!success) setError("Some deletes failed");
             return success;
         } catch (err: any) {

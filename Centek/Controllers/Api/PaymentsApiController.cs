@@ -39,7 +39,9 @@ namespace Centek.Controllers_Api
             var allPayments = new List<Payment>();
 
             // NORMAL PAYMENTS
-            var userPayments = await _context.Payments.Where(p => userAccountIds.Contains(p.AccountId.Value)).ToListAsync();
+            var userPayments = await _context
+                .Payments.Where(p => userAccountIds.Contains(p.AccountId.Value))
+                .ToListAsync();
             allPayments.AddRange(userPayments);
             // RECURING PAYMENTS
             var recPayments = await _context
@@ -50,7 +52,8 @@ namespace Centek.Controllers_Api
                 )
                 .ToListAsync();
 
-            DateTime fromDate = recPayments.Count != 0 ? recPayments.Min(x => x.StartDate!.Value) : DateTime.Today;
+            DateTime fromDate =
+                recPayments.Count != 0 ? recPayments.Min(x => x.StartDate!.Value) : DateTime.Today;
             var maxRecPaymentId = userPayments.Max(x => x.ID);
 
             DateTime today = DateTime.Today;
@@ -103,9 +106,23 @@ namespace Centek.Controllers_Api
                     };
                 }
             }
-
-            allPayments = allPayments.OrderByDescending(p => p.Date).ToList();
-            return Ok(allPayments);
+            var recPaymentsIds = recPayments.Select(rp => rp.ID);
+            var result = allPayments
+                .Select(p => new
+                {
+                    p.ID,
+                    p.Name,
+                    p.Note,
+                    p.Type,
+                    p.Amount,
+                    p.Date,
+                    p.AccountId,
+                    p.MainCategoryId,
+                    p.SubCategoryId,
+                    IsRecurring = recPaymentsIds.Contains(p.ID),
+                })
+                .OrderByDescending(p => p.Date);
+            return Ok(result);
         }
 
         // GET: api/PaymentsApi/5
