@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Alert, Modal, View } from "react-native";
 
 
-const CreateAccountModal = ({ modalVisible, setModalVisible }: ModalProps) => {
+const CreateAccountModal = ({ modalVisible, setModalVisible, refetch }: ModalProps) => {
     const router = useRouter();
     const [aName, setAName] = useState<string>('');
 
@@ -20,13 +20,13 @@ const CreateAccountModal = ({ modalVisible, setModalVisible }: ModalProps) => {
         const newAccount: accountPostRequest = {
             Name: aName,
         };
-        
+
         const { success, result } = await postAccount(newAccount);
         if (success && result) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created Account');
             setModalVisible(false);
-            router.replace("/BankManager/Payments/CreatePayments");
+            if (refetch) refetch();
         } else {
             Alert.alert("Error", "Can't create account right now");
 

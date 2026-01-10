@@ -30,4 +30,5 @@ export interface Stats {
 export type ModalProps = {
     modalVisible: boolean;
     setModalVisible: (open: boolean) => void;
+    refetch?: () => void;
 }

@@ -13,7 +13,7 @@ interface SubCategoryModalProps extends ModalProps {
 
 }
 
-const CreateSubCategoryModal = ({ mainCategoriesDropdown, modalVisible, setModalVisible }: SubCategoryModalProps) => {
+const CreateSubCategoryModal = ({ mainCategoriesDropdown, modalVisible, setModalVisible, refetch }: SubCategoryModalProps) => {
     const router = useRouter();
 
     const [scName, setSCName] = useState<string>('');
@@ -37,7 +37,7 @@ const CreateSubCategoryModal = ({ mainCategoriesDropdown, modalVisible, setModal
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created SubCategory');
             setModalVisible(false);
-            router.replace("/BankManager/Payments/CreatePayments");
+            if (refetch) refetch();
         } else {
             Alert.alert("Error", "Can't create SubCategory right now");
         }

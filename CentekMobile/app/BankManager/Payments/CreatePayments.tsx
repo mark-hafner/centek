@@ -30,13 +30,13 @@ export default function CreatePayment() {
     const [pSubCategoryId, setpSubCategoryId] = useState<number>(-1);
     const [pNote, setPNote] = useState<string>('');
 
-    var { accounts, loading: loadingGetAccounts, error: errorGetAccounts } = useGetAccounts();
+    var { accounts, loading: loadingGetAccounts, error: errorGetAccounts, refetch: refetchAccounts } = useGetAccounts();
     const accountsDropdown = accounts.map(a => ({ label: a.name, value: a.id }));
 
-    var { mainCategories, loading: loadingGetMainCategories, error: errorGetMainCategories } = useGetMainCategories();
+    var { mainCategories, loading: loadingGetMainCategories, error: errorGetMainCategories, refetch: refetchMainCategories } = useGetMainCategories();
     const MainCategoriesDropdown = mainCategories.map(mc => ({ label: mc.name, value: mc.id }));
 
-    var { subCategories, loading: loadingGetSubCategories, error: errorGetSubCategories } = useGetSubCategories();
+    var { subCategories, loading: loadingGetSubCategories, error: errorGetSubCategories, refetch: refetchSubCategories } = useGetSubCategories();
     var filteredSubCategories = subCategories;
     if (pMainCategoryId !== -1) { filteredSubCategories = subCategories.filter(sc => (sc.mainCategoryId === pMainCategoryId)); }
     const SubCategoriesDropdown = filteredSubCategories.map(sc => ({ label: sc.name, value: sc.id }));
@@ -79,9 +79,9 @@ export default function CreatePayment() {
                 style={styles.background}
             >
                 <View style={styles.screen}>
-                    <CreateAccountModal modalVisible={createAccountModalVisible} setModalVisible={setCreateAccountModalVisible} />
-                    <CreateMainCategoryModal modalVisible={createMainCategoryModalVisible} setModalVisible={setCreateMainCategoryModalVisible} />
-                    <CreateSubCategoryModal mainCategoriesDropdown={MainCategoriesDropdown} modalVisible={createSubCategoryModalVisible} setModalVisible={setCreateSubCategoryModalVisible} />
+                    <CreateAccountModal modalVisible={createAccountModalVisible} setModalVisible={setCreateAccountModalVisible} refetch={refetchAccounts} />
+                    <CreateMainCategoryModal modalVisible={createMainCategoryModalVisible} setModalVisible={setCreateMainCategoryModalVisible} refetch={refetchMainCategories} />
+                    <CreateSubCategoryModal mainCategoriesDropdown={MainCategoriesDropdown} modalVisible={createSubCategoryModalVisible} setModalVisible={setCreateSubCategoryModalVisible} refetch={refetchSubCategories} />
 
                     <View style={[styles.topHalf, { flex: extraOptions ? 1 : 1 / 2 }]}>
                         <TextInputComponent placeholder={"Payment name"} value={pName} onChange={setPName} />

@@ -6,24 +6,28 @@ export function useApiGet<T>(endpoint: string) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const result = await apiRequest(endpoint);
-                if (result === false) {
-                    setError("No Internet Connection");
-                } else {
-                    setData(result);
-                }
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const result = await apiRequest(endpoint);
+            if (result === false) {
+                setError("No Internet Connection");
+            } else {
+                setData(result);
+                setError(null);
             }
-        })();
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
     }, [endpoint]);
 
-    return { data, loading, error };
+    return { data, loading, error, refetch: fetchData };
 };
 
 export function useApiPost<T>(endpoint: string) {

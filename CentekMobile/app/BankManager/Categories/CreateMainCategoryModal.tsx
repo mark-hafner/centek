@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Alert, Modal, View } from "react-native";
 
 
-const CreateMainCategoryModal = ({ modalVisible, setModalVisible }: ModalProps) => {
+const CreateMainCategoryModal = ({ modalVisible, setModalVisible, refetch }: ModalProps) => {
     const router = useRouter();
     const [mcName, setMCName] = useState<string>('');
 
@@ -26,7 +26,7 @@ const CreateMainCategoryModal = ({ modalVisible, setModalVisible }: ModalProps) 
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert('Success', 'Created MainCategory');
             setModalVisible(false);
-            router.replace("/BankManager/Payments/CreatePayments");
+            if (refetch) refetch();
         } else {
             Alert.alert("Error", "Can't create MainCategory right now");
 

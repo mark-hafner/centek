@@ -1,16 +1,22 @@
+import { useReadFromDevice, useStoreToDevice } from "@/services/storage";
 import { FetchQueryBuilder } from "@/services/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { Account, MainCategory, Overview, Payment, Stats, SubCategory } from "./types";
 import { useApiGet } from './useApi';
-import { useEffect, useState } from "react";
-import { useReadFromDevice, useStoreToDevice } from "@/services/storage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // FUNCTIONS
 
 export const useGetOverview = () => {
-    const { data: apiData, loading, error } = useApiGet<Overview>('overview');
+    const { data: apiData, loading, error, refetch: apiRefetch } = useApiGet<Overview>('overview');
     const [overview, setOverview] = useState<Overview[]>([]);
     const isOffline = error === "No Internet Connection";
+
+    const refetch = async () => {
+        if (apiRefetch) {
+            await apiRefetch();
+        }
+    };
 
     // online update
     useEffect(() => {
@@ -22,13 +28,19 @@ export const useGetOverview = () => {
     useStoreToDevice('Overview', apiData, loading, error);
     useReadFromDevice('Overview', isOffline, setOverview);
 
-    return { overview, loading, error };
+    return { overview, loading, error, refetch };
 };
 
 export const useGetAccounts = () => {
-    const { data: apiData, loading, error } = useApiGet<Account>('accounts');
+    const { data: apiData, loading, error, refetch: apiRefetch } = useApiGet<Account>('accounts');
     const [accounts, setAccounts] = useState<Account[]>([]);
     const isOffline = error === "No Internet Connection";
+
+    const refetch = async () => {
+        if (apiRefetch) {
+            await apiRefetch();
+        }
+    };
 
     useEffect(() => {
         if (!loading && apiData && !error) {
@@ -39,13 +51,19 @@ export const useGetAccounts = () => {
     useStoreToDevice('Accounts', apiData, loading, error);
     useReadFromDevice('Accounts', isOffline, setAccounts);
 
-    return { accounts, loading, error };
+    return { accounts, loading, error, refetch };
 };
 
 export const useGetMainCategories = () => {
-    const { data: apiData, loading, error } = useApiGet<MainCategory>('mainCategories');
+    const { data: apiData, loading, error, refetch: apiRefetch } = useApiGet<MainCategory>('mainCategories');
     const [mainCategories, setMainCategories] = useState<MainCategory[]>([]);
     const isOffline = error === "No Internet Connection";
+
+    const refetch = async () => {
+        if (apiRefetch) {
+            await apiRefetch();
+        }
+    };
 
     useEffect(() => {
         if (!loading && apiData && !error) {
@@ -56,13 +74,19 @@ export const useGetMainCategories = () => {
     useStoreToDevice('MainCategories', apiData, loading, error);
     useReadFromDevice('MainCategories', isOffline, setMainCategories);
 
-    return { mainCategories, loading, error };
+    return { mainCategories, loading, error, refetch };
 };
 
 export const useGetSubCategories = () => {
-    const { data: apiData, loading, error } = useApiGet<SubCategory>('subCategories');
+    const { data: apiData, loading, error, refetch: apiRefetch } = useApiGet<SubCategory>('subCategories');
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const isOffline = error === "No Internet Connection";
+
+    const refetch = async () => {
+        if (apiRefetch) {
+            await apiRefetch();
+        }
+    };
 
     useEffect(() => {
         if (!loading && apiData && !error) {
@@ -73,13 +97,19 @@ export const useGetSubCategories = () => {
     useStoreToDevice('SubCategories', apiData, loading, error);
     useReadFromDevice('SubCategories', isOffline, setSubCategories);
 
-    return { subCategories, loading, error };
+    return { subCategories, loading, error, refetch };
 };
 
 export const useGetPayments = () => {
-    const { data: apiData, loading, error } = useApiGet<Payment>('payments');
+    const { data: apiData, loading, error, refetch: apiRefetch } = useApiGet<Payment>('payments');
     const [payments, setPayments] = useState<Payment[]>([]);
     const isOffline = error === "No Internet Connection";
+
+    const refetch = async () => {
+        if (apiRefetch) {
+            await apiRefetch();
+        }
+    };
 
     useEffect(() => {
         if (!loading && apiData && !error) {
@@ -90,7 +120,7 @@ export const useGetPayments = () => {
     useStoreToDevice('Payments', apiData, loading, error);
     useReadFromDevice('Payments', isOffline, setPayments);
 
-    return { payments, loading, error };
+    return { payments, loading, error, refetch };
 };
 
 export const useGetStats = (
