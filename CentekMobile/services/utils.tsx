@@ -113,7 +113,7 @@ export interface PaymentFilters {
   accountIds?: number[];
   mainCategoryIds?: number[];
   subCategoryIds?: number[];
-  type?: boolean; // true = income, false = expenseb
+  type?: boolean; // true = income, false = expense
   fromDate?: Date;
   toDate?: Date;
 }
@@ -167,7 +167,7 @@ export function extractEntities(
   const accounts = uniqueById(
     payments
       .map(p => allAccounts.find(a => a.id === p.accountId))
-      .filter((a): a is Account => !!a) // odstrani null
+      .filter((a): a is Account => !!a)
   );
 
   const mainCategories = uniqueById(

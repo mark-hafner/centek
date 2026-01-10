@@ -24,7 +24,6 @@ export default function StatsView() {
   });
   const [toDate, setToDate] = useState(new Date());
 
-  // get stats data
   const filters = {
     accountIds: accountIds,
     mainCategoryIds: mainCategoryIds,

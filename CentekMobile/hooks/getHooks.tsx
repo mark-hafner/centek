@@ -125,7 +125,7 @@ export const useGetPayments = (filters?: PaymentFilters) => {
   const { data: apiData, loading, error } = useApiGet<Payment>("payments");
   const [payments, setPayments] = useState<Payment[]>([]);
 
-  // Shrani RAW payments v storage
+  // Online
   useEffect(() => {
     (async () => {
       if (!loading && apiData && !error) {
@@ -139,7 +139,7 @@ export const useGetPayments = (filters?: PaymentFilters) => {
     })();
   }, [apiData, loading, error]);
 
-  // Če ni neta, beri iz storage
+  // Offline
   useEffect(() => {
   (async () => {
     if (error === 'No Internet Connection') {
@@ -161,7 +161,6 @@ export const useGetPayments = (filters?: PaymentFilters) => {
   })();
 }, [error]);
 
-  // Filtrirani payments (memoizirano, da se ne računa vsaki render)
   const filteredPayments = useMemo(() => {
     if (!filters) return payments;
     return filterPayments(payments, filters);
@@ -171,14 +170,11 @@ export const useGetPayments = (filters?: PaymentFilters) => {
 };
 
 export const usePaymentDropdowns = (payments: Payment[]) => {
-  // Hooki vedno vračajo default [] → safe
   const { accounts: allAccounts = [] } = useGetAccounts();
   const { mainCategories: allMainCategories = [] } = useGetMainCategories();
   const { subCategories: allSubCategories = [] } = useGetSubCategories();
 
-  // Memoiziramo, da se ne računa vsaki render
   return useMemo(() => {
-    // extractEntities poveže ID-je iz payments z objekti
     const { accounts, mainCategories, subCategories } = extractEntities(
       payments,
       allAccounts,
@@ -186,7 +182,6 @@ export const usePaymentDropdowns = (payments: Payment[]) => {
       allSubCategories
     );
 
-    // Mapiramo v dropdown format { label, value }
     const accountDropdown = accounts.map(a => ({ label: a.name, value: a.id }));
     const mainCategoriesDropdown = mainCategories.map(c => ({ label: c.name, value: c.id }));
     const subCategoriesDropdown = subCategories.map(s => ({ label: s.name, value: s.id }));
