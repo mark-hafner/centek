@@ -38,15 +38,13 @@ export default function StatsView() {
     filters
   );
 
-
-  if (loading || stats === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
-
-
   const {
     accountDropdown,
     mainCategoriesDropdown,
     subCategoriesDropdown,
   } = usePaymentDropdowns(stats);
+
+  if (loading || stats === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
 
   const TableHeader = () => (
     <View style={styles.rowHeader}>

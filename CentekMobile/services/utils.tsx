@@ -3,7 +3,7 @@ import * as SO from 'expo-screen-orientation';
 import { useEffect, useState } from "react";
 import { getUserId } from "./userData";
 import { Alert } from "react-native";
-import { Payment } from "@/hooks/types";
+import { Account, MainCategory, Payment, SubCategory } from "@/hooks/types";
 
 
 //! SEND API REQUEST
@@ -123,12 +123,31 @@ export function filterPayments(
   filters: PaymentFilters
 ): Payment[] {
   return payments.filter(p => {
-    if (filters.accountIds && !filters.accountIds.includes(p.account.id)) return false;
-    if (filters.mainCategoryIds && !filters.mainCategoryIds.includes(p.mainCategory.id)) return false;
-    if (filters.subCategoryIds && !filters.subCategoryIds.includes(p.subCategory.id)) return false;
+    if (!p) return false;
+
+    // Accounts
+    if (filters.accountIds && filters.accountIds.length > 0) {
+      if (!filters.accountIds.includes(p.accountId)) return false;
+    }
+
+    // Main categories
+    if (filters.mainCategoryIds && filters.mainCategoryIds.length > 0) {
+      if (!filters.mainCategoryIds.includes(p.mainCategoryId!)) return false;
+    }
+
+    // Sub categories
+    if (filters.subCategoryIds && filters.subCategoryIds.length > 0) {
+      if (!filters.subCategoryIds.includes(p.subCategoryId!)) return false;
+    }
+
+    // Type
     if (filters.type !== undefined && p.type !== filters.type) return false;
-    if (filters.fromDate && p.date < filters.fromDate) return false;
-    if (filters.toDate && p.date > filters.toDate) return false;
+
+    // Dates
+    const paymentDate = p.date instanceof Date ? p.date : new Date(p.date);
+    if (filters.fromDate && paymentDate < filters.fromDate) return false;
+    if (filters.toDate && paymentDate > filters.toDate) return false;
+
     return true;
   });
 }
@@ -139,14 +158,29 @@ function uniqueById<T extends { id: number }>(items: T[]): T[] {
   return Array.from(map.values());
 }
 
-export function extractEntities(payments: Payment[]) {
-  const accounts = uniqueById(payments.map(p => p.account));
-  const mainCategories = uniqueById(payments.map(p => p.mainCategory));
-  const subCategories = uniqueById(payments.map(p => p.subCategory));
+export function extractEntities(
+  payments: Payment[],
+  allAccounts: Account[],
+  allMainCategories: MainCategory[],
+  allSubCategories: SubCategory[]
+) {
+  const accounts = uniqueById(
+    payments
+      .map(p => allAccounts.find(a => a.id === p.accountId))
+      .filter((a): a is Account => !!a) // odstrani null
+  );
 
-  return {
-    accounts,
-    mainCategories,
-    subCategories,
-  };
+  const mainCategories = uniqueById(
+    payments
+      .map(p => allMainCategories.find(c => c.id === p.mainCategoryId))
+      .filter((c): c is MainCategory => !!c)
+  );
+
+  const subCategories = uniqueById(
+    payments
+      .map(p => allSubCategories.find(s => s.id === p.subCategoryId))
+      .filter((s): s is SubCategory => !!s)
+  );
+
+  return { accounts, mainCategories, subCategories };
 }

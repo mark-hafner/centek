@@ -141,25 +141,25 @@ export const useGetPayments = (filters?: PaymentFilters) => {
 
   // Če ni neta, beri iz storage
   useEffect(() => {
-    (async () => {
-      if (error === 'No Internet Connection') {
-        try {
-          const stored = await AsyncStorage.getItem('Payments');
-          if (stored) {
-            const parsed = JSON.parse(stored).map((p: any) => ({
-              ...p,
-              date: new Date(p.date) // ⬅️ pretvori nazaj v Date
-            }));
-            setPayments(parsed);
-          } else {
-            setPayments([]);
-          }
-        } catch (e) {
-          console.error('Failed to load payments from storage', e);
+  (async () => {
+    if (error === 'No Internet Connection') {
+      try {
+        const stored = await AsyncStorage.getItem('Payments');
+        if (stored) {
+          const parsed: Payment[] = JSON.parse(stored).map((p: any) => ({
+            ...p,
+            date: new Date(p.date),
+          }));
+          setPayments(parsed);
+        } else {
+          setPayments([]);
         }
+      } catch (e) {
+        console.error('Failed to load payments from storage', e);
       }
-    })();
-  }, [error]);
+    }
+  })();
+}, [error]);
 
   // Filtrirani payments (memoizirano, da se ne računa vsaki render)
   const filteredPayments = useMemo(() => {
@@ -171,27 +171,28 @@ export const useGetPayments = (filters?: PaymentFilters) => {
 };
 
 export const usePaymentDropdowns = (payments: Payment[]) => {
+  // Hooki vedno vračajo default [] → safe
+  const { accounts: allAccounts = [] } = useGetAccounts();
+  const { mainCategories: allMainCategories = [] } = useGetMainCategories();
+  const { subCategories: allSubCategories = [] } = useGetSubCategories();
+
+  // Memoiziramo, da se ne računa vsaki render
   return useMemo(() => {
-    const { accounts, mainCategories, subCategories } =
-      extractEntities(payments);
+    // extractEntities poveže ID-je iz payments z objekti
+    const { accounts, mainCategories, subCategories } = extractEntities(
+      payments,
+      allAccounts,
+      allMainCategories,
+      allSubCategories
+    );
 
-    return {
-      accountDropdown: accounts.map(a => ({
-        label: a.name,
-        value: a.id,
-      })),
+    // Mapiramo v dropdown format { label, value }
+    const accountDropdown = accounts.map(a => ({ label: a.name, value: a.id }));
+    const mainCategoriesDropdown = mainCategories.map(c => ({ label: c.name, value: c.id }));
+    const subCategoriesDropdown = subCategories.map(s => ({ label: s.name, value: s.id }));
 
-      mainCategoriesDropdown: mainCategories.map(c => ({
-        label: c.name,
-        value: c.id,
-      })),
-
-      subCategoriesDropdown: subCategories.map(s => ({
-        label: s.name,
-        value: s.id,
-      })),
-    };
-  }, [payments]);
+    return { accountDropdown, mainCategoriesDropdown, subCategoriesDropdown };
+  }, [payments, allAccounts, allMainCategories, allSubCategories]);
 };
 
 export const useGetStats = (
