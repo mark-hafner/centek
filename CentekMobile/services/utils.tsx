@@ -21,9 +21,9 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
             options.body = JSON.stringify(body);
         };
 
-        const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
+        // const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
         // const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);
-        // const response = await fetch(`http://206.189.2.204:8080/api/v1/${item}`, options);
+        const response = await fetch(`http://206.189.2.204:8080/api/v1/${item}`, options);
 
         if (response.status > 299) return [];
         if (method === "DELETE" && response.status === 204) return [{ status: 204, statusText: "Successfull deletion" }];
@@ -32,7 +32,7 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error("ERROR: " + error);
+        // console.error("ERROR: " + error);
         return false;
     }
 };

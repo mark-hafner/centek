@@ -1,5 +1,6 @@
 import { ButtonComponent, LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
+import { Sync } from '@/services/sync';
 import { getUserId, getUserName, getUserSurname } from '@/services/userData';
 import { useLoggedIn } from '@/services/utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +17,8 @@ export default function Index() {
   const [userSurname, setUserSurname] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
+  Sync();
+  
   useEffect(() => {
     const load = async () => {
       if (!loggedIn) return;
