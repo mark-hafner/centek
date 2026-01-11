@@ -6,11 +6,10 @@ import React from 'react';
 import { FlatList, Text, View } from 'react-native';
 
 
-export default function AccountsView() {
+export default function accountsCategoriesView() {
     const { accounts, loading: loadingAccounts } = useGetAccounts();
     const { mainCategories, loading: loadingMainCategories } = useGetMainCategories();
     const { subCategories, loading: loadingSubategories } = useGetSubCategories();
-    console.log(accounts, mainCategories, subCategories);
 
     const TableHeader = () => (
         <View style={styles.rowHeader}>
