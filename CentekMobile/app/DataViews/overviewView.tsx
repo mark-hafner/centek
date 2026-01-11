@@ -1,11 +1,12 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
-import { useGetPayments, useGetStats, usePaymentDropdowns } from '@/hooks/getHooks';
+import { useGetPayments, usePaymentDropdowns } from '@/hooks/getHooks';
 import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { BarChart, PieChart } from "react-native-gifted-charts";
 
 
 export default function OverviewView() {
@@ -50,6 +51,9 @@ export default function OverviewView() {
     }, 0);
   }, [payments]);
 
+
+  const data = [{ value: 50 }, { value: 80 }, { value: 90 }, { value: 70 }]
+
   if (loading || payments === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
 
   const TableHeader = () => (
@@ -86,7 +90,7 @@ export default function OverviewView() {
       {...gradientStyle}
       style={[styles.background]}
     >
-      <Stack.Screen options={{ title: 'Stats', headerShown: (isLandscape) ? false : true }} />
+      <Stack.Screen options={{ title: 'Overview', headerShown: (isLandscape) ? false : true }} />
 
       <Modal
         animationType="slide"
@@ -151,6 +155,14 @@ export default function OverviewView() {
       {!isLandscape && (
         <ButtonComponent label={"Open Filters"} onPress={() => setModalVisible(true)} />
       )}
+      <View style={styles.container}>
+        <ScrollView horizontal={false}>
+          <BarChart data={data} />
+          <PieChart data={data} />
+
+        </ScrollView>
+      </View>
+
     </LinearGradient>
   );
 }

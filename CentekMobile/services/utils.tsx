@@ -23,10 +23,11 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
 
         const response = await fetch(`https://subunequal-marcy-unsatirized.ngrok-free.dev/api/v1/${item}`, options);
         // const response = await fetch(`http://localhost:5087/api/v1/${item}`, options);
-        // const response = await fetch(`http://http://206.189.2.204:8080/api/v1/${item}`, options);
+        // const response = await fetch(`http://206.189.2.204:8080/api/v1/${item}`, options);
 
         if (response.status > 299) return [];
-        if (response.status === 204) return [{ status: 204, statusText: "Successfull deletion" }];
+        if (method === "DELETE" && response.status === 204) return [{ status: 204, statusText: "Successfull deletion" }];
+
 
         const data = await response.json();
         return data;

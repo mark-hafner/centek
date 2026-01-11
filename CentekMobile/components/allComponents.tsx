@@ -2,7 +2,7 @@ import { gradientStyle, styles } from '@/components/styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, KeyboardTypeOptions, Platform, Pressable, StyleProp, Text, TextInput, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardTypeOptions, Platform, Pressable, StyleProp, Text, TextInput, View, ViewStyle, } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 
@@ -12,13 +12,14 @@ type ButtonProps = {
     value?: any;
     onPress?: () => void;
     customStyle?: StyleProp<ViewStyle>;
+    customButtonStyle?: StyleProp<ViewStyle>;
 };
 
-export const ButtonComponent = ({ label, onPress, customStyle }: ButtonProps) => {
+export const ButtonComponent = ({ label, onPress, customStyle, customButtonStyle }: ButtonProps) => {
 
     return (
         <View style={[styles.buttonContainer, customStyle]}>
-            <Pressable style={styles.button} onPress={onPress}>
+            <Pressable style={[styles.button, customButtonStyle]} onPress={onPress}>
                 <Text style={styles.buttonLabel}>{label}</Text>
             </Pressable>
         </View>

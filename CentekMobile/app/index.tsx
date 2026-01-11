@@ -39,25 +39,13 @@ export default function Index() {
         style={styles.background}
       >
         <View style={styles.container}>
-          <ButtonComponent label="DEBUG: Clear Async Storage" onPress={async () => { await AsyncStorage.clear(); router.replace("/login") }} />
           <Text style={styles.text}>VIEW YOUR DATA</Text>
-          <ButtonComponent label="Show Accounts" onPress={() => router.push("/DataViews/accountsView")} />
-          <ButtonComponent label="Show Main Categories" onPress={() => router.push("/DataViews/mainCategoriesView")} />
-          <ButtonComponent label="Show Sub Categories" onPress={() => router.push("/DataViews/subCategoriesView")} />
+          <ButtonComponent label="Show Accounts and Categories" onPress={() => router.push("/DataViews/accountsCategoriesView")} />
           <ButtonComponent label="Show Stats" onPress={() => router.push("/DataViews/statsView")} />
           <ButtonComponent label="Show Graphs" onPress={() => router.push("/DataViews/overviewView")} />
           <ButtonComponent label="Create payment" onPress={() => router.push("/BankManager/Payments/CreatePayments")} />
           <ButtonComponent label="Delete payment" onPress={() => router.push("/BankManager/Payments/DeletePayments")} />
-
-          {userId && (
-            <Text style={styles.text}>
-              Your UserID: {userId}
-            </Text>
-          )}{userName && userSurname && (
-            <Text style={styles.text}>
-              Your Name: {userName} {userSurname}
-            </Text>
-          )}
+          <ButtonComponent customButtonStyle={{ backgroundColor: "#f00" }} label="Log out" onPress={async () => { await AsyncStorage.clear(); router.replace("/login") }} />
         </View>
       </LinearGradient>
     </LoaderScreen>

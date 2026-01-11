@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
   },
-  
+
   // Container za screens
   container: {
     flex: 1,
@@ -96,6 +96,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
+    marginVertical: 2,
   },
   button: {
     backgroundColor: "#00aff5ff",

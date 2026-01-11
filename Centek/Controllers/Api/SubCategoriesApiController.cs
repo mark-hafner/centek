@@ -32,7 +32,7 @@ namespace Centek.Controllers_Api
                 .ToListAsync();
             if (mainCategoryIds.Count == 0)
             {
-                return null;
+                return Array.Empty<SubCategory>();
             }
             // get all subcategories for these categories
             var subCategory = await _context

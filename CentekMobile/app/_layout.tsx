@@ -9,9 +9,7 @@ export default function Layout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
 
-        <Stack.Screen name="DataViews/accountsView" options={{ title: "accounts" }} />
-        <Stack.Screen name="DataViews/mainCategoriesView" options={{ title: "mainCategories" }} />
-        <Stack.Screen name="DataViews/subCategoriesView" options={{ title: "subCategories" }} />
+        <Stack.Screen name="DataViews/accountsCategoriesView" options={{ title: "Accounts and Categories" }} />
         <Stack.Screen name="DataViews/statsView" options={{ title: "Stats" }} />
         <Stack.Screen name="DataViews/overviewView" options={{ title: "Overview" }} />
 

@@ -30,19 +30,19 @@ export default function CreatePayment() {
     const [pSubCategoryId, setpSubCategoryId] = useState<number>(-1);
     const [pNote, setPNote] = useState<string>('');
 
-    var { accounts, loading: loadingGetAccounts, error: errorGetAccounts, refetch: refetchAccounts } = useGetAccounts();
+    var { accounts, loading: loadingGetAccounts, refetch: refetchAccounts } = useGetAccounts();
     const accountsDropdown = accounts.map(a => ({ label: a.name, value: a.id }));
 
-    var { mainCategories, loading: loadingGetMainCategories, error: errorGetMainCategories, refetch: refetchMainCategories } = useGetMainCategories();
+    var { mainCategories, loading: loadingGetMainCategories, refetch: refetchMainCategories } = useGetMainCategories();
     const MainCategoriesDropdown = mainCategories.map(mc => ({ label: mc.name, value: mc.id }));
 
-    var { subCategories, loading: loadingGetSubCategories, error: errorGetSubCategories, refetch: refetchSubCategories } = useGetSubCategories();
+    var { subCategories, loading: loadingGetSubCategories, refetch: refetchSubCategories } = useGetSubCategories();
     var filteredSubCategories = subCategories;
     if (pMainCategoryId !== -1) { filteredSubCategories = subCategories.filter(sc => (sc.mainCategoryId === pMainCategoryId)); }
     const SubCategoriesDropdown = filteredSubCategories.map(sc => ({ label: sc.name, value: sc.id }));
 
 
-    const { payment, loading: postLoading, error: postError, postPayment } = usePostPayment();
+    const { payment, loading: postLoading, postPayment } = usePostPayment();
 
     const handleCreate = async () => {
         if (!pAccountId) return alert("Select an account");
@@ -69,7 +69,7 @@ export default function CreatePayment() {
     };
 
 
-    if (loadingGetAccounts) return <LoaderScreen loading={loadingGetAccounts} title="Stats" children={undefined}></LoaderScreen>;
+    if (loadingGetAccounts || loadingGetMainCategories || loadingGetSubCategories || postLoading) return <LoaderScreen loading={loadingGetAccounts} title="Stats" children={undefined}></LoaderScreen>;
 
 
     return (
@@ -106,7 +106,7 @@ export default function CreatePayment() {
                                     <DropdownComponent customStyle={{ paddingRight: 6 }} data={SubCategoriesDropdown} dropdownLabel="Sub Category" value={pSubCategoryId} onChange={setpSubCategoryId} />
                                     <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateSubCategoryModalVisible(!createSubCategoryModalVisible)} />
                                 </View>
-                                <TextInputComponent placeholder={"Payment note"} value={pName} onChange={setPName} />
+                                <TextInputComponent placeholder={"Payment note"} value={pNote} onChange={setPNote} />
                             </>
                         )}
                     </View>

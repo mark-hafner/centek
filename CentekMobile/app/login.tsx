@@ -4,9 +4,9 @@ import loginToApp from "@/services/loginHandler";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
 
 
 const LoginPage = () => {
@@ -34,7 +34,7 @@ const LoginPage = () => {
                     <TextInputComponent customStyle={{ marginBottom: 16 }} placeholder={"Password"} hidden={true} value={password} onChange={setPassword} />
                     <ButtonComponent customStyle={{ marginBottom: 16 }} label="Login" onPress={handleLogin} />
                     <ButtonComponent customStyle={{ marginBottom: 16 }} label="Create account" onPress={() => {
-                        WebBrowser.openBrowserAsync("https://subunequal-marcy-unsatirized.ngrok-free.dev/Identity/Account/Register", {
+                        WebBrowser.openBrowserAsync("http://206.189.2.204:8080/Identity/Account/Register", {
                             enableBarCollapsing: false,
                             readerMode: false,
                             presentationStyle: WebBrowser.WebBrowserPresentationStyle.OVER_FULL_SCREEN
