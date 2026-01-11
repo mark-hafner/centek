@@ -59,7 +59,7 @@ export default function DeletePayment() {
                         setPaymentToDelete([]);
                         if (refetch) refetch();
                     } else {
-                        Alert.alert("Error", "Can't delete payments right now");
+                        Alert.alert("Alert", "Payments will be deleted next time you are online");
                     }
                 } catch (err) {
                     Alert.alert("Error", "Something went wrong");

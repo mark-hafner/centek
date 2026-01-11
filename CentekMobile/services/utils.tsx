@@ -31,7 +31,7 @@ export const apiRequest = async (item: string, method: string = "GET", body?: an
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error("ERROR: " + error);
+        // console.error("ERROR: " + error);
         return false;
     }
 };
