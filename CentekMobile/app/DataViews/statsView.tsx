@@ -1,10 +1,11 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useGetPayments, useGetStats, usePaymentDropdowns } from '@/hooks/getHooks';
+import { Sync } from '@/services/sync';
 import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 export default function StatsView() {
@@ -13,6 +14,8 @@ export default function StatsView() {
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
   const [modalVisible, setModalVisible] = useState(false);
+  
+  Sync();
 
   const [accountIds, setAccountIds] = useState<number[]>([]);
   const [mainCategoryIds, setMainCategoryIds] = useState<number[]>([]);
