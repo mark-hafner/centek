@@ -36,7 +36,6 @@ export default function OverviewView() {
   const { payments, loading: loadingPayments } = useGetPayments(
     filters
   );
-  console.warn(payments);
 
   const {
     accountDropdown,
@@ -47,7 +46,6 @@ export default function OverviewView() {
   var chartDataAccounts = null;
   if (payments && payments.every(p => p.account)) {
     // get total per account
-    payments.forEach(p => console.log(p.account));
     const accountsTotals = Object.values(
       payments.reduce<Record<number, { label: string; value: number }>>((acc, p) => {
         acc[p.accountId] ??= { label: p.account!.name, value: 0 };
