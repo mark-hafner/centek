@@ -36,6 +36,7 @@ export default function OverviewView() {
   const { payments, loading: loadingPayments } = useGetPayments(
     filters
   );
+  console.warn(payments);
 
   const {
     accountDropdown,
@@ -43,21 +44,25 @@ export default function OverviewView() {
     subCategoriesDropdown,
   } = usePaymentDropdowns();
 
+  var chartDataAccounts = null;
+  if (payments && payments.every(p => p.account)) {
+    // get total per account
+    payments.forEach(p => console.log(p.account));
+    const accountsTotals = Object.values(
+      payments.reduce<Record<number, { label: string; value: number }>>((acc, p) => {
+        acc[p.accountId] ??= { label: p.account!.name, value: 0 };
+        acc[p.accountId].value += p.type ? p.amount : -p.amount;
+        return acc;
+      }, {})
+    );
+    chartDataAccounts = accountsTotals.map(d => ({
+      ...d,
+      frontColor: d.value >= 0 ? '#2ecc71' : '#e74c3c',
+    }));
+  }
 
-  // get total per account
-  const accountsTotals = Object.values(
-    payments.reduce<Record<number, { label: string; value: number }>>((acc, p) => {
-      acc[p.accountId] ??= { label: p.account!.name, value: 0 };
-      acc[p.accountId].value += p.type ? p.amount : -p.amount;
-      return acc;
-    }, {})
-  );
-  const chartDataAccounts = accountsTotals.map(d => ({
-    ...d,
-    frontColor: d.value >= 0 ? '#2ecc71' : '#e74c3c',
-  }));
 
-  if (loadingPayments) return <LoaderScreen loading={loadingPayments} title="Stats" children={undefined}></LoaderScreen>;
+  if (loadingPayments || payments === null || chartDataAccounts === null) return <LoaderScreen loading={loadingPayments} children={undefined}></LoaderScreen>;
 
   return (
     <LinearGradient
