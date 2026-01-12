@@ -49,7 +49,7 @@ export function Sync() {
 
       const items = JSON.parse(raw);
       if (!items.length) return;
-
+      
       const { success } = await postPayments(items);
 
       if (success) {
