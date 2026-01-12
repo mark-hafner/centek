@@ -1,16 +1,14 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useGetPayments, usePaymentDropdowns } from '@/hooks/getHooks';
-import { ScreenOrientation } from '@/services/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Modal, ScrollView, Text, useWindowDimensions, View } from 'react-native';
-import { BarChart, PieChart } from "react-native-gifted-charts";
+import { BarChart } from "react-native-gifted-charts";
 
 
 export default function OverviewView() {
-  ScreenOrientation();
 
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
@@ -35,7 +33,7 @@ export default function OverviewView() {
     toDate: toDate
   };
 
-  const { payments: payments, loading } = useGetPayments(
+  const { payments, loading: loadingPayments } = useGetPayments(
     filters
   );
 
@@ -45,45 +43,24 @@ export default function OverviewView() {
     subCategoriesDropdown,
   } = usePaymentDropdowns();
 
-  const totalAmount = useMemo(() => {
-    return payments.reduce((sum, p) => {
-      return sum + (p.type ? p.amount : -p.amount);
-    }, 0);
-  }, [payments]);
+  var chartDataAccounts = null;
+  if (payments && payments.every(p => p.account)) {
+    // get total per account
+    const accountsTotals = Object.values(
+      payments.reduce<Record<number, { label: string; value: number }>>((acc, p) => {
+        acc[p.accountId] ??= { label: p.account!.name, value: 0 };
+        acc[p.accountId].value += p.type ? p.amount : -p.amount;
+        return acc;
+      }, {})
+    );
+    chartDataAccounts = accountsTotals.map(d => ({
+      ...d,
+      frontColor: d.value >= 0 ? '#2ecc71' : '#e74c3c',
+    }));
+  }
 
 
-  const data = [{ value: 50 }, { value: 80 }, { value: 90 }, { value: 70 }]
-
-  if (loading || payments === null) return <LoaderScreen loading={loading} title="Stats" children={undefined}></LoaderScreen>;
-
-  const TableHeader = () => (
-    <View style={styles.rowHeader}>
-      <Text style={styles.headerCell}>Name</Text>
-      <Text style={styles.headerCell}>Amount</Text>
-      <Text style={styles.headerCell}>Account</Text>
-      <Text style={styles.headerCell}>Category</Text>
-      <Text style={styles.headerCell}>Note</Text>
-    </View>
-  );
-
-  const PaymentRow = ({ p }: any) => (
-    <View style={styles.row}>
-      <Text style={styles.cell}>{p.name}</Text>
-      <Text
-        style={[
-          styles.cell,
-          { color: p.type ? 'green' : 'red', fontWeight: 'bold' },
-        ]}
-      >
-        {p.type ? p.amount : -p.amount} €
-      </Text>
-      <Text style={styles.cell}>{p.account?.name}</Text>
-      <Text style={styles.cell}>
-        {p.mainCategory?.name} / {p.subCategory?.name}
-      </Text>
-      <Text style={styles.cell}>{p.note}</Text>
-    </View>
-  );
+  if (loadingPayments || payments === null || chartDataAccounts === null) return <LoaderScreen loading={loadingPayments} children={undefined}></LoaderScreen>;
 
   return (
     <LinearGradient
@@ -157,8 +134,12 @@ export default function OverviewView() {
       )}
       <View style={styles.container}>
         <ScrollView horizontal={false}>
-          <BarChart data={data} />
-          <PieChart data={data} />
+          <BarChart
+            data={chartDataAccounts}
+            barWidth={50}
+            spacing={16}
+            yAxisThickness={0}
+            xAxisThickness={1} />
 
         </ScrollView>
       </View>

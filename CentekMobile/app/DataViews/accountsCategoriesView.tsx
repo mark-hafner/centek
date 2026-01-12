@@ -46,6 +46,7 @@ export default function accountsCategoriesView() {
             style={styles.background}
         >
             <View style={[styles.container, { alignItems: "stretch", paddingBottom: 20, paddingHorizontal: 10 }]}>
+                <Text style={styles.titleText}>ACCOUNTS</Text>
                 <FlatList
                     data={accounts}
                     keyExtractor={(item) => item.id.toString()}
@@ -55,6 +56,7 @@ export default function accountsCategoriesView() {
                 />
             </View>
             <View style={[styles.container, { alignItems: "stretch", paddingBottom: 20, paddingHorizontal: 10 }]}>
+                <Text style={styles.titleText}>MAIN CATEGORIES</Text>
                 <FlatList
                     data={mainCategories}
                     keyExtractor={(item) => item.id.toString()}
@@ -64,6 +66,7 @@ export default function accountsCategoriesView() {
                 />
             </View>
             <View style={[styles.container, { alignItems: "stretch", paddingBottom: 20, paddingHorizontal: 10 }]}>
+                <Text style={styles.titleText}>SUB CATEGORIES</Text>
                 <FlatList
                     data={subCategories}
                     keyExtractor={(item) => item.id.toString()}

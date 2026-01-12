@@ -9,7 +9,10 @@ export default async function loginToApp(email: string, password: string) {
 
     try {
         const data = await apiRequest('users/login', 'POST', { email, password });
-        if (data === false) return null;
+        if (data === false) {
+            Alert.alert("FAILED LOGIN", "NO internet connection");
+            return null;
+        }
         if (data.length === 0) {
             Alert.alert("FAILED LOGIN", "Incorrect Credentials");
             return null;

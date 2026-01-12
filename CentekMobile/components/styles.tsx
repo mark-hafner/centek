@@ -64,6 +64,19 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     marginVertical: 4,
   },
+  titleText: {
+    color: '#000',
+    fontSize: 20,
+    marginVertical: 4,
+    textAlign: "center",
+
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    borderColor: "#000",
+    borderWidth: 1,
+    padding: 2
+  },
+
   scroll: {
     marginTop: 20,
     paddingHorizontal: 20,
