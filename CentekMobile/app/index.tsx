@@ -20,16 +20,17 @@ export default function Index() {
 
   Sync();
 
+  useGetAccounts();
+  useGetMainCategories();
+  useGetSubCategories();
+  useGetPayments()
+
   useEffect(() => {
     const load = async () => {
       if (!loggedIn) return;
       setUserId(await getUserId());
       setUserName(await getUserName());
       setUserSurname(await getUserSurname());
-      useGetAccounts();
-      useGetMainCategories();
-      useGetSubCategories();
-      useGetPayments()
       setLoading(false);
     };
     load();

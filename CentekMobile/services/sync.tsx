@@ -52,7 +52,6 @@ export function Sync() {
 
       const { success } = await postPayments(items);
 
-      
       if (success) {
         await AsyncStorage.removeItem("CreatePayments");
       }
