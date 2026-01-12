@@ -95,7 +95,7 @@ namespace Centek.Controllers
             var now = DateTime.Now;
             var payment = new RecurringPayment
             {
-                StartDate = new DateTime(now.Year, now.Month, now.Day)
+                StartDate = new DateTime(now.Year, now.Month, now.Day),
             };
 
             return View(payment);
@@ -216,9 +216,10 @@ namespace Centek.Controllers
                 DateTime date = startDate;
                 while (date <= toDate)
                 {
-                    if (date >= endDate) break;
+                    if (date >= endDate)
+                        break;
 
-                    var payment = (new Payment
+                    var payment = new Payment
                     {
                         Name = recurringPayment.Name,
                         Note = recurringPayment.Note,
@@ -230,8 +231,8 @@ namespace Centek.Controllers
                         SubCategoryId = recurringPayment.SubCategoryId,
                         Account = recurringPayment.Account,
                         MainCategory = recurringPayment.MainCategory,
-                        SubCategory = recurringPayment.SubCategory
-                    });
+                        SubCategory = recurringPayment.SubCategory,
+                    };
                     _context.Add(payment);
                     await _context.SaveChangesAsync();
 

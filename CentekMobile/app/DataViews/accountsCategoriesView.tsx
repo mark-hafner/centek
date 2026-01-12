@@ -52,7 +52,7 @@ export default function accountsCategoriesView() {
                     keyExtractor={(item) => item.id.toString()}
                     ListHeaderComponent={TableHeader}
                     renderItem={({ item }) => <TableRow item={item} />}
-                    style={{ marginTop: 8, paddingBottom: 20 }}
+                    style={{ marginTop: 8, paddingBottom: 20, borderRadius: 10 }}
                 />
             </View>
             <View style={[styles.container, { alignItems: "stretch", paddingBottom: 20, paddingHorizontal: 10 }]}>
@@ -62,7 +62,7 @@ export default function accountsCategoriesView() {
                     keyExtractor={(item) => item.id.toString()}
                     ListHeaderComponent={TableHeader}
                     renderItem={({ item }) => <TableRow item={item} />}
-                    style={{ marginTop: 8, paddingBottom: 20 }}
+                    style={{ marginTop: 8, paddingBottom: 20, borderRadius: 10 }}
                 />
             </View>
             <View style={[styles.container, { alignItems: "stretch", paddingBottom: 20, paddingHorizontal: 10 }]}>
@@ -72,7 +72,7 @@ export default function accountsCategoriesView() {
                     keyExtractor={(item) => item.id.toString()}
                     ListHeaderComponent={SubCategoriesTableHeader}
                     renderItem={({ item }) => <SubCategoriesTableRow item={item} />}
-                    style={{ marginTop: 8, paddingBottom: 20 }}
+                    style={{ marginTop: 8, paddingBottom: 20, borderRadius: 10 }}
                 />
             </View>
         </LinearGradient>

@@ -2,7 +2,6 @@ import { ButtonComponent, LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useGetAccounts, useGetMainCategories, useGetPayments, useGetSubCategories } from '@/hooks/getHooks';
 import { Sync } from '@/services/sync';
-import { getUserId, getUserName, getUserSurname } from '@/services/userData';
 import { useLoggedIn } from '@/services/utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,12 +12,10 @@ import { Text, View } from "react-native";
 export default function Index() {
   const router = useRouter();
   const loggedIn = useLoggedIn();
-  const [userId, setUserId] = useState<string>('');
-  const [userName, setUserName] = useState<string>('');
-  const [userSurname, setUserSurname] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   Sync();
+
 
   useGetAccounts();
   useGetMainCategories();
@@ -28,9 +25,6 @@ export default function Index() {
   useEffect(() => {
     const load = async () => {
       if (!loggedIn) return;
-      setUserId(await getUserId());
-      setUserName(await getUserName());
-      setUserSurname(await getUserSurname());
       setLoading(false);
     };
     load();

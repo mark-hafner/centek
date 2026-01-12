@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useApiDelete, useApiPost } from "@/hooks/useApi";
 import { accountPostRequest, mainCategoryPostRequest, paymentPostRequest, subCategoryPostRequest } from "@/hooks/apiTypes";
+import { useApiDelete, useApiPost } from "@/hooks/useApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 
 export function Sync() {
   const { remove } = useApiDelete("payments/deletePayment");
@@ -42,21 +42,39 @@ export function Sync() {
   const { post: postMainCategories } = useApiPost<mainCategoryPostRequest>("mainCategories/createMainCategory");
   const { post: postSubCategories } = useApiPost<subCategoryPostRequest>("subCategories/createSubCategory");
 
+
   useEffect(() => {
+    let cancelled = false;
+
     const syncCreatePayment = async () => {
       const raw = await AsyncStorage.getItem("CreatePayments");
       if (!raw) return;
 
       const items = JSON.parse(raw);
-      if (!items.length) return;
-      
+
+      await AsyncStorage.removeItem("CreatePayments");
+
       const { success } = await postPayments(items);
 
-      if (success) {
-        await AsyncStorage.removeItem("CreatePayments");
+      if (!success && !cancelled) {
+        const existingRaw = await AsyncStorage.getItem("CreatePayments");
+        const existing = existingRaw ? JSON.parse(existingRaw) : [];
+
+        await AsyncStorage.setItem(
+          "CreatePayments",
+          JSON.stringify([...existing, ...items])
+        );
       }
-    }
+    };
+
     syncCreatePayment();
-  })
-  
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+
+
+
 }
