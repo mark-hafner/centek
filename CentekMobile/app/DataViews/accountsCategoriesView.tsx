@@ -33,7 +33,7 @@ export default function accountsCategoriesView() {
     const SubCategoriesTableRow = ({ item }: any) => (
         <View style={styles.row}>
             <Text style={styles.cell}>{item.name}</Text>
-            <Text style={styles.cell}>{item.mainCategoryId?.toString()}</Text>
+            <Text style={styles.cell}>{mainCategories.find(mc => mc.id === item.mainCategoryId)?.name}</Text>
         </View>
     );
 

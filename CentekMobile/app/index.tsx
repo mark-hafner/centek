@@ -18,7 +18,7 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
 
   Sync();
-  
+
   useEffect(() => {
     const load = async () => {
       if (!loggedIn) return;
