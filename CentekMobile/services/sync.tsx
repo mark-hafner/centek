@@ -53,8 +53,8 @@ export function Sync() {
       const { success } = await postPayments(items);
 
       
-      if (!success) {
-        await AsyncStorage.setItem("CreatePayments", JSON.stringify(items));
+      if (success) {
+        await AsyncStorage.removeItem("CreatePayments");
       }
     }
     syncCreatePayment();
