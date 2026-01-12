@@ -26,7 +26,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -57,11 +57,11 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+            var accounts = await _context.Accounts.Where(a => a.UserId == user!.Id).ToListAsync();
             ViewBag.Accounts = new SelectList(accounts, "ID", "Name", recurringPayment?.AccountId);
 
             var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user.Id)
+                .MainCategories.Where(c => c.UserId == user!.Id)
                 .ToListAsync();
             ViewBag.MainCategories = new SelectList(
                 mainCategories,
@@ -127,7 +127,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -186,7 +186,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -239,19 +239,19 @@ namespace Centek.Controllers
                     switch (frequency)
                     {
                         case RecurringPayment.Frequency.Daily:
-                            date = date.AddDays((double)interval);
+                            date = date.AddDays((double)interval!);
                             break;
 
                         case RecurringPayment.Frequency.Weekly:
-                            date = date.AddDays((double)(interval * 7));
+                            date = date.AddDays((double)(interval! * 7));
                             break;
 
                         case RecurringPayment.Frequency.Monthly:
-                            date = date.AddMonths((int)interval);
+                            date = date.AddMonths((int)interval!);
                             break;
 
                         case RecurringPayment.Frequency.Yearly:
-                            date = date.AddYears((int)interval);
+                            date = date.AddYears((int)interval!);
                             break;
                     }
                 }
