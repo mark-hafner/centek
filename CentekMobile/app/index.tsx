@@ -1,5 +1,6 @@
 import { ButtonComponent, LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
+import { useGetAccounts, useGetMainCategories, useGetPayments, useGetSubCategories } from '@/hooks/getHooks';
 import { Sync } from '@/services/sync';
 import { getUserId, getUserName, getUserSurname } from '@/services/userData';
 import { useLoggedIn } from '@/services/utils';
@@ -25,6 +26,10 @@ export default function Index() {
       setUserId(await getUserId());
       setUserName(await getUserName());
       setUserSurname(await getUserSurname());
+      useGetAccounts();
+      useGetMainCategories();
+      useGetSubCategories();
+      useGetPayments()
       setLoading(false);
     };
     load();
