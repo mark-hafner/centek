@@ -56,6 +56,7 @@ export default function StatsView() {
 
   const TableHeader = () => (
     <View style={styles.rowHeader}>
+      <Text style={styles.headerCell}>Date</Text>
       <Text style={styles.headerCell}>Name</Text>
       <Text style={styles.headerCell}>Amount</Text>
       <Text style={styles.headerCell}>Account</Text>
@@ -66,6 +67,7 @@ export default function StatsView() {
 
   const PaymentRow = ({ p }: any) => (
     <View style={styles.row}>
+      <Text style={styles.cell}>{p.date.toLocaleDateString('de-DE')}</Text>
       <Text style={styles.cell}>{p.name}</Text>
       <Text
         style={[
