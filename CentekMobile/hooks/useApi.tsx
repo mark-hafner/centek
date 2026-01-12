@@ -36,19 +36,22 @@ export function useApiPost<T>(endpoint: string) {
     const [error, setError] = useState<string | null>(null);
 
     const post = async (body: T): Promise<{ success: boolean; result?: any }> => {
+        const array = Array.isArray(body) ? body : [body];
+        if (!array.length) return { success: true };
+
         setLoading(true);
         try {
-            const result = await apiRequest(endpoint, "POST", body);
+            const results = await Promise.all(
+                array.map(body => apiRequest(endpoint, "POST", body)));
 
-            if (result === false) {
-                setError("No Internet connection");
-                return { success: false };
-            }
+            const failed = array.filter((_, index) => results[index] === false);
+            const success = failed.length === 0;
 
-            setData(result);
-            return { success: true, result };
+            if (!success) setError("Some creates failed");
+            return { success: success, result: results };
+
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message ?? "Create failed");
             return { success: false };
         } finally {
             setLoading(false);

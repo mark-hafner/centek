@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useApiDelete } from "@/hooks/useApi";
+import { useApiDelete, useApiPost } from "@/hooks/useApi";
+import { accountPostRequest, mainCategoryPostRequest, paymentPostRequest, subCategoryPostRequest } from "@/hooks/apiTypes";
 
 export function Sync() {
   const { remove } = useApiDelete("payments/deletePayment");
 
   useEffect(() => {
-    const sync = async () => {
+    const syncDeletePayments = async () => {
       const raw = await AsyncStorage.getItem("DeletePayments");
       if (!raw) return;
 
@@ -19,7 +20,7 @@ export function Sync() {
         // remove waiting deletes
         await AsyncStorage.removeItem("DeletePayments");
 
-        // also remove locally stored payments
+        // remove locally stored payments
         const paymentsRaw = await AsyncStorage.getItem("Payments");
         if (paymentsRaw) {
           const payments = JSON.parse(paymentsRaw);
@@ -33,6 +34,30 @@ export function Sync() {
       }
     };
 
-    sync();
+    syncDeletePayments();
   }, []);
+
+  const { post: postPayments } = useApiPost<paymentPostRequest>("payments/createPayment");
+  const { post: postAccounts } = useApiPost<accountPostRequest>("accounts/createAccount");
+  const { post: postMainCategories } = useApiPost<mainCategoryPostRequest>("mainCategories/createMainCategory");
+  const { post: postSubCategories } = useApiPost<subCategoryPostRequest>("subCategories/createSubCategory");
+
+  useEffect(() => {
+    const syncCreatePayment = async () => {
+      const raw = await AsyncStorage.getItem("CreatePayments");
+      await AsyncStorage.removeItem("CreatePayments");
+      if (!raw) return;
+
+      const items = JSON.parse(raw);
+      if (!items.length) return;
+
+      const { success } = await postPayments(items);
+
+      if (!success) {
+        await AsyncStorage.setItem("CreatePayments", JSON.stringify(items));
+      }
+    }
+    syncCreatePayment();
+  })
+  
 }

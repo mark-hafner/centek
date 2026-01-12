@@ -60,6 +60,8 @@ export default function DeletePayment() {
                         if (refetch) refetch();
                     } else {
                         Alert.alert("Alert", "Payments will be deleted next time you are online");
+                        setPaymentToDelete([]);
+                        if (refetch) refetch();
                     }
                 } catch (err) {
                     Alert.alert("Error", "Something went wrong");
