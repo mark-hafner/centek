@@ -42,22 +42,22 @@ export function Sync() {
   const { post: postMainCategories } = useApiPost<mainCategoryPostRequest>("mainCategories/createMainCategory");
   const { post: postSubCategories } = useApiPost<subCategoryPostRequest>("subCategories/createSubCategory");
 
-  useEffect(() => {
-    const syncCreatePayment = async () => {
-      const raw = await AsyncStorage.getItem("CreatePayments");
-      await AsyncStorage.removeItem("CreatePayments");
-      if (!raw) return;
+  // useEffect(() => {
+  //   const syncCreatePayment = async () => {
+  //     const raw = await AsyncStorage.getItem("CreatePayments");
+  //     if (!raw) return;
 
-      const items = JSON.parse(raw);
-      if (!items.length) return;
+  //     const items = JSON.parse(raw);
+  //     if (!items.length) return;
 
-      const { success } = await postPayments(items);
+  //     const { success } = await postPayments(items);
 
-      if (!success) {
-        await AsyncStorage.setItem("CreatePayments", JSON.stringify(items));
-      }
-    }
-    syncCreatePayment();
-  })
+      
+  //     if (!success) {
+  //       await AsyncStorage.setItem("CreatePayments", JSON.stringify(items));
+  //     }
+  //   }
+  //   syncCreatePayment();
+  // })
   
 }
