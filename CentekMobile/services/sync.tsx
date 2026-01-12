@@ -45,16 +45,15 @@ export function Sync() {
   useEffect(() => {
     const syncCreatePayment = async () => {
       const raw = await AsyncStorage.getItem("CreatePayments");
-      await AsyncStorage.removeItem("CreatePayments");
       if (!raw) return;
 
       const items = JSON.parse(raw);
       if (!items.length) return;
-
+      
       const { success } = await postPayments(items);
 
-      if (!success) {
-        await AsyncStorage.setItem("CreatePayments", JSON.stringify(items));
+      if (success) {
+        await AsyncStorage.removeItem("CreatePayments");
       }
     }
     syncCreatePayment();

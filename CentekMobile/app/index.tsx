@@ -1,5 +1,6 @@
 import { ButtonComponent, LoaderScreen } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
+import { useGetAccounts, useGetMainCategories, useGetPayments, useGetSubCategories } from '@/hooks/getHooks';
 import { Sync } from '@/services/sync';
 import { getUserId, getUserName, getUserSurname } from '@/services/userData';
 import { useLoggedIn } from '@/services/utils';
@@ -18,6 +19,11 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
 
   Sync();
+
+  useGetAccounts();
+  useGetMainCategories();
+  useGetSubCategories();
+  useGetPayments()
 
   useEffect(() => {
     const load = async () => {

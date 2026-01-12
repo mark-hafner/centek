@@ -26,7 +26,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -57,11 +57,11 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+            var accounts = await _context.Accounts.Where(a => a.UserId == user!.Id).ToListAsync();
             ViewBag.Accounts = new SelectList(accounts, "ID", "Name", recurringPayment?.AccountId);
 
             var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user.Id)
+                .MainCategories.Where(c => c.UserId == user!.Id)
                 .ToListAsync();
             ViewBag.MainCategories = new SelectList(
                 mainCategories,
@@ -127,7 +127,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -186,7 +186,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account.UserId == user.Id)
+                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -208,6 +208,54 @@ namespace Centek.Controllers
             var recurringPayment = await _context.RecurringPayment.FindAsync(id);
             if (recurringPayment != null)
             {
+                var toDate = DateTime.Today;
+                var frequency = recurringPayment.RecFrequency;
+                var interval = recurringPayment.RecInterval;
+                DateTime startDate = (DateTime)recurringPayment.StartDate!;
+                DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
+                DateTime date = startDate;
+                while (date <= toDate)
+                {
+                    if (date >= endDate) break;
+
+                    var payment = (new Payment
+                    {
+                        Name = recurringPayment.Name,
+                        Note = recurringPayment.Note,
+                        Type = recurringPayment.Type,
+                        Amount = recurringPayment.Amount,
+                        Date = date,
+                        AccountId = recurringPayment.AccountId,
+                        MainCategoryId = recurringPayment.MainCategoryId,
+                        SubCategoryId = recurringPayment.SubCategoryId,
+                        Account = recurringPayment.Account,
+                        MainCategory = recurringPayment.MainCategory,
+                        SubCategory = recurringPayment.SubCategory
+                    });
+                    _context.Add(payment);
+                    await _context.SaveChangesAsync();
+
+                    // increase date correctly
+                    switch (frequency)
+                    {
+                        case RecurringPayment.Frequency.Daily:
+                            date = date.AddDays((double)interval!);
+                            break;
+
+                        case RecurringPayment.Frequency.Weekly:
+                            date = date.AddDays((double)(interval! * 7));
+                            break;
+
+                        case RecurringPayment.Frequency.Monthly:
+                            date = date.AddMonths((int)interval!);
+                            break;
+
+                        case RecurringPayment.Frequency.Yearly:
+                            date = date.AddYears((int)interval!);
+                            break;
+                    }
+                }
+
                 _context.RecurringPayment.Remove(recurringPayment);
             }
 
