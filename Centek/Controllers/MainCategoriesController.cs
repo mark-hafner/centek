@@ -10,7 +10,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Centek.Controllers
 {
     [Authorize]
-    public class MainCategoriesController(CentekContext context, UserManager<User> userManager, SubCategoryDelete subCategoryDelete) : Controller
+    public class MainCategoriesController(
+        CentekContext context,
+        UserManager<User> userManager,
+        SubCategoryDelete subCategoryDelete
+    ) : Controller
     {
         private readonly CentekContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
@@ -57,7 +61,8 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
             var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user.Id);
+                c.ID == id && c.UserId == user.Id
+            );
             if (mainCategory == null)
             {
                 return NotFound();
@@ -184,7 +189,9 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c => c.ID == id && c.UserId == user.Id);
+            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
+                c.ID == id && c.UserId == user.Id
+            );
             if (mainCategory != null)
             {
                 // Get SubCategories conected to MainCategories
@@ -201,6 +208,14 @@ namespace Centek.Controllers
                     catPayment.MainCategoryId = null;
                 }
 
+                var categorisedRecPayments = await _context
+                    .RecurringPayment.Where(p => p.MainCategoryId == mainCategory.ID)
+                    .ToListAsync();
+                foreach (var catPayment in categorisedRecPayments)
+                {
+                    catPayment.MainCategory = null;
+                    catPayment.MainCategoryId = null;
+                }
                 foreach (var subCategory in subCategories)
                 {
                     if (!await _subCategoryDelete.DeleteSubCategoryAsync(subCategory.ID))

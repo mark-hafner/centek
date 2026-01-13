@@ -25,17 +25,18 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); // current user
             // Get only MainCategories for this user
             // get all main categories for user
-            var mainCategoryIds = await _context.MainCategories
-                .Where(c => c.UserId == user.Id)
-                .Select(c => c.ID)        // only IDs!
+            var mainCategoryIds = await _context
+                .MainCategories.Where(c => c.UserId == user.Id)
+                .Select(c => c.ID) // only IDs!
                 .ToListAsync();
             if (mainCategoryIds.IsNullOrEmpty())
             {
                 return null;
             }
             // get all subcategories for these categories
-            var subCategory = await _context.SubCategories
-                .FirstOrDefaultAsync(s => s.ID == id && mainCategoryIds.Contains(s.MainCategoryId));
+            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(s =>
+                s.ID == id && mainCategoryIds.Contains(s.MainCategoryId)
+            );
             return subCategory;
         }
 
@@ -189,6 +190,15 @@ namespace Centek.Controllers
                     .Payments.Where(p => p.SubCategoryId == subCategory.ID)
                     .ToListAsync();
                 foreach (var catPayment in categorisedPayments)
+                {
+                    catPayment.SubCategory = null;
+                    catPayment.SubCategoryId = null;
+                }
+
+                var categorisedRecPayments = await _context
+                    .RecurringPayment.Where(p => p.SubCategoryId == subCategory.ID)
+                    .ToListAsync();
+                foreach (var catPayment in categorisedRecPayments)
                 {
                     catPayment.SubCategory = null;
                     catPayment.SubCategoryId = null;
