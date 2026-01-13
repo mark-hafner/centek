@@ -29,7 +29,7 @@
         <div class="col-md-2">
             <label class="form-label">Account</label>
             <select name="accountIds" class="form-control" multiple size="1">
-                @foreach (var acc in accounts)
+                @foreach (var acc in accounts!)
                 {
                     if (selectedAccountIds.Contains(acc.ID))
                     {
@@ -46,7 +46,7 @@
         <div class="col-md-2">
             <label class="form-label">Main Category</label>
             <select name="mainCategoryIds" class="form-control" multiple size="1">
-                @foreach (var cat in mainCategories)
+                @foreach (var cat in mainCategories!)
                 {
                     if (selectedMainCategoryIds.Contains(cat.ID))
                     {
@@ -63,7 +63,7 @@
         <div class="col-md-2">
             <label class="form-label">Sub Category</label>
             <select name="subCategoryIds" class="form-control" multiple size="1">
-                @foreach (var sub in subCategories)
+                @foreach (var sub in subCategories!)
                 {
                     if (selectedSubCategoryIds.Contains(sub.ID))
                     {
