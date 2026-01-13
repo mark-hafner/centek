@@ -238,4 +238,10 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     width: 100,
   },
+
+  flatlistStyle: {
+    marginTop: 8,
+    paddingBottom: 20,
+    borderRadius: 10
+  },
 });
