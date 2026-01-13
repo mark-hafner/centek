@@ -3,10 +3,11 @@ import { gradientStyle, styles } from '@/components/styles';
 import { paymentPostRequest } from '@/hooks/apiTypes';
 import { useGetAccounts, useGetMainCategories, useGetSubCategories } from '@/hooks/getHooks';
 import { usePostPayment } from '@/hooks/postHooks';
+import NetInfo from "@react-native-community/netinfo";
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import CreateAccountModal from '../Accounts/CreateAccountModal';
 import CreateMainCategoryModal from '../Categories/CreateMainCategoryModal';
@@ -20,6 +21,15 @@ export default function CreatePayment() {
     const [createAccountModalVisible, setCreateAccountModalVisible] = useState(false);
     const [createMainCategoryModalVisible, setCreateMainCategoryModalVisible] = useState(false);
     const [createSubCategoryModalVisible, setCreateSubCategoryModalVisible] = useState(false);
+    const [connectedToNet, setConnectedToNet] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = NetInfo.addEventListener(state => {
+            setConnectedToNet(state.isConnected ?? false);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
 
     const [pName, setPName] = useState<string>('');
@@ -64,7 +74,8 @@ export default function CreatePayment() {
             Alert.alert('Success', 'Created Payment');
             router.back();
         } else {
-            Alert.alert("Error", "Can't create payment right now");
+            Alert.alert("Alert", "Payment will be processed when you are back online");
+            router.back();
         }
     };
 
@@ -91,7 +102,7 @@ export default function CreatePayment() {
                         </View>
                         <View style={[styles.rowContainer, { width: "75%" }]}>
                             <DropdownComponent customStyle={{ paddingRight: 6 }} data={accountsDropdown} dropdownLabel="Accounts" value={pAccountId} onChange={setPAccountId} />
-                            <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateAccountModalVisible(!createAccountModalVisible)} />
+                            <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateAccountModalVisible(!createAccountModalVisible)} disabled={!connectedToNet} />
                         </View>
                         <ButtonComponent label={(extraOptions ? 'Close ' : 'Open ') + 'Extra Options'} onPress={() => setExtraOptions(!extraOptions)} />
                     </View>
@@ -100,11 +111,11 @@ export default function CreatePayment() {
                             <>
                                 <View style={[styles.rowContainer, { width: "75%" }]}>
                                     <DropdownComponent customStyle={{ paddingRight: 6 }} data={MainCategoriesDropdown} dropdownLabel="Main Category" value={pMainCategoryId} onChange={setPMainCategoryId} />
-                                    <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateMainCategoryModalVisible(!createMainCategoryModalVisible)} />
+                                    <ButtonComponent customStyle={{ width: "15%", }} label={"+"} onPress={() => setCreateMainCategoryModalVisible(!createMainCategoryModalVisible)} disabled={!connectedToNet} />
                                 </View>
                                 <View style={[styles.rowContainer, { width: "75%" }]}>
                                     <DropdownComponent customStyle={{ paddingRight: 6 }} data={SubCategoriesDropdown} dropdownLabel="Sub Category" value={pSubCategoryId} onChange={setpSubCategoryId} />
-                                    <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateSubCategoryModalVisible(!createSubCategoryModalVisible)} />
+                                    <ButtonComponent customStyle={{ width: "15%" }} label={"+"} onPress={() => setCreateSubCategoryModalVisible(!createSubCategoryModalVisible)} disabled={!connectedToNet} />
                                 </View>
                                 <TextInputComponent placeholder={"Payment note"} value={pNote} onChange={setPNote} />
                             </>

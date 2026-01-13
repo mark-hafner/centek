@@ -13,13 +13,16 @@ type ButtonProps = {
     onPress?: () => void;
     customStyle?: StyleProp<ViewStyle>;
     customButtonStyle?: StyleProp<ViewStyle>;
+    disabled?: boolean;
 };
 
-export const ButtonComponent = ({ label, onPress, customStyle, customButtonStyle }: ButtonProps) => {
+export const ButtonComponent = ({ label, onPress, customStyle, customButtonStyle, disabled }: ButtonProps) => {
 
     return (
         <View style={[styles.buttonContainer, customStyle]}>
-            <Pressable style={[styles.button, customButtonStyle]} onPress={onPress}>
+            <Pressable style={[styles.button, customButtonStyle, disabled && { backgroundColor: disabled ? "rgb(109, 109, 109)" : "#00aff5ff" }]}
+                onPress={onPress}
+                disabled={disabled}>
                 <Text style={styles.buttonLabel}>{label}</Text>
             </Pressable>
         </View>
