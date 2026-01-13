@@ -40,9 +40,9 @@
                 <td>@(item.MainCategory?.Name ?? "NONE")</td>
                 <td>@(item.SubCategory?.Name ?? "NONE")</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-primary">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-primary">Delete</a>
                 </td>
             </tr>
         }
@@ -84,9 +84,12 @@
                 <td>@(item.MainCategory?.Name ?? "NONE")</td>
                 <td>@(item.SubCategory?.Name ?? "NONE")</td>
                 <td>
-                    <a asp-controller="RecurringPayments" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-controller="RecurringPayments" asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-controller="RecurringPayments" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-controller="RecurringPayments" asp-action="Edit" asp-route-id="@item.ID"
+                        class="btn btn-primary">Edit</a> |
+                    <a asp-controller="RecurringPayments" asp-action="Details" asp-route-id="@item.ID"
+                        class="btn btn-primary">Details</a> |
+                    <a asp-controller="RecurringPayments" asp-action="Delete" asp-route-id="@item.ID"
+                        class="btn btn-primary">Delete</a>
                 </td>
             </tr>
         }

@@ -1,6 +1,7 @@
 import { ButtonComponent, DatePickerComponent, DropdownComponent, LoaderScreen, MultiSelectComponent } from '@/components/allComponents';
 import { gradientStyle, styles } from '@/components/styles';
 import { useGetPayments, usePaymentDropdowns } from '@/hooks/getHooks';
+import { Sync } from '@/services/sync';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
@@ -13,6 +14,8 @@ export default function OverviewView() {
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
   const [modalVisible, setModalVisible] = useState(false);
+
+  Sync();
 
   const [accountIds, setAccountIds] = useState<number[]>([]);
   const [mainCategoryIds, setMainCategoryIds] = useState<number[]>([]);
