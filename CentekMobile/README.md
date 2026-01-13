@@ -1,50 +1,68 @@
-# Welcome to your Expo app 👋
+# NASLOV SEMINARSKE NALOGE: CENTEK
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Člana ekipe:
 
-## Get started
+63240105 Mark Hafner
 
-1. Install dependencies
+63240368 Matic Žakelj
 
-   ```bash
-   npm install
-   ```
+**CENTEK – aplikacija za pregled financ** <br>
+<a href="http://206.189.2.204:8080/">Centek spletna stran</a>
 
-2. Start the app
+OPIS APLIKACIJE
 
-   ```bash
-   npx expo start
-   ```
+Namen aplikacije je sledenje denarnemu toku uporabnika, da ima ta enostaven pregled nad svojimi
+financami.
 
-In the output, you'll find options to open the app in a
+Delovala bo kot spletna in mobilna aplikacija, ki bosta povezani preko skupnega backend-a.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## FUNKCIONALNOSTI
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 1. VNOS PRIHODKOV IN ODHODKOV
 
-## Get a fresh project
+- Uporabnik vpisuje prihodke in odhodke ter pri vsakem navede, od kod je denar prišel in kje je bil
+    porabljen
+- Pri vsakem vnosu določi:
+    - Ali je prihodek ali odhodek
+    - Znesek transakcije
+    - Ime in opis transakcije
+    - Račun, na ketegem se ta transakcija izvede
+    - Kategorijo pod katero ta spada (npr. hrana, prevoz, šport...)
+    - Podkategorijo(npr. Špar, McDonalds, Avtobus ...)
+- Pri kategorijah lahko izbira med nekaterimi standardnimi, lahko pa tudi doda svoje.
+- Lahko določi tudi ponavljajoče transakcije.
 
-When you're ready, run:
+## 2. PRIKAZ PODATKOV
 
-```bash
-npm run reset-project
-```
+- Aplikacija omogoča vizalni prikaz prihodkov in odhodkov s tabelo in grafi.
+- Lahko filtrira po kategorijah, tipu transakcije(pihodek/odhodek), znesku, časovnem obdobju ...
+- Ob vsakem novem vnosu podatkov se izvede izračun in posodobitev prikaza.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 3. TEHNOLOGIJE
 
-## Learn more
+Spletna aplikacija je narejena z ASP.NET z MVC.
+Mobilna aplikacija je narejena v EXPO React Native Framework-u.
 
-To learn more about developing your project with Expo, look at the following resources:
+## 4. KRATEK OPIS DELOVANJA
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Uporabnik se registrira in naredi svoj prvi račun. Na voljo so mu 4 prej narejene glavne kategorije seveda pa lahko dodaja nove. Prav tako lahko dodaja pod kategorije, plačila in ponavljajoča plačila. Pregled nad plačili mu omogoča zavihek "Stats" v obliki tabele in zavihek "Overview" v obliki grafov, podatke lahko tudi filtrira. Vsa plačila, računi in kategorije so shranjeni v podatkovni bazi. Aplikacija deluje tako na operacijskem sistemu Android kot na iOS. Preko <a href="http://206.189.2.204:8080/swagger/index.html">spletne storitve (API)</a> se z avtorizacijo/avtentikacijo povezuje na bazo spletne strani. V aplikaciji uporabnik lahko briše in dodaja plačila, dodaja račune in kategorije. Prav tako ima pregled nad plačili s tabelo in grafom. Aplikacija omogoča prikaz podatkov in brisanje/dodajanje plačil tudi, ko telefon nima dostopa do baze, ko ponovno dobi povezavo, posodobljene podatke pošlje preko spletne storitve, da se osveži tudi baza.
 
-## Join the community
+## 5. OPIS NALOG
 
-Join our community of developers creating universal apps.
+Zaradi želje po razumevanju in učenju izdelave spletne strani, spletne storitve in mobilne aplikacije, sva naloge veliko združevala, izboljševala in delala oba. V grobem je razdelitev dela zgledala nekako tako:
+- Mark: Podatkovna baza, login, filtri na spletni strani in v aplikaciji, prikaz plačil na spletu in v aplikaciji
+- Matic: Izgled spletne strani, strani za ustvarjanje plačil, računov in kategorij, ogrodje mobilne aplikacije 
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 6. PODATKOVNI MODEL
+<img width="1559" height="1404" alt="schema-CentekDB" src="https://github.com/user-attachments/assets/bcf0f9ba-e6b9-4537-a07b-9681b2a5a84b" />
+
+## 7. ZASLONSKE SLIKE GRAFIČNEGA VMESNIKA
+
+<img width="2879" height="1721" alt="Zavihek Stats" src="https://github.com/user-attachments/assets/19951922-d62b-4128-8e5b-ee3bb67cb04e" />
+<img width="2879" height="1629" alt="Zavihek Payments" src="https://github.com/user-attachments/assets/af018be6-2dda-45e0-9a8e-28aa73904a3a" />
+<img width="2879" height="1627" alt="Zavihek Overview" src="https://github.com/user-attachments/assets/a9ea6015-2f3c-4e90-ace5-52449ca62da8" />
+<img width="2556" height="1179" alt="Zavihek Stats mobile" src="https://github.com/user-attachments/assets/b1b31703-1111-40c5-a2a8-b89c7f9511e5" />
+<img width="295" height="639" alt="createPayment" src="https://github.com/user-attachments/assets/ef51888a-bb2c-40b1-88e2-c6561e2fb2c7" />
+
+
+
