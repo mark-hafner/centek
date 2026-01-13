@@ -49,20 +49,20 @@ namespace Centek.Controllers_Api
             toDate = toDate.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
             // var user = await _userManager.GetUserAsync(User);
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId!);
 
             var paymentsQuery = _context
                 .Payments.Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
-                .Where(p => p.Account.UserId == user.Id)
+                .Where(p => p.Account!.UserId == user!.Id)
                 .AsQueryable();
 
             var recPaymentsQuery = _context
                 .RecurringPayment.Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
-                .Where(p => p.Account.UserId == user.Id)
+                .Where(p => p.Account!.UserId == user!.Id)
                 .AsQueryable();
 
             if (accountIds?.Any() == true)
@@ -117,7 +117,7 @@ namespace Centek.Controllers_Api
                 var calculatedPayments = new List<Payment>();
                 var frequency = recurringPayment.RecFrequency;
                 var interval = recurringPayment.RecInterval;
-                DateTime startDate = recurringPayment.StartDate.Value;
+                DateTime startDate = recurringPayment.StartDate!.Value;
                 DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
                 DateTime date = startDate;
 
@@ -148,19 +148,19 @@ namespace Centek.Controllers_Api
                     switch (frequency)
                     {
                         case RecurringPayment.Frequency.Daily:
-                            date = date.AddDays((double)interval);
+                            date = date.AddDays((double)interval!);
                             break;
 
                         case RecurringPayment.Frequency.Weekly:
-                            date = date.AddDays((double)(interval * 7));
+                            date = date.AddDays((double)(interval! * 7));
                             break;
 
                         case RecurringPayment.Frequency.Monthly:
-                            date = date.AddMonths((int)interval);
+                            date = date.AddMonths((int)interval!);
                             break;
 
                         case RecurringPayment.Frequency.Yearly:
-                            date = date.AddYears((int)interval);
+                            date = date.AddYears((int)interval!);
                             break;
                     }
                 }
@@ -172,13 +172,13 @@ namespace Centek.Controllers_Api
             var total = payments.Sum(p => p.Type ? p.Amount : -p.Amount);
 
             var accounts = await _context
-                .Accounts.Where(a => a.UserId == user.Id && a.Payments.Any())
+                .Accounts.Where(a => a.UserId == user!.Id && a.Payments!.Any())
                 .ToListAsync();
             var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user.Id && c.Payments.Any())
+                .MainCategories.Where(c => c.UserId == user!.Id && c.Payments!.Any())
                 .ToListAsync();
             var subCategories = await _context
-                .SubCategories.Where(sc => sc.MainCategory.UserId == user.Id && sc.Payments.Any())
+                .SubCategories.Where(sc => sc.MainCategory!.UserId == user!.Id && sc.Payments!.Any())
                 .Include(sc => sc.MainCategory)
                 .ToListAsync();
 

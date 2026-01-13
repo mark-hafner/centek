@@ -40,7 +40,7 @@ namespace Centek.Controllers_Api
 
             // NORMAL PAYMENTS
             var userPayments = await _context
-                .Payments.Where(p => userAccountIds.Contains(p.AccountId.Value))
+                .Payments.Where(p => userAccountIds.Contains(p.AccountId!.Value))
                 .ToListAsync();
             allPayments.AddRange(userPayments);
             // RECURING PAYMENTS
@@ -68,7 +68,7 @@ namespace Centek.Controllers_Api
             {
                 var frequency = recurringPayment.RecFrequency;
                 var interval = recurringPayment.RecInterval;
-                DateTime startDate = recurringPayment.StartDate.Value;
+                DateTime startDate = recurringPayment.StartDate!.Value;
                 DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
                 DateTime date = startDate;
                 var newId = recurringPayment.ID - recPaymentId;
@@ -98,10 +98,10 @@ namespace Centek.Controllers_Api
 
                     date = frequency switch
                     {
-                        RecurringPayment.Frequency.Daily => date.AddDays((double)interval),
-                        RecurringPayment.Frequency.Weekly => date.AddDays((double)interval * 7),
-                        RecurringPayment.Frequency.Monthly => date.AddMonths((int)interval),
-                        RecurringPayment.Frequency.Yearly => date.AddYears((int)interval),
+                        RecurringPayment.Frequency.Daily => date.AddDays((double)interval!),
+                        RecurringPayment.Frequency.Weekly => date.AddDays((double)interval! * 7),
+                        RecurringPayment.Frequency.Monthly => date.AddMonths((int)interval!),
+                        RecurringPayment.Frequency.Yearly => date.AddYears((int)interval!),
                         _ => throw new InvalidOperationException(),
                     };
                 }

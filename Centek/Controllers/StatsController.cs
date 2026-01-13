@@ -44,7 +44,7 @@ namespace Centek.Controllers
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
-                .Where(p => p.Account.UserId == user.Id)
+                .Where(p => p.Account!.UserId == user!.Id)
                 .AsQueryable();
 
             // All recurring payments from user
@@ -52,23 +52,23 @@ namespace Centek.Controllers
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
-                .Where(p => p.Account.UserId == user.Id)
+                .Where(p => p.Account!.UserId == user!.Id)
                 .AsQueryable();
 
             // Filters
-            if (accountIds.Any())
+            if (accountIds != null && accountIds.Any())
             {
                 paymentsQuery = paymentsQuery.Where(p => accountIds.Contains(p.AccountId));
                 recPaymentsQuery = recPaymentsQuery.Where(p => accountIds.Contains(p.AccountId));
             }
 
-            if (mainCategoryIds.Any())
+            if (mainCategoryIds != null && mainCategoryIds.Any())
             {
                 paymentsQuery = paymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
                 recPaymentsQuery = recPaymentsQuery.Where(p => mainCategoryIds.Contains(p.MainCategoryId));
             }
 
-            if (subCategoryIds.Any())
+            if (subCategoryIds != null && subCategoryIds.Any())
             {
                 paymentsQuery = paymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
                 recPaymentsQuery = recPaymentsQuery.Where(p => subCategoryIds.Contains(p.SubCategoryId));
@@ -101,7 +101,7 @@ namespace Centek.Controllers
                 var calculatedPayments = new List<Payment>();
                 var frequency = recurringPayment.RecFrequency;
                 var interval = recurringPayment.RecInterval;
-                DateTime startDate = (DateTime)recurringPayment.StartDate;
+                DateTime startDate = (DateTime)recurringPayment.StartDate!;
                 DateTime endDate = recurringPayment.EndDate ?? DateTime.MaxValue;
                 DateTime date = startDate;
                 while (date <= toDate)
@@ -129,19 +129,19 @@ namespace Centek.Controllers
                     switch (frequency)
                     {
                         case RecurringPayment.Frequency.Daily:
-                            date = date.AddDays((double)interval);
+                            date = date.AddDays((double)interval!);
                             break;
 
                         case RecurringPayment.Frequency.Weekly:
-                            date = date.AddDays((double)(interval * 7));
+                            date = date.AddDays((double)(interval! * 7));
                             break;
 
                         case RecurringPayment.Frequency.Monthly:
-                            date = date.AddMonths((int)interval);
+                            date = date.AddMonths((int)interval!);
                             break;
 
                         case RecurringPayment.Frequency.Yearly:
-                            date = date.AddYears((int)interval);
+                            date = date.AddYears((int)interval!);
                             break;
                     }
                 }
@@ -163,17 +163,17 @@ namespace Centek.Controllers
 
             // Accounts
             ViewData["Accounts"] = await _context.Accounts
-                .Where(a => a.UserId == user.Id && a.Payments.Any())
+                .Where(a => a.UserId == user!.Id && a.Payments!.Any())
                 .ToListAsync();
 
             // MainCategories
             ViewData["MainCategories"] = await _context.MainCategories
-                .Where(c => c.UserId == user.Id && c.Payments.Any())
+                .Where(c => c.UserId == user!.Id && c.Payments!.Any())
                 .ToListAsync();
 
             // SubCategories
             ViewData["SubCategories"] = await _context.SubCategories
-                .Where(sc => sc.MainCategory.UserId == user.Id && sc.Payments.Any())
+                .Where(sc => sc.MainCategory!.UserId == user!.Id && sc.Payments!.Any())
                 .Include(sc => sc.MainCategory)
                 .ToListAsync();
 

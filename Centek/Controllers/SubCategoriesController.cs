@@ -20,13 +20,13 @@ namespace Centek.Controllers
         }
 
         [HttpGet]
-        public async Task<SubCategory> GetSubcategories(int? id)
+        public async Task<SubCategory?> GetSubcategories(int? id)
         {
             var user = await _userManager.GetUserAsync(User); // current user
             // Get only MainCategories for this user
             // get all main categories for user
             var mainCategoryIds = await _context
-                .MainCategories.Where(c => c.UserId == user.Id)
+                .MainCategories.Where(c => c.UserId == user!.Id)
                 .Select(c => c.ID) // only IDs!
                 .ToListAsync();
             if (mainCategoryIds.IsNullOrEmpty())
@@ -71,7 +71,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); // current user
             // Get only MainCategories for this user
             var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user.Id)
+                .MainCategories.Where(c => c.UserId == user!.Id)
                 .Select(c => new { c.ID, c.Name })
                 .ToListAsync();
             // put recived data into ViewBag for display in select

@@ -30,7 +30,7 @@ namespace Centek.Controllers
 
             // Get MainCategories for this user
             var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user.Id)
+                .MainCategories.Where(c => c.UserId == user!.Id)
                 .ToListAsync();
 
             // Get SubCategories conected to MainCategories
@@ -61,7 +61,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
             var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user.Id
+                c.ID == id && c.UserId == user!.Id
             );
             if (mainCategory == null)
             {
@@ -87,7 +87,7 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User); //get current user
             //match current user with his categories
-            mainCategory.UserId = user.Id;
+            mainCategory.UserId = user!.Id;
             mainCategory.User = user;
             if (!ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
             var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user.Id
+                c.ID == id && c.UserId == user!.Id
             );
             if (mainCategory == null)
             {
@@ -129,7 +129,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
             var existingCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user.Id
+                c.ID == id && c.UserId == user!.Id
             );
 
             if (existingCategory == null)
@@ -172,7 +172,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
             var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user.Id
+                c.ID == id && c.UserId == user!.Id
             );
             if (mainCategory == null)
             {
@@ -190,7 +190,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only categories from current user
             var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user.Id
+                c.ID == id && c.UserId == user!.Id
             );
             if (mainCategory != null)
             {

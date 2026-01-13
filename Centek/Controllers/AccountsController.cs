@@ -32,7 +32,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             // Get Accounts for this user
-            var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+            var accounts = await _context.Accounts.Where(a => a.UserId == user!.Id).ToListAsync();
 
             return View(accounts);
         }
@@ -49,7 +49,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id
+                a.ID == id && a.UserId == user!.Id
             );
             if (account == null)
             {
@@ -75,7 +75,7 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User); //get current user
 
-            account.UserId = user.Id;
+            account.UserId = user!.Id;
             account.User = user;
             if (ModelState.IsValid)
             {
@@ -112,7 +112,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id
+                a.ID == id && a.UserId == user!.Id
             );
             if (account == null)
             {
@@ -131,7 +131,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id
+                a.ID == id && a.UserId == user!.Id
             );
 
             if (existingAccount == null)
@@ -176,7 +176,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id
+                a.ID == id && a.UserId == user!.Id
             );
 
             if (account == null)
@@ -195,7 +195,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User); //get current user
             // show only accounts from current user
             var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user.Id
+                a.ID == id && a.UserId == user!.Id
             );
 
             if (account != null)

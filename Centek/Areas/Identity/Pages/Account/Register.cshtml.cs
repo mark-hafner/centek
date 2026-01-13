@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Centek.Data;
 
 namespace Centek.Areas.Identity.Pages.Account
 {
@@ -30,13 +31,15 @@ namespace Centek.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly CentekContext _context;
 
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            CentekContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +47,7 @@ namespace Centek.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+             _context = context;
         }
 
         /// <summary>
@@ -165,7 +169,44 @@ namespace Centek.Areas.Identity.Pages.Account
                     await _userManager.UpdateAsync(user);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+
+                    var trgovine = new MainCategory
+                    {
+                        UserId = user.Id,
+                        Name = "Shops"
+                    };
+
+                    var restavracije = new MainCategory
+                    {
+                        UserId = user.Id,
+                        Name = "Restavrants"
+                    };
+
+                    var placa = new MainCategory
+                    {
+                        UserId = user.Id,
+                        Name = "Salary"
+                    };
+
+                    var ostalo = new MainCategory
+                    {
+                        UserId = user.Id,
+                        Name = "Other"
+                    };
+                    
+                    _context.Add(trgovine);
+                    await _context.SaveChangesAsync();
+
+                    _context.Add(restavracije);
+                    await _context.SaveChangesAsync();
+
+                    _context.Add(placa);
+                    await _context.SaveChangesAsync();
+
+                    _context.Add(ostalo);
+                    await _context.SaveChangesAsync();
+
+                    return LocalRedirect("/Accounts/Create");
                 }
                 
                 foreach (var error in result.Errors)

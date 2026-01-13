@@ -26,14 +26,14 @@ namespace Centek.Controllers
             var viewModel = new PaymentsViewModel
             {
                 Payments = await _context
-                    .Payments.Where(p => p.Account.UserId == user.Id)
+                    .Payments.Where(p => p.Account!.UserId == user!.Id)
                     .Include(p => p.Account)
                     .Include(p => p.MainCategory)
                     .Include(p => p.SubCategory)
                     .ToListAsync(),
 
                 RecurringPayments = await _context
-                    .RecurringPayment.Where(rp => rp.Account.UserId == user.Id)
+                    .RecurringPayment.Where(rp => rp.Account!.UserId == user!.Id)
                     .Include(rp => rp.Account)
                     .Include(rp => rp.MainCategory)
                     .Include(rp => rp.SubCategory)
@@ -54,7 +54,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var payment = await _context
-                .Payments.Where(p => p.Account.UserId == user.Id)
+                .Payments.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -85,11 +85,11 @@ namespace Centek.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+            var accounts = await _context.Accounts.Where(a => a.UserId == user!.Id).ToListAsync();
             ViewBag.Accounts = new SelectList(accounts, "ID", "Name", payment?.AccountId);
 
             var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user.Id)
+                .MainCategories.Where(c => c.UserId == user!.Id)
                 .ToListAsync();
             ViewBag.MainCategories = new SelectList(
                 mainCategories,
@@ -153,7 +153,7 @@ namespace Centek.Controllers
 
             // Include navigation properties if you need them
             var payment = await _context
-                .Payments.Where(p => p.Account.UserId == user.Id)
+                .Payments.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
@@ -211,7 +211,7 @@ namespace Centek.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             var payment = await _context
-                .Payments.Where(p => p.Account.UserId == user.Id)
+                .Payments.Where(p => p.Account!.UserId == user!.Id)
                 .Include(p => p.Account)
                 .Include(p => p.MainCategory)
                 .Include(p => p.SubCategory)
