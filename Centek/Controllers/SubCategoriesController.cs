@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Centek.Controllers
@@ -22,22 +23,11 @@ namespace Centek.Controllers
         [HttpGet]
         public async Task<SubCategory?> GetSubcategories(int? id)
         {
-            var user = await _userManager.GetUserAsync(User); // current user
-            // Get only MainCategories for this user
-            // get all main categories for user
-            var mainCategoryIds = await _context
-                .MainCategories.Where(c => c.UserId == user!.Id)
-                .Select(c => c.ID) // only IDs!
-                .ToListAsync();
-            if (mainCategoryIds.IsNullOrEmpty())
-            {
-                return null;
-            }
-            // get all subcategories for these categories
-            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(s =>
-                s.ID == id && mainCategoryIds.Contains(s.MainCategoryId)
-            );
-            return subCategory;
+            var user = await _userManager.GetUserAsync(User);
+
+            return await _context
+                .SubCategories.Include(s => s.MainCategory)
+                .FirstOrDefaultAsync(s => s.ID == id && s.MainCategory.UserId == user!.Id);
         }
 
         // GET: SubCategories
@@ -61,7 +51,6 @@ namespace Centek.Controllers
             {
                 return NotFound();
             }
-
             return View(subCategory);
         }
 
