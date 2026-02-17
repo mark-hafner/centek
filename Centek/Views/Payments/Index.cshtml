@@ -31,15 +31,15 @@
         @foreach (var item in Model.Payments)
         {
             <tr>
-                <td>@(item.Name ?? "NONE")</td>
-                <td>@(item.Note ?? "NONE")</td>
+                <td>@(item.Name ?? "")</td>
+                <td>@(item.Note ?? "")</td>
                 <td>@(item.Type ? "Income" : "Expense")</td>
                 <td>@item.Amount</td>
                 <td>@item.Date?.ToShortDateString()</td>
-                <td>@(item.Account?.Name ?? "NONE")</td>
-                <td>@(item.MainCategory?.Name ?? "NONE")</td>
-                <td>@(item.SubCategory?.Name ?? "NONE")</td>
-                <td>
+                <td>@(item.Account?.Name ?? "")</td>
+                <td>@(item.MainCategory?.Name ?? "")</td>
+                <td>@(item.SubCategory?.Name ?? "")</td>
+                <td class="text-end">
                     <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-primary">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-primary">Delete</a>
@@ -72,24 +72,24 @@
         @foreach (var item in Model.RecurringPayments)
         {
             <tr>
-                <td>@(item.Name ?? "NONE")</td>
-                <td>@(item.Note ?? "NONE")</td>
+                <td>@(item.Name ?? "")</td>
+                <td>@(item.Note ?? "")</td>
                 <td>@(item.Type ? "Income" : "Expense")</td>
                 <td>@item.Amount</td>
                 <td>@item.StartDate?.ToShortDateString()</td>
-                <td>@(item.EndDate?.ToShortDateString() ?? "NONE")</td>
+                <td>@(item.EndDate?.ToShortDateString() ?? "")</td>
                 <td>@item.RecFrequency</td>
                 <td>@item.RecInterval</td>
-                <td>@(item.Account?.Name ?? "NONE")</td>
-                <td>@(item.MainCategory?.Name ?? "NONE")</td>
-                <td>@(item.SubCategory?.Name ?? "NONE")</td>
-                <td>
+                <td>@(item.Account?.Name ?? "")</td>
+                <td>@(item.MainCategory?.Name ?? "")</td>
+                <td>@(item.SubCategory?.Name ?? "")</td>
+                <td class="text-end">
                     <a asp-controller="RecurringPayments" asp-action="Edit" asp-route-id="@item.ID"
-                        class="btn btn-primary">Edit</a> |
+                       class="btn btn-primary">Edit</a> |
                     <a asp-controller="RecurringPayments" asp-action="Details" asp-route-id="@item.ID"
-                        class="btn btn-primary">Details</a> |
+                       class="btn btn-primary">Details</a> |
                     <a asp-controller="RecurringPayments" asp-action="Delete" asp-route-id="@item.ID"
-                        class="btn btn-primary">Delete</a>
+                       class="btn btn-primary">Delete</a>
                 </td>
             </tr>
         }

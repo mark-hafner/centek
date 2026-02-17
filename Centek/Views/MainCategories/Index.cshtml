@@ -24,7 +24,7 @@
         {
             <tr>
                 <td>@Html.DisplayFor(m => item.Name)</td>
-                <td>
+                <td class="text-end">
                     <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-primary">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-primary">Delete</a>
@@ -50,13 +50,13 @@
         {
             <tr>
                 <td>@Html.DisplayFor(m => item.Name)</td>
-                <td>
+                <td class="text-end">
                     <a asp-controller="SubCategories" asp-action="Edit" asp-route-id="@item.ID"
-                        class="btn btn-primary">Edit</a> |
+                       class="btn btn-primary">Edit</a> |
                     <a asp-controller="SubCategories" asp-action="Details" asp-route-id="@item.ID"
-                        class="btn btn-primary">Details</a> |
+                       class="btn btn-primary">Details</a> |
                     <a asp-controller="SubCategories" asp-action="Delete" asp-route-id="@item.ID"
-                        class="btn btn-primary">Delete</a>
+                       class="btn btn-primary">Delete</a>
                 </td>
             </tr>
         }

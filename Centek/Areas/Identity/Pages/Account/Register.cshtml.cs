@@ -10,16 +10,16 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using Centek.Data;
+using Centek.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Centek.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Centek.Data;
 
 namespace Centek.Areas.Identity.Pages.Account
 {
@@ -39,7 +39,8 @@ namespace Centek.Areas.Identity.Pages.Account
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            CentekContext context)
+            CentekContext context
+        )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,7 +48,7 @@ namespace Centek.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-             _context = context;
+            _context = context;
         }
 
         /// <summary>
@@ -75,14 +76,12 @@ namespace Centek.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-
-            [Required]                         // Da inputa ime in priimek v bazo, ime je required
+            [Required] // Da inputa ime in priimek v bazo, ime je required
             [Display(Name = "Name")]
             public string Name { get; set; }
 
             [Display(Name = "Surname")]
             public string? Surname { get; set; }
-
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -98,7 +97,11 @@ namespace Centek.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(
+                100,
+                ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+                MinimumLength = 6
+            )]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -109,27 +112,33 @@ namespace Centek.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare(
+                "Password",
+                ErrorMessage = "The password and confirmation password do not match."
+            )]
             public string ConfirmPassword { get; set; }
         }
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (
+                await _signInManager.GetExternalAuthenticationSchemesAsync()
+            ).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (
+                await _signInManager.GetExternalAuthenticationSchemesAsync()
+            ).ToList();
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                user.Name = Input.Name;             // Doda ime za userja
-                user.Surname = Input.Surname;       // Doda neobvezen priimek za userja
+                user.Name = Input.Name; // Doda ime za userja
+                user.Surname = Input.Surname; // Doda neobvezen priimek za userja
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -145,15 +154,28 @@ namespace Centek.Areas.Identity.Pages.Account
                 //     var callbackUrl = Url.Page(
                 //         "/Account/ConfirmEmail",
                 //         pageHandler: null,
-                //         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                //         protocol: Request.Scheme);
+                //         values: new
+                //         {
+                //             area = "Identity",
+                //             userId = userId,
+                //             code = code,
+                //             returnUrl = returnUrl,
+                //         },
+                //         protocol: Request.Scheme
+                //     );
 
-                //     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                //         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                //     await _emailSender.SendEmailAsync(
+                //         Input.Email,
+                //         "Confirm your email",
+                //         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>."
+                //     );
 
                 //     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 //     {
-                //         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                //         return RedirectToPage(
+                //             "RegisterConfirmation",
+                //             new { email = Input.Email, returnUrl = returnUrl }
+                //         );
                 //     }
                 //     else
                 //     {
@@ -162,7 +184,6 @@ namespace Centek.Areas.Identity.Pages.Account
                 //     }
                 // }
 
-
                 if (result.Succeeded)
                 {
                     user.EmailConfirmed = true;
@@ -170,30 +191,14 @@ namespace Centek.Areas.Identity.Pages.Account
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    var trgovine = new MainCategory
-                    {
-                        UserId = user.Id,
-                        Name = "Shops"
-                    };
+                    var trgovine = new MainCategory { UserId = user.Id, Name = "Shops" };
 
-                    var restavracije = new MainCategory
-                    {
-                        UserId = user.Id,
-                        Name = "Restavrants"
-                    };
+                    var restavracije = new MainCategory { UserId = user.Id, Name = "Restaurants" };
 
-                    var placa = new MainCategory
-                    {
-                        UserId = user.Id,
-                        Name = "Salary"
-                    };
+                    var placa = new MainCategory { UserId = user.Id, Name = "Salary" };
 
-                    var ostalo = new MainCategory
-                    {
-                        UserId = user.Id,
-                        Name = "Other"
-                    };
-                    
+                    var ostalo = new MainCategory { UserId = user.Id, Name = "Other" };
+
                     _context.Add(trgovine);
                     await _context.SaveChangesAsync();
 
@@ -208,7 +213,7 @@ namespace Centek.Areas.Identity.Pages.Account
 
                     return LocalRedirect("/Accounts/Create");
                 }
-                
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -227,9 +232,11 @@ namespace Centek.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
-                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                throw new InvalidOperationException(
+                    $"Can't create an instance of '{nameof(User)}'. "
+                        + $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively "
+                        + $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml"
+                );
             }
         }
 
@@ -237,7 +244,9 @@ namespace Centek.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException(
+                    "The default UI requires a user store with email support."
+                );
             }
             return (IUserEmailStore<User>)_userStore;
         }

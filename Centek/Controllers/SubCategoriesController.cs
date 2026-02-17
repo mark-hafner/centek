@@ -27,7 +27,7 @@ namespace Centek.Controllers
 
             return await _context
                 .SubCategories.Include(s => s.MainCategory)
-                .FirstOrDefaultAsync(s => s.ID == id && s.MainCategory.UserId == user!.Id);
+                .FirstOrDefaultAsync(s => s.ID == id && s.MainCategory!.UserId == user!.Id);
         }
 
         // GET: SubCategories

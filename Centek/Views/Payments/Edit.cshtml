@@ -30,83 +30,83 @@
                 <div>
                     <div id="button-3" class="button r">
                         <input class="checkbox" type="checkbox" asp-for="Type">
-                        <div class="knobs"></div>
-                        <div class="layer"></div>
+                            <div class="knobs"></div>
+                            <div class="layer"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            @* Amount input *@
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
-            </div>
-            @* Date input *@
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            @* Account dropdown *@
-            <div class="form-group">
-                <label asp-for="AccountId" class="control-label">Account</label>
-                <select asp-for="AccountId" asp-items="ViewBag.Accounts" class="form-control">
-                    <option value="">-- Select Account --</option>
-                </select>
-                <span asp-validation-for="AccountId" class="text-danger"></span>
-            </div>
+                @* Amount input *@
+                <div class="form-group">
+                    <label asp-for="Amount" class="control-label"></label>
+                    <input asp-for="Amount" class="form-control" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                @* Date input *@
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label"></label>
+                    <input asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+                @* Account dropdown *@
+                <div class="form-group">
+                    <label asp-for="AccountId" class="control-label">Account</label>
+                    <select asp-for="AccountId" asp-items="ViewBag.Accounts" class="form-control">
+                        <option value="">-- Select Account --</option>
+                    </select>
+                    <span asp-validation-for="AccountId" class="text-danger"></span>
+                </div>
 
-            @* Main Category dropdown *@
-            <div class="form-group">
-                <label asp-for="MainCategoryId" class="control-label">Main Category</label>
-                <select asp-for="MainCategoryId" asp-items="ViewBag.MainCategories" class="form-control"
-                    id="MainCategoryId">
-                    <option value="">-- Select Main Category --</option>
-                </select>
-                <span asp-validation-for="MainCategoryId" class="text-danger"></span>
-            </div>
+                @* Main Category dropdown *@
+                <div class="form-group">
+                    <label asp-for="MainCategoryId" class="control-label">Main Category</label>
+                    <select asp-for="MainCategoryId" asp-items="ViewBag.MainCategories" class="form-control"
+                            id="MainCategoryId">
+                        <option value="">-- Select Main Category --</option>
+                    </select>
+                    <span asp-validation-for="MainCategoryId" class="text-danger"></span>
+                </div>
 
-            @* Subcategory dropdown *@
-            <div class="form-group">
-                <label asp-for="SubCategoryId" class="control-label">Sub Category</label>
-                <select asp-for="SubCategoryId" asp-items="ViewBag.SubCategories" class="form-control"
-                    id="SubCategoryId">
-                    <option value="">-- Select Sub Category --</option>
-                </select>
-                <span asp-validation-for="SubCategoryId" class="text-danger"></span>
-            </div>
+                @* Subcategory dropdown *@
+                <div class="form-group">
+                    <label asp-for="SubCategoryId" class="control-label">Sub Category</label>
+                    <select asp-for="SubCategoryId" asp-items="ViewBag.SubCategories" class="form-control"
+                            id="SubCategoryId">
+                        <option value="">-- Select Sub Category --</option>
+                    </select>
+                    <span asp-validation-for="SubCategoryId" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-            <div>
-                <a asp-action="Index">Back to List</a>
-            </div>
-        </form>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-@* script for updating SubCategory dropdown *@
-@section Scripts {
-    <script>
-        // start script only when page is fully loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            const main = document.getElementById('MainCategoryId');
-            const sub = document.getElementById('SubCategoryId');
+    @* script for updating SubCategory dropdown *@
+    @section Scripts {
+        <script>
+                // start script only when page is fully loaded
+                document.addEventListener('DOMContentLoaded', () => {
+                    const main = document.getElementById('MainCategoryId');
+                    const sub = document.getElementById('SubCategoryId');
 
 
-            // wait for change in mainCategoryId
-            main?.addEventListener('change', () => {
-                sub.innerHTML = '<option value="">-- Select Sub Category --</option>';
-                if (!main.value) return;
+                    // wait for change in mainCategoryId
+                    main?.addEventListener('change', () => {
+                        sub.innerHTML = '<option value="">-- Select Sub Category --</option>';
+                        if (!main.value) return;
 
-                // get data for subCategory from selected Main Categories
-                fetch(`/Payments/GetSubCategories?mainCategoryId=${main.value}`)
-                    .then(res => res.json())
-                    .then(data => data.forEach(sc =>
-                        sub.appendChild(new Option(sc.name, sc.id))
-                    ));
-            });
-        });
-    </script>
-}
+                        // get data for subCategory from selected Main Categories
+                        fetch(`/Payments/GetSubCategories?mainCategoryId=${main.value}`)
+                            .then(res => res.json())
+                            .then(data => data.forEach(sc =>
+                                sub.appendChild(new Option(sc.name, sc.id))
+                            ));
+                    });
+                });
+        </script>
+    }
