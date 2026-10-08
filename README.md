@@ -6,7 +6,7 @@
 
 63240368 Matic Žakelj
 
-**CENTEK – aplikacija za pregled financ** <br>
+**CENTEK – aplikacija za pregled osebnih financ** <br>
 <a href="http://206.189.2.204:8080/">Centek spletna stran</a>
 
 OPIS APLIKACIJE
