@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Centek.Filters;
 
 namespace Centek.Controllers_Api
@@ -17,10 +18,12 @@ namespace Centek.Controllers_Api
     public class RecurringPaymentsApiController : ControllerBase
     {
         private readonly CentekContext _context;
+        private readonly RecurringPaymentService _recurringPaymentService;
 
-        public RecurringPaymentsApiController(CentekContext context)
+        public RecurringPaymentsApiController(CentekContext context, RecurringPaymentService recurringPaymentService)
         {
             _context = context;
+            _recurringPaymentService = recurringPaymentService;
         }
 
         // GET: api/RecurringPaymentsApi
@@ -59,6 +62,7 @@ namespace Centek.Controllers_Api
             try
             {
                 await _context.SaveChangesAsync();
+                await _recurringPaymentService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -82,6 +86,7 @@ namespace Centek.Controllers_Api
         {
             _context.RecurringPayment.Add(recurringPayment);
             await _context.SaveChangesAsync();
+            await _recurringPaymentService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return CreatedAtAction("GetRecurringPayment", new { id = recurringPayment.ID }, recurringPayment);
         }
@@ -98,6 +103,7 @@ namespace Centek.Controllers_Api
 
             _context.RecurringPayment.Remove(recurringPayment);
             await _context.SaveChangesAsync();
+            await _recurringPaymentService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return NoContent();
         }

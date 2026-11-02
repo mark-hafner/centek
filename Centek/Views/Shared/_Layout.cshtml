@@ -133,19 +133,46 @@
     @if (path != "/Payments/Create" && path != "Payments/Edit" &&
         path != "/RecurringPayments/Create" && path != "RecurringPayments/Edit")
     {
-        <div class="loader" style="display:none;"></div> <!-- loader skrit po defaultu -->
+        <div class="loader" style="display:none;"></div> @* hidden by default *@
 
     <script>
-        let loaderTimeout = setTimeout(function () {
-            // pokaži loader, če stran še ni naložena po določenem času
-            $('.loader').fadeIn('fast');
-        }, 0.001); // cca 0,00001 sekunde
+        (function () {
+            var delay = 300; // ms - loader only appears if loading takes longer than this
+            var timer = null;
 
-        $(window).on('load', function () {
-            // če se je stran nalozila ustavi timer
-            clearTimeout(loaderTimeout);
-            $('.loader').fadeOut('fast');
-        });
+            function arm() {
+                clearTimeout(timer);
+                timer = setTimeout(function () { $('.loader').fadeIn('fast'); }, delay);
+            }
+            function hide() {
+                clearTimeout(timer);
+                $('.loader').stop(true, true).fadeOut('fast');
+            }
+
+            // this page is still loading
+            if (document.readyState !== 'complete') {
+                arm();
+                $(window).on('load', hide);
+            }
+
+            // navigating to another page (link click / form submit)
+            $(document).on('click', 'a[href]', function (e) {
+                var a = this, href = a.getAttribute('href');
+                if (e.isDefaultPrevented() || e.which > 1 || e.ctrlKey || e.metaKey || e.shiftKey) return;
+                if (a.target === '_blank' || a.hasAttribute('download')) return;
+                if (!/^https?:$/.test(a.protocol) || !href || href.charAt(0) === '#') return;
+                if (a.pathname === location.pathname && a.search === location.search) return; // same page / anchor
+                arm();
+            });
+            $(document).on('submit', 'form', function (e) {
+                if (!e.isDefaultPrevented()) arm();
+            });
+
+            // page restored from back/forward cache - no load event fires
+            $(window).on('pageshow', function (e) {
+                if (e.originalEvent.persisted) hide();
+            });
+        })();
     </script>
     }
 </body>

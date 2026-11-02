@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Centek.Data;
 using Centek.Filters;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,12 @@ namespace Centek.Controllers_Api
     public class MainCategoriesApiController : ControllerBase
     {
         private readonly CentekContext _context;
+        private readonly MainCategoryService _mainCategoryService;
 
-        public MainCategoriesApiController(CentekContext context)
+        public MainCategoriesApiController(CentekContext context, MainCategoryService mainCategoryService)
         {
             _context = context;
+            _mainCategoryService = mainCategoryService;
         }
 
         // GET: api/MainCategoriesApi
@@ -65,6 +68,7 @@ namespace Centek.Controllers_Api
             try
             {
                 await _context.SaveChangesAsync();
+                await _mainCategoryService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -96,6 +100,7 @@ namespace Centek.Controllers_Api
             };
             _context.MainCategories.Add(mainCategory);
             await _context.SaveChangesAsync();
+            await _mainCategoryService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return CreatedAtAction("GetMainCategory", new { id = mainCategory.ID }, mainCategory);
         }
@@ -112,6 +117,7 @@ namespace Centek.Controllers_Api
 
             _context.MainCategories.Remove(mainCategory);
             await _context.SaveChangesAsync();
+            await _mainCategoryService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return NoContent();
         }

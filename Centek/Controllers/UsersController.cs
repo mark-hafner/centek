@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 
 namespace Centek.Controllers
 {
     public class UsersController : Controller
     {
         private readonly CentekContext _context;
+        private readonly AccountService _accountService;
 
-        public UsersController(CentekContext context)
+        public UsersController(CentekContext context, AccountService accountService)
         {
             _context = context;
+            _accountService = accountService;
         }
 
         // GET: Users
@@ -151,6 +154,7 @@ namespace Centek.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _accountService.InvalidateAsync(id); // user's data is deleted with them
             return RedirectToAction(nameof(Index));
         }
 

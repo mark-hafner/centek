@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Centek.Filters;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -13,10 +14,12 @@ namespace Centek.Controllers_Apigi
     public class AccuntsApiController : ControllerBase
     {
         private readonly CentekContext _context;
+        private readonly AccountService _accountService;
 
-        public AccuntsApiController(CentekContext context)
+        public AccuntsApiController(CentekContext context, AccountService accountService)
         {
             _context = context;
+            _accountService = accountService;
         }
 
         // GET: api/AccuntsApi
@@ -58,6 +61,7 @@ namespace Centek.Controllers_Apigi
             try
             {
                 await _context.SaveChangesAsync();
+                await _accountService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -89,6 +93,7 @@ namespace Centek.Controllers_Apigi
 
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
+            await _accountService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return CreatedAtAction("GetAccount", new { id = account.ID }, account);
         }
@@ -105,6 +110,7 @@ namespace Centek.Controllers_Apigi
 
             _context.Accounts.Remove(account);
             await _context.SaveChangesAsync();
+            await _accountService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return NoContent();
         }

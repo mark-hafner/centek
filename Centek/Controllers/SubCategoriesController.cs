@@ -1,6 +1,7 @@
 using Centek.Data;
 using Centek.Models;
 using Centek.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Centek.Controllers
 {
+    [Authorize]
     public class SubCategoriesController : Controller
     {
         private readonly CentekContext _context;
@@ -44,7 +46,8 @@ namespace Centek.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.SubCategories.ToListAsync());
+            // only this user's subcategories (cached)
+            return View(await _subCategoryService.GetForUserAsync(_userManager.GetUserId(User)!));
         }
 
         // GET: SubCategories/Details/5

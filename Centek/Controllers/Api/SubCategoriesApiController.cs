@@ -1,6 +1,7 @@
 using Centek.Data;
 using Centek.Filters;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,12 @@ namespace Centek.Controllers_Api
     public class SubCategoriesApiController : ControllerBase
     {
         private readonly CentekContext _context;
+        private readonly SubCategoryService _subCategoryService;
 
-        public SubCategoriesApiController(CentekContext context)
+        public SubCategoriesApiController(CentekContext context, SubCategoryService subCategoryService)
         {
             _context = context;
+            _subCategoryService = subCategoryService;
         }
 
         // GET: api/SubCategoriesApi
@@ -70,6 +73,7 @@ namespace Centek.Controllers_Api
             try
             {
                 await _context.SaveChangesAsync();
+                await _subCategoryService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -101,6 +105,7 @@ namespace Centek.Controllers_Api
 
             _context.SubCategories.Add(subCategory);
             await _context.SaveChangesAsync();
+            await _subCategoryService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return CreatedAtAction("GetSubCategory", new { id = subCategory.ID }, subCategory);
         }
@@ -117,6 +122,7 @@ namespace Centek.Controllers_Api
 
             _context.SubCategories.Remove(subCategory);
             await _context.SaveChangesAsync();
+            await _subCategoryService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return NoContent();
         }

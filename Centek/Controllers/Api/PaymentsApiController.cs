@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Centek.Data;
 using Centek.Filters;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,12 @@ namespace Centek.Controllers_Api
     public class PaymentsApiController : ControllerBase
     {
         private readonly CentekContext _context;
+        private readonly PaymentService _paymentService;
 
-        public PaymentsApiController(CentekContext context)
+        public PaymentsApiController(CentekContext context, PaymentService paymentService)
         {
             _context = context;
+            _paymentService = paymentService;
         }
 
         // GET: api/PaymentsApi
@@ -154,6 +157,7 @@ namespace Centek.Controllers_Api
             try
             {
                 await _context.SaveChangesAsync();
+                await _paymentService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -191,6 +195,7 @@ namespace Centek.Controllers_Api
 
             _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
+            await _paymentService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
 
             return CreatedAtAction("GetPayment", new { id = payment.ID }, payment);
         }
@@ -207,6 +212,7 @@ namespace Centek.Controllers_Api
 
             _context.Payments.Remove(payment);
             await _context.SaveChangesAsync();
+            await _paymentService.InvalidateAsync(HttpContext.Request.Headers["UserId"].ToString());
             return NoContent();
         }
 

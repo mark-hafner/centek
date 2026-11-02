@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Centek.Filters;
 using Microsoft.AspNetCore.Identity;
 
@@ -20,11 +21,17 @@ namespace Centek.Controllers_Api
     {
         private readonly CentekContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly AccountService _accountService;
 
-        public UsersApiController(CentekContext context, UserManager<User> userManager)
+        public UsersApiController(
+            CentekContext context,
+            UserManager<User> userManager,
+            AccountService accountService
+        )
         {
             _context = context;
             _userManager = userManager;
+            _accountService = accountService;
         }
 
         // GET: api/UsersApi
@@ -146,6 +153,7 @@ namespace Centek.Controllers_Api
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+            await _accountService.InvalidateAsync(id); // user's data is deleted with them
 
             return NoContent();
         }
