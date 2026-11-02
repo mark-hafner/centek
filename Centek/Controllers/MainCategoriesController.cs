@@ -13,32 +13,29 @@ namespace Centek.Controllers
     public class MainCategoriesController(
         CentekContext context,
         UserManager<User> userManager,
-        SubCategoryDelete subCategoryDelete
+        SubCategoryDelete subCategoryDelete,
+        MainCategoryService mainCategoryService,
+        SubCategoryService subCategoryService
     ) : Controller
     {
         private readonly CentekContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
         private readonly SubCategoryDelete _subCategoryDelete = subCategoryDelete;
+        private readonly MainCategoryService _mainCategoryService = mainCategoryService;
+        private readonly SubCategoryService _subCategoryService = subCategoryService;
 
         // GET: MainCategories
         [HttpGet]
-        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // get user specific categories
-            var user = await _userManager.GetUserAsync(User);
+            // get user specific categories (cached)
+            var userId = _userManager.GetUserId(User)!;
 
             // Get MainCategories for this user
-            var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user!.Id)
-                .ToListAsync();
+            var mainCategories = await _mainCategoryService.GetForUserAsync(userId);
 
             // Get SubCategories conected to MainCategories
-            var subCategories = await _context
-                .SubCategories.Where(s =>
-                    mainCategories.Select(c => c.ID).Contains(s.MainCategoryId)
-                )
-                .ToListAsync();
+            var subCategories = await _subCategoryService.GetForUserAsync(userId);
 
             var viewModel = new CategoryViewModel
             {
@@ -58,10 +55,10 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User); //get current user
-            // show only categories from current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user!.Id
+            // show only categories from current user (cached)
+            var mainCategory = await _mainCategoryService.GetAsync(
+                _userManager.GetUserId(User)!,
+                id.Value
             );
             if (mainCategory == null)
             {
@@ -95,6 +92,7 @@ namespace Centek.Controllers
             }
             _context.Add(mainCategory);
             await _context.SaveChangesAsync();
+            await _mainCategoryService.InvalidateAsync(user.Id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -107,10 +105,10 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User); //get current user
-            // show only categories from current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user!.Id
+            // show only categories from current user (cached)
+            var mainCategory = await _mainCategoryService.GetAsync(
+                _userManager.GetUserId(User)!,
+                id.Value
             );
             if (mainCategory == null)
             {
@@ -143,6 +141,7 @@ namespace Centek.Controllers
                 {
                     _context.Update(existingCategory);
                     await _context.SaveChangesAsync();
+                    await _mainCategoryService.InvalidateAsync(user!.Id);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -169,10 +168,10 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User); //get current user
-            // show only categories from current user
-            var mainCategory = await _context.MainCategories.FirstOrDefaultAsync(c =>
-                c.ID == id && c.UserId == user!.Id
+            // show only categories from current user (cached)
+            var mainCategory = await _mainCategoryService.GetAsync(
+                _userManager.GetUserId(User)!,
+                id.Value
             );
             if (mainCategory == null)
             {
@@ -225,6 +224,7 @@ namespace Centek.Controllers
                 }
                 _context.MainCategories.Remove(mainCategory);
                 await _context.SaveChangesAsync();
+                await _mainCategoryService.InvalidateAsync(user!.Id);
             }
 
             return RedirectToAction(nameof(Index));

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,22 +18,25 @@ namespace Centek.Controllers
     {
         private readonly CentekContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly AccountService _accountService;
 
-        public AccountsController(CentekContext context, UserManager<User> userManager)
+        public AccountsController(
+            CentekContext context,
+            UserManager<User> userManager,
+            AccountService accountService
+        )
         {
             _context = context;
             _userManager = userManager;
+            _accountService = accountService;
         }
 
         // GET: Accounts
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // get user specific accounts
-            var user = await _userManager.GetUserAsync(User);
-
-            // Get Accounts for this user
-            var accounts = await _context.Accounts.Where(a => a.UserId == user!.Id).ToListAsync();
+            // get user specific accounts (cached)
+            var accounts = await _accountService.GetForUserAsync(_userManager.GetUserId(User)!);
 
             return View(accounts);
         }
@@ -46,11 +50,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User); //get current user
-            // show only accounts from current user
-            var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user!.Id
-            );
+            // show only accounts from current user (cached)
+            var account = await _accountService.GetAsync(_userManager.GetUserId(User)!, id.Value);
             if (account == null)
             {
                 return NotFound();
@@ -94,6 +95,7 @@ namespace Centek.Controllers
 
                 _context.Payments.Add(initialPayment);
                 await _context.SaveChangesAsync();
+                await _accountService.InvalidateAsync(user.Id);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -109,11 +111,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User); //get current user
-            // show only accounts from current user
-            var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user!.Id
-            );
+            // show only accounts from current user (cached)
+            var account = await _accountService.GetAsync(_userManager.GetUserId(User)!, id.Value);
             if (account == null)
             {
                 return NotFound();
@@ -147,6 +146,7 @@ namespace Centek.Controllers
                 {
                     _context.Update(existingAccount);
                     await _context.SaveChangesAsync();
+                    await _accountService.InvalidateAsync(user!.Id);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -173,11 +173,8 @@ namespace Centek.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User); //get current user
-            // show only accounts from current user
-            var account = await _context.Accounts.FirstOrDefaultAsync(a =>
-                a.ID == id && a.UserId == user!.Id
-            );
+            // show only accounts from current user (cached)
+            var account = await _accountService.GetAsync(_userManager.GetUserId(User)!, id.Value);
 
             if (account == null)
             {
@@ -204,6 +201,7 @@ namespace Centek.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _accountService.InvalidateAsync(user!.Id);
             return RedirectToAction(nameof(Index));
         }
 

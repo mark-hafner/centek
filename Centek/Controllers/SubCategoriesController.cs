@@ -1,5 +1,6 @@
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,21 +14,30 @@ namespace Centek.Controllers
     {
         private readonly CentekContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly MainCategoryService _mainCategoryService;
+        private readonly SubCategoryService _subCategoryService;
 
-        public SubCategoriesController(CentekContext context, UserManager<User> userManager)
+        public SubCategoriesController(
+            CentekContext context,
+            UserManager<User> userManager,
+            MainCategoryService mainCategoryService,
+            SubCategoryService subCategoryService
+        )
         {
             _context = context;
             _userManager = userManager;
+            _mainCategoryService = mainCategoryService;
+            _subCategoryService = subCategoryService;
         }
 
         [HttpGet]
         public async Task<SubCategory?> GetSubcategories(int? id)
         {
-            var user = await _userManager.GetUserAsync(User);
+            if (id == null)
+                return null;
 
-            return await _context
-                .SubCategories.Include(s => s.MainCategory)
-                .FirstOrDefaultAsync(s => s.ID == id && s.MainCategory!.UserId == user!.Id);
+            // cached, already includes MainCategory
+            return await _subCategoryService.GetAsync(_userManager.GetUserId(User)!, id.Value);
         }
 
         // GET: SubCategories
@@ -57,12 +67,10 @@ namespace Centek.Controllers
         // Helper for generating items in the MainCategory dropdown menu
         private async Task GenerateMainCategoryDropdownAsync(object? selectedValue = null)
         {
-            var user = await _userManager.GetUserAsync(User); // current user
-            // Get only MainCategories for this user
-            var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user!.Id)
-                .Select(c => new { c.ID, c.Name })
-                .ToListAsync();
+            // Get only MainCategories for this user (cached)
+            var mainCategories = await _mainCategoryService.GetForUserAsync(
+                _userManager.GetUserId(User)!
+            );
             // put recived data into ViewBag for display in select
             ViewBag.MainCategories = new SelectList(mainCategories, "ID", "Name", selectedValue);
         }
@@ -89,6 +97,7 @@ namespace Centek.Controllers
             }
             _context.Add(subCategory);
             await _context.SaveChangesAsync();
+            await _subCategoryService.InvalidateAsync(_userManager.GetUserId(User)!);
             return RedirectToAction("Index", "MainCategories");
         }
 
@@ -131,6 +140,7 @@ namespace Centek.Controllers
                     subCategoryInDb.Name = subCategory.Name;
                     subCategoryInDb.MainCategoryId = subCategory.MainCategoryId;
                     await _context.SaveChangesAsync();
+                    await _subCategoryService.InvalidateAsync(_userManager.GetUserId(User)!);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -196,6 +206,7 @@ namespace Centek.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _subCategoryService.InvalidateAsync(_userManager.GetUserId(User)!);
             return RedirectToAction("Index", "MainCategories");
         }
 

@@ -33,7 +33,7 @@ namespace Centek.Filters
                 context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
             var apiKey = configuration.GetValue<string>("ApiKey");
 
-            if (apiKey.IsNullOrEmpty() || !apiKey.Equals(potentialApiKey))
+            if (apiKey.IsNullOrEmpty() || potentialApiKey.IsNullOrEmpty() || !apiKey!.Equals(potentialApiKey))
             {
                 context.Result = new UnauthorizedResult();
                 return;

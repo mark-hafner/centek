@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.Extensions.Caching.Hybrid;
 
 
 
@@ -23,6 +24,20 @@ var connectionString = builder.Configuration.GetConnectionString("CentekContext"
 builder.Services.AddDbContext<CentekContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddStackExchangeRedisCache(o =>
+{
+    o.Configuration = builder.Configuration.GetConnectionString("Redis"); // npr. "localhost:6379"
+    o.InstanceName = "centek:";
+});
+builder.Services.AddHybridCache(o =>
+{
+    o.DefaultEntryOptions = new HybridCacheEntryOptions
+    {
+        Expiration = TimeSpan.FromMinutes(10), // Redis
+        LocalCacheExpiration = TimeSpan.FromMinutes(2), // in-memory
+    };
+});
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<CentekContext>();
@@ -61,6 +76,11 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 builder.Services.AddScoped<SubCategoryDelete>();
 builder.Services.AddScoped<MainCategoryDelete>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<PaymentService>();
+builder.Services.AddScoped<RecurringPaymentService>();
+builder.Services.AddScoped<MainCategoryService>();
+builder.Services.AddScoped<SubCategoryService>();
 
 builder.Services.AddSwaggerGen();
 

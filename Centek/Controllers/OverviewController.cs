@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Security.AccessControl;
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,28 @@ namespace Centek.Controllers
     [Authorize]
     public class OverviewController : Controller
     {
-        private readonly CentekContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly AccountService _accountService;
+        private readonly MainCategoryService _mainCategoryService;
+        private readonly SubCategoryService _subCategoryService;
+        private readonly PaymentService _paymentService;
+        private readonly RecurringPaymentService _recurringPaymentService;
 
-        public OverviewController(CentekContext context, UserManager<User> userManager)
+        public OverviewController(
+            UserManager<User> userManager,
+            AccountService accountService,
+            MainCategoryService mainCategoryService,
+            SubCategoryService subCategoryService,
+            PaymentService paymentService,
+            RecurringPaymentService recurringPaymentService
+        )
         {
-            _context = context;
             _userManager = userManager;
+            _accountService = accountService;
+            _mainCategoryService = mainCategoryService;
+            _subCategoryService = subCategoryService;
+            _paymentService = paymentService;
+            _recurringPaymentService = recurringPaymentService;
         }
 
         [HttpGet]
@@ -39,23 +55,15 @@ namespace Centek.Controllers
             toDate = toDate ?? defaultTo;
             toDate = toDate.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
-            var user = await _userManager.GetUserAsync(User);
+            var userId = _userManager.GetUserId(User)!;
 
-            // All payments from user
-            var paymentsQuery = _context
-                .Payments.Include(p => p.Account)
-                .Include(p => p.MainCategory)
-                .Include(p => p.SubCategory)
-                .Where(p => p.Account!.UserId == user!.Id)
-                .AsQueryable();
+            // All payments from user (cached, filtered in memory)
+            var allPayments = await _paymentService.GetForUserAsync(userId);
+            IEnumerable<Payment> paymentsQuery = allPayments;
 
-            // All recurring payments from user
-            var recPaymentsQuery = _context
-                .RecurringPayment.Include(p => p.Account)
-                .Include(p => p.MainCategory)
-                .Include(p => p.SubCategory)
-                .Where(p => p.Account!.UserId == user!.Id)
-                .AsQueryable();
+            // All recurring payments from user (cached, filtered in memory)
+            IEnumerable<RecurringPayment> recPaymentsQuery =
+                await _recurringPaymentService.GetForUserAsync(userId);
 
             // Filters
             if (accountIds != null && accountIds.Any())
@@ -103,8 +111,8 @@ namespace Centek.Controllers
             }
 
             // Execute query
-            var payments = await paymentsQuery.ToListAsync();
-            var recPayments = await recPaymentsQuery.ToListAsync();
+            var payments = paymentsQuery.ToList();
+            var recPayments = recPaymentsQuery.ToList();
 
             foreach (var recurringPayment in recPayments)
             {
@@ -207,21 +215,25 @@ namespace Centek.Controllers
             ViewBag.negativeMainCatValues = negativeMainCatGroups.Select(x => x.Value).ToList();
 
 
+            // only show filter options that have payments
+            var usedAccountIds = allPayments.Select(p => p.AccountId).ToHashSet();
+            var usedMainCategoryIds = allPayments.Select(p => p.MainCategoryId).ToHashSet();
+            var usedSubCategoryIds = allPayments.Select(p => p.SubCategoryId).ToHashSet();
+
             // Accounts
-            ViewBag.Accounts = await _context
-                .Accounts.Where(a => a.UserId == user!.Id && a.Payments!.Any())
-                .ToListAsync();
+            ViewBag.Accounts = (await _accountService.GetForUserAsync(userId))
+                .Where(a => usedAccountIds.Contains(a.ID))
+                .ToList();
 
             // MainCategories
-            ViewBag.MainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user!.Id && c.Payments!.Any())
-                .ToListAsync();
+            ViewBag.MainCategories = (await _mainCategoryService.GetForUserAsync(userId))
+                .Where(c => usedMainCategoryIds.Contains(c.ID))
+                .ToList();
 
             // SubCategories
-            ViewBag.SubCategories = await _context
-                .SubCategories.Where(sc => sc.MainCategory!.UserId == user!.Id && sc.Payments!.Any())
-                .Include(sc => sc.MainCategory)
-                .ToListAsync();
+            ViewBag.SubCategories = (await _subCategoryService.GetForUserAsync(userId))
+                .Where(sc => usedSubCategoryIds.Contains(sc.ID))
+                .ToList();
 
             // From
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");

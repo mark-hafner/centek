@@ -1,5 +1,6 @@
 using Centek.Data;
 using Centek.Models;
+using Centek.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +10,21 @@ using Microsoft.EntityFrameworkCore;
 namespace Centek.Controllers
 {
     [Authorize]
-    public class RecurringPaymentsController(CentekContext context, UserManager<User> userManager)
-        : Controller
+    public class RecurringPaymentsController(
+        CentekContext context,
+        UserManager<User> userManager,
+        AccountService accountService,
+        MainCategoryService mainCategoryService,
+        SubCategoryService subCategoryService,
+        RecurringPaymentService recurringPaymentService
+    ) : Controller
     {
         private readonly CentekContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
+        private readonly AccountService _accountService = accountService;
+        private readonly MainCategoryService _mainCategoryService = mainCategoryService;
+        private readonly SubCategoryService _subCategoryService = subCategoryService;
+        private readonly RecurringPaymentService _recurringPaymentService = recurringPaymentService;
 
         // GET: RecurringPayments/Details/5
         [HttpGet]
@@ -22,15 +33,8 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
-            var user = await _userManager.GetUserAsync(User);
-
-            // Include navigation properties if you need them
-            var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
-                .Include(p => p.Account)
-                .Include(p => p.MainCategory)
-                .Include(p => p.SubCategory)
-                .FirstOrDefaultAsync(p => p.ID == id);
+            // cached, already includes Account / MainCategory / SubCategory
+            var recurringPayment = await _recurringPaymentService.GetAsync(_userManager.GetUserId(User)!, id.Value);
 
             if (recurringPayment == null)
                 return NotFound();
@@ -44,10 +48,14 @@ namespace Centek.Controllers
         [HttpGet]
         public async Task<JsonResult> GetSubCategories(int mainCategoryId)
         {
-            var subCategories = await _context
-                .SubCategories.Where(sc => sc.MainCategoryId == mainCategoryId)
+            var subCategories = (
+                await _subCategoryService.GetByMainCategoryAsync(
+                    _userManager.GetUserId(User)!,
+                    mainCategoryId
+                )
+            )
                 .Select(sc => new { sc.ID, sc.Name })
-                .ToListAsync();
+                .ToList();
 
             return Json(subCategories);
         }
@@ -55,14 +63,12 @@ namespace Centek.Controllers
         // helper for populating ViewBag for dropdown
         public async Task PopulateViewBag(RecurringPayment? recurringPayment = null)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = _userManager.GetUserId(User)!;
 
-            var accounts = await _context.Accounts.Where(a => a.UserId == user!.Id).ToListAsync();
+            var accounts = await _accountService.GetForUserAsync(userId);
             ViewBag.Accounts = new SelectList(accounts, "ID", "Name", recurringPayment?.AccountId);
 
-            var mainCategories = await _context
-                .MainCategories.Where(c => c.UserId == user!.Id)
-                .ToListAsync();
+            var mainCategories = await _mainCategoryService.GetForUserAsync(userId);
             ViewBag.MainCategories = new SelectList(
                 mainCategories,
                 "ID",
@@ -72,11 +78,10 @@ namespace Centek.Controllers
 
             var subCategories =
                 recurringPayment?.MainCategoryId != null
-                    ? await _context
-                        .SubCategories.Where(sc =>
-                            sc.MainCategoryId == recurringPayment.MainCategoryId
-                        )
-                        .ToListAsync()
+                    ? await _subCategoryService.GetByMainCategoryAsync(
+                        userId,
+                        recurringPayment.MainCategoryId.Value
+                    )
                     : new List<SubCategory>();
             ViewBag.SubCategories = new SelectList(
                 subCategories,
@@ -110,6 +115,7 @@ namespace Centek.Controllers
             {
                 _context.Add(recurringPayment);
                 await _context.SaveChangesAsync();
+                await _recurringPaymentService.InvalidateAsync(_userManager.GetUserId(User)!);
                 return RedirectToAction("Index", "Payments");
             }
             await PopulateViewBag();
@@ -123,15 +129,8 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
-            var user = await _userManager.GetUserAsync(User);
-
-            // Include navigation properties if you need them
-            var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
-                .Include(p => p.Account)
-                .Include(p => p.MainCategory)
-                .Include(p => p.SubCategory)
-                .FirstOrDefaultAsync(p => p.ID == id);
+            // cached, already includes Account / MainCategory / SubCategory
+            var recurringPayment = await _recurringPaymentService.GetAsync(_userManager.GetUserId(User)!, id.Value);
 
             if (recurringPayment == null)
                 return NotFound();
@@ -157,6 +156,7 @@ namespace Centek.Controllers
                 {
                     _context.Update(recurringPayment);
                     await _context.SaveChangesAsync();
+                    await _recurringPaymentService.InvalidateAsync(_userManager.GetUserId(User)!);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -182,15 +182,8 @@ namespace Centek.Controllers
             if (id == null)
                 return NotFound();
 
-            var user = await _userManager.GetUserAsync(User);
-
-            // Include navigation properties if you need them
-            var recurringPayment = await _context
-                .RecurringPayment.Where(p => p.Account!.UserId == user!.Id)
-                .Include(p => p.Account)
-                .Include(p => p.MainCategory)
-                .Include(p => p.SubCategory)
-                .FirstOrDefaultAsync(p => p.ID == id);
+            // cached, already includes Account / MainCategory / SubCategory
+            var recurringPayment = await _recurringPaymentService.GetAsync(_userManager.GetUserId(User)!, id.Value);
 
             if (recurringPayment == null)
                 return NotFound();
@@ -261,6 +254,7 @@ namespace Centek.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _recurringPaymentService.InvalidateAsync(_userManager.GetUserId(User)!);
             return RedirectToAction("Index", "Payments");
         }
 
